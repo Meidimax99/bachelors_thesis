@@ -13,6 +13,9 @@
 *.cb2
 .*.lb
 
+
+# Drawio files
+*.bkp
 ## Intermediate documents:
 *.dvi
 *.xdv

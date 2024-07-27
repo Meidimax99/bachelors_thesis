@@ -11,6 +11,57 @@
 % \subsection{Qemu}
 % \paragraph{softmmu Target}
 
+
+
+
+\section{Relevant Modules in the xv6 Source}
+\paragraph*{kalloc - physical memory allocator}
+\paragraph*{proc}
+\paragraph*{vm.c}
+\subsection*{Syscalls to change}
+% System call interface should stay the same so that existing processes can continue
+% as usual -> new virtual memory scheme should be completely transparent
+\paragraph*{fork}
+% creating a new addresse space -> fixed number of processes ? ?
+\paragraph*{exit}
+% freeing memory?
+\paragraph*{exec}
+% same as fork?
+\paragraph*{sbrk}
+% allocating new memory
+Sbrk is the system call with which a program can change its program break. The program break
+is the end of the programs data segment. This system call is typically used to either
+increase or decrease a programs memory.
+Sbrk would typically be called by the memory manager of the user program. Calls
+to malloc would for example call sbrk when there is not enough memory available to
+satisfy the call to malloc.
+Internally, sbrk calls a function called growproc(n) which grows or shrinks to calling
+processes memory by n bytes.
+growproc will then call either uvmalloc() or uvmdealloc(). These functions need to be
+changed to use the new allocation scheme.
+
+\paragraph*{Experimental Allocation Scheme}
+xv6 keeps all of its unused physical memory in a linked list. The linked list itself is stored
+in the free blocks, as they are not used for anything else. When a process asks for more memory
+the kalloc() function retrieves the first element from the linked list, updates the head
+of the list to point to the next element and returns the pointer to the first element,
+which is the same as the physical address for the page managed by that first list item.
+kalloc() is called by the uvmalloc() function, and since we want to change the way
+the virtual memory management works, it would make sense to directly change the uvmalloc() function.
+However, in order to properly test the physical memory allocation first, we will change
+the allocation scheme first and then the mapping, as the trampoline page would not work anymore.
+
+The new allocation scheme statically assigns a fixed portion of the available physical memory
+to each process. The size is determined by the size of physical memory and the maximum number
+of processes.
+kalloc() will then use the process id, the current size of the process and the requested
+increase in size to determine the next page for the process.
+
+\section{Changing physical memory allocation}
+\subsection{Special cases}
+\paragraph*{Kernel direct mapping}
+\paragraph*{MMIO}
+\paragraph*{Trampoline}
 % \section{Modifying Qemu Source}
 % \subsection{TLB Miss Exception}
 % \subsection{CSR Modifications}
@@ -28,3 +79,19 @@
 % \subsection{Problems}
 % \subsection{idiosyncracies}
 % \subsection{limitations}
+
+%\section{Veriying the Mapping - Mapping Tester}
+\section{Challange: Modifying code in parts}
+% in order to test single changes, changes should be isolated to a specific
+% kernel module and not change the interface between modules
+\subsection*{Changing the physical memory allocation}
+% each process gets a fixed set of physical pages assigned to it
+% TODO How much processes does xv6 run at a time? -> Least amount of processess to have 
+% the operation continue as usual
+
+\section{Simplest Case: Fixed memory area for each process}
+\subsection{Discussion: Limitations}
+\paragraph*{Fragmentation}
+%Processes have fixed size of memory and may not use all of it
+\paragraph*{Limited Process count}
+%Maybe appropiate for embedded applications?

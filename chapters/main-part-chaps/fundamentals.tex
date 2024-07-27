@@ -77,54 +77,11 @@
     \caption[RISC-V Sv39 Page Table Entry]{RISC-V Sv39 Page Table Entry}
     \label{fig:fundamentals:sv39pte}
 \end{figure*}
-\begin{figure*}[t]
+\
+\begin{figure*}[ht]
     \centering
-    \begin{tikzpicture}[node distance=2cm, auto]
-        % Define block styles
-        \tikzstyle{pageTable} = [rectangle, draw, fill=blue!10, text centered, minimum height=2em, minimum width=4em]
-        \tikzstyle{process} = [rectangle, draw, fill=orange!10, text centered, minimum height=2em, minimum width=6em]
-        \tikzstyle{arrow} = [->, thick]
+    \includegraphics[]{figures/simple_mapping.pdf}
 
-        % Nodes
-        \node[process] (virtual) {Virtual Address};
-        \node[pageTable, below of=virtual] (pt1) {Level 1 Page Table};
-        \node[pageTable, below of=pt1] (pt2) {Level 2 Page Table};
-        \node[pageTable, below of=pt2] (pt3) {Level 3 Page Table};
-        \node[process, below of=pt3] (physical) {Physical Address};
-
-        % Arrows
-        \draw[arrow] (virtual) -- (pt1) node[midway, right] {Index into PT1};
-        \draw[arrow] (pt1) -- (pt2) node[midway, right] {Index into PT2};
-        \draw[arrow] (pt2) -- (pt3) node[midway, right] {Index into PT3};
-        \draw[arrow] (pt3) -- (physical) node[midway, right] {Physical Address};
-
-        % Optional: Add text labels or notes
-        \node[below of=physical, node distance=1cm] {Physical Memory};
-
-    \end{tikzpicture}
-
-    \caption[RISC-V Sv39 Address Translation Process]{RISC-V Sv39 Address Translation Process}
-    \label{fig:fundamentals:sv39addresstranslation}
+    \caption[Simple Mapping Scheme]{Simple Mapping Scheme}
+    \label{fig:theory:simplemapping}
 \end{figure*}
-
-\begin{tikzpicture}
-    % Define styles
-    \tikzstyle{section} = [draw, fill=blue!10, text centered, minimum height=2em, minimum width=4em]
-
-    % Draw the main box
-    \node[draw, rectangle, minimum width=6cm, minimum height=6cm] (mainbox) {};
-
-    % Draw sections
-    \node[section, below left=0.5cm and 0.5cm of mainbox.north west] (section1) {Section 1};
-    \node[section, below right=0.5cm and 0.5cm of mainbox.north east] (section2) {Section 2};
-    \node[section, below=1.5cm of section1.south] (section3) {Section 3};
-    \node[section, below=1.5cm of section2.south] (section4) {Section 4};
-
-    % Draw separating lines
-    \draw[thick] (mainbox.west) -- (mainbox.east);
-    \draw[thick] (section1.south west) -- (section2.south east);
-    \draw[thick] (section3.west) -- (section4.east);
-    \draw[thick] (section1.south west) -- (section3.north west);
-    \draw[thick] (section2.south east) -- (section4.north east);
-
-\end{tikzpicture}
