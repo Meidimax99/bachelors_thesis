@@ -1,12 +1,30 @@
-# Der Rote Faden
-- What is virtual memory?                                                           Introduction
-    - History
+# Introduction 2-3 Seiten
+- Problemstellung
+- Ziele / Forschungsfrage
+- Inhaltliche Abgrenzung, Ausschließen von Teilproblemen
+- Aufbau der Arbeit
+- Relevanz
+- !Keine Ergebnisse
+- !Keine Definitionen
+- !Keine Historische Einordnung
+- Einführende Zitate oder Geschichten -> Atlas , Overlays
+
+
+
+# Hauptteil
+
+## Fundamentals
+- What is virtual memory?
+    - Definitions
+        - Lehrbücher -> Compare different definitions and pick one most usefull for my cause
     - What does it do?
     - Why do we want it?
     - How does it work?
         - Different Implementations
 
-- How is Virtual Memory realized/implemented?                                       Fundamentals
+- How is Virtual Memory realized/implemented?
+    - In what aspects may implementation differ
+        - Hardware-Software TLB Refill
     - Typical VM System Implementations
         - Inverted
         - Hierachical
@@ -29,10 +47,13 @@
         - Different use cases that may not want to use a MMU
     - Why not do the TLB Filling in software for more flexibility
 
-- Software Based VM Approach
+## Related Work
+- Software Based VM Approaches
     - Rationale
     - Possible Tradeoffs?
     - Related work [ A look at several ...]
+
+## Theory / Idea (in Detail)
     - Not just a SW-Pagetable walk
         - HW is faster (even thought cpu freezes in HW VM?)
         - Context switch would be very expensive [ Paper on cost of context switch? ]
@@ -51,16 +72,22 @@
     - mapping pages
     - -> Feature extrapolation
 
-- Implementation                                                                Implementation
+- Plaform Selection Theory ?
+## Implementation
+
     - Suitable Platforms, Chosen Platform
         - Required features
         - Comparison with other Platforms
     - Implementation Description
 
-- Evaluation                                                                    Evaluation
+## Evaluation
+
+- Evaluation
     - Relevant Metrics
     - Critical assesment
     - Possible niche
 
+# End
+- Conclusion (zusammenfassung der Kernaspekte)
 - Future Work
     - Missing Features, what more to implement, ideas how to implement it

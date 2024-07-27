@@ -39,3 +39,18 @@
 - Zusammenfassung der Kernaspekte
 - Ausblick
 - Future work
+
+
+# Michael
+	- Intro
+	- Fundamentals
+    - Related Work
+        - Work that is quite similar to mine but not exactly the same
+        -> Software-based approaches , but still using bigger structures
+	- Theorie / Idee
+		- Einfaches Beispiel
+		- Weiteres Aufbauen der Idee
+	- Implementierungskapitel
+		- Beschreiben der Implementierung
+	- Evaluieren
+		- Cyclen Zählen in qemu
