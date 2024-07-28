@@ -57,6 +57,22 @@ of processes.
 kalloc() will then use the process id, the current size of the process and the requested
 increase in size to determine the next page for the process.
 
+\subsection*{Why does this not work for anything else but the sbrk syscall}
+- kalloc with sbrk uses the current process size to determine the next free space in
+the address space of the process
+- The processes size only keeps track of the text data and so on segments. So only stuff
+the program is aware of. Page table pages need to be allocated per process as well but
+do not contribute to the overall size of the process so they can not be put into the
+processes memory space. This has the direct advantage that users can not access their page tables
+but this was never the problem because pages containing page tables could simply be marked
+as not user accessible. And of course this brings some disadvantages: Kernel size becomes
+a scarce resource and user address spaces are not self contained anymore, page tables now reside
+somewhere else entirely.
+But since it is the goal to get rid of page tables anyways, its not too big of a problem.
+When we get rid of the page tables, we get rid of a huge part of the tables that can not
+be directly allocated using the respective process size.
+What are the other pages and allocations that can not rely on the processes size?
+
 \section{Changing physical memory allocation}
 \subsection{Special cases}
 \paragraph*{Kernel direct mapping}
