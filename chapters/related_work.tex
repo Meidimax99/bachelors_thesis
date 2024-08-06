@@ -8,9 +8,18 @@
 
 % \section{Other software-based TLB miss handlers / Page table walkers?}
 
-\begin{itemize}
-    %
-    \item Software Managed Address Translation
-    \item
-\end{itemize}
-
+\cite{jacobSoftwaremanagedAddressTranslation1997} explores software-managed
+address translation and analyses the efficiency of a PowerPC implementation
+of the presented design they call \textit{softvm}. They show that
+software-managed address translation can achieve better performance and
+at the same time simplify hardware by dispensing with translation caches and
+the hardware state-machine for walking the page-table.\\
+The approach is based on handling virtually indexed and tagged cache misses in
+software.
+With sufficiently-sized virtual caches the system can go for long periods
+without requiring translations.
+Not unlike this paper, they extend the PowerPC architecture by two new instructions
+to write entries to the cache. However, their design uses software page-table
+walks to find translations on cache-miss, while the approach presented in this
+paper presents a software-based TLB fill mechanism with segmented
+memory allocation.

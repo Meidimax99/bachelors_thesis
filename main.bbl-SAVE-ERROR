@@ -1,0 +1,192 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global/global}
+    \entry{DietrichKBF18}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=2142fb95fd3244b3a062a06cd63def07}{%
+           family={Dietrich},
+           familyi={D\bibinitperiod},
+           given={Constanze},
+           giveni={C\bibinitperiod}}}%
+        {{hash=7013c00954646b04183fa1fedcc596be}{%
+           family={Krombholz},
+           familyi={K\bibinitperiod},
+           given={Katharina},
+           giveni={K\bibinitperiod}}}%
+        {{hash=bbca5b2b13ba79651548e9aa6f7496ae}{%
+           family={Borgolte},
+           familyi={B\bibinitperiod},
+           given={Kevin},
+           giveni={K\bibinitperiod}}}%
+        {{hash=704095eebb063e660c248da087244bfb}{%
+           family={Fiebig},
+           familyi={F\bibinitperiod},
+           given={Tobias},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{6ced0c03c3d81d43a38084c51f110dd5}
+      \strng{fullhash}{79580a0d65a41e7b5dc8714f6c85c70a}
+      \strng{fullhashraw}{79580a0d65a41e7b5dc8714f6c85c70a}
+      \strng{bibnamehash}{6ced0c03c3d81d43a38084c51f110dd5}
+      \strng{authorbibnamehash}{6ced0c03c3d81d43a38084c51f110dd5}
+      \strng{authornamehash}{6ced0c03c3d81d43a38084c51f110dd5}
+      \strng{authorfullhash}{79580a0d65a41e7b5dc8714f6c85c70a}
+      \strng{authorfullhashraw}{79580a0d65a41e7b5dc8714f6c85c70a}
+      \field{labelalpha}{Die+18}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Investigating System Operators' Perspective on Security Misconfigurations}
+      \field{year}{2018}
+      \field{pages}{1272\bibrangedash 1289}
+      \range{pages}{18}
+    \endentry
+    \entry{jacobSoftwaremanagedAddressTranslation1997}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=dca6d20d17cddb6b7079c1fc8f321c7d}{%
+           family={Jacob},
+           familyi={J\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=11b36a9f524aa06ae519f6e4f7196446}{%
+           family={Mudge},
+           familyi={M\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IEEE Comput. Soc. Press}%
+      }
+      \strng{namehash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{fullhash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{fullhashraw}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{bibnamehash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{authorbibnamehash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{authornamehash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{authorfullhash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{authorfullhashraw}{86b0bcf9efee80c4917a3cf9c114a059}
+      \field{labelalpha}{JM97}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eventtitle}{Third {{International Symposium}} on {{High-Performance Computer Architecture}}}
+      \field{isbn}{978-0-8186-7764-9}
+      \field{langid}{english}
+      \field{title}{Software-Managed Address Translation}
+      \field{year}{1997}
+      \field{dateera}{ce}
+      \field{pages}{156\bibrangedash 167}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1109/HPCA.1997.569652
+      \endverb
+    \endentry
+  \enddatalist
+  \datalist[entry]{anyt/global//global/global/global}
+    \entry{DietrichKBF18}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=2142fb95fd3244b3a062a06cd63def07}{%
+           family={Dietrich},
+           familyi={D\bibinitperiod},
+           given={Constanze},
+           giveni={C\bibinitperiod}}}%
+        {{hash=7013c00954646b04183fa1fedcc596be}{%
+           family={Krombholz},
+           familyi={K\bibinitperiod},
+           given={Katharina},
+           giveni={K\bibinitperiod}}}%
+        {{hash=bbca5b2b13ba79651548e9aa6f7496ae}{%
+           family={Borgolte},
+           familyi={B\bibinitperiod},
+           given={Kevin},
+           giveni={K\bibinitperiod}}}%
+        {{hash=704095eebb063e660c248da087244bfb}{%
+           family={Fiebig},
+           familyi={F\bibinitperiod},
+           given={Tobias},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{6ced0c03c3d81d43a38084c51f110dd5}
+      \strng{fullhash}{79580a0d65a41e7b5dc8714f6c85c70a}
+      \strng{fullhashraw}{79580a0d65a41e7b5dc8714f6c85c70a}
+      \strng{bibnamehash}{6ced0c03c3d81d43a38084c51f110dd5}
+      \strng{authorbibnamehash}{6ced0c03c3d81d43a38084c51f110dd5}
+      \strng{authornamehash}{6ced0c03c3d81d43a38084c51f110dd5}
+      \strng{authorfullhash}{79580a0d65a41e7b5dc8714f6c85c70a}
+      \strng{authorfullhashraw}{79580a0d65a41e7b5dc8714f6c85c70a}
+      \field{labelalpha}{Die+18}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Investigating System Operators' Perspective on Security Misconfigurations}
+      \field{year}{2018}
+      \field{pages}{1272\bibrangedash 1289}
+      \range{pages}{18}
+    \endentry
+    \entry{jacobSoftwaremanagedAddressTranslation1997}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=dca6d20d17cddb6b7079c1fc8f321c7d}{%
+           family={Jacob},
+           familyi={J\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+        {{hash=11b36a9f524aa06ae519f6e4f7196446}{%
+           family={Mudge},
+           familyi={M\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IEEE Comput. Soc. Press}%
+      }
+      \strng{namehash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{fullhash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{fullhashraw}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{bibnamehash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{authorbibnamehash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{authornamehash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{authorfullhash}{86b0bcf9efee80c4917a3cf9c114a059}
+      \strng{authorfullhashraw}{86b0bcf9efee80c4917a3cf9c114a059}
+      \field{labelalpha}{JM97}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eventtitle}{Third {{International Symposium}} on {{High-Performance Computer Architecture}}}
+      \field{isbn}{978-0-8186-7764-9}
+      \field{langid}{english}
+      \field{title}{Software-Managed Address Translation}
+      \field{year}{1997}
+      \field{dateera}{ce}
+      \field{pages}{156\bibrangedash 167}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1109/HPCA.1997.569652
+      \endverb
+    \endentry
+  \enddatalist
+  \missing{BuchananRSS08}
+\endrefsection
+\endinput
+

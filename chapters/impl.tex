@@ -1,6 +1,139 @@
 \chapter{Implementation}
 
 \label{chap:impl}
+The implementation consists of two fundamental parts:
+The extension of RISC-V ISA emulated by Qemu and the implementation of a
+TLB Miss Handler.
+
+
+
+\section{Qemu}
+This section describes the changes introduced to the Qemu emulator.
+It will start with a short overview of the parts of the code relevant for TLB lookups,
+TLB management, exceptions and CSRs. Since the implementation runs on a RISC-V
+the focus will be on the source code for the qemu RISC-V softmmu target which includes
+emulation of a memory management unit.
+
+\TODO{Maybe it is better to not have one block for qemu and one block for xv6, because the development
+    was pretty interleaved in the beginning}
+
+\todo{Add references to documentation at appropiate places}
+\todo{ add disclaimer, that most of this information was derived from reading the source code and may in some places not be accurate because the code is pretty complex and
+    i have only been at it for a few months}
+\subsection{A short overview of the Qemu source code}
+\texttt{cputlb.c} found in \texttt{accel/tcg} contains the TLB-handling logic for all
+emulation targets; from there, target-specific functions for TLB management are called.
+The target-specific functions are implemented in \texttt{target/riscv}.\\
+Every target needs to implement the functions in the \texttt{TCGCPUOps} struct in
+\texttt{include/hw/core/tcg-cpu-ops.h}. This struct is part of the glue that connects the target-independent
+Tiny Code Generator (TCG) backend with the target-specific functions and structures.
+
+\todo{explain PTE}
+\subsection{Adding the TLB MISS exception}
+The required behavior for the TLB Miss exception is similar to the behavior of a page fault exception.
+The RISC-V Instruction Set Manual: Volume II \cite{RISCVInstructionSetII} describes when page faults
+are triggered in the virtual address translation process. Page faults are thrown when:
+\begin{itemize}
+    \item the valid bit of a PTE is 0; the read bit is 0 and the write bit is 1; any of the reserved
+          bits is set
+    \item the PTE at the last level of the page table tree does not the read or execute bits set.
+    \item the requested memory access type is not allowed by the read, write, execute and user bits.
+    \item the PTE describes a missaligned superpage.
+\end{itemize}
+Depending on active extensions, there are possibly more scenarios where page faults are triggered.\\
+The page fault will then make the operating system jump to a specific location in the kernel code
+specified by the (physical) address found in the \texttt{mtvec} register.\\
+The TLB Miss exception does not have to trigger in similar patterns as the page fault exception, but rather
+before the page table is traversed by the emulated hardware pagetable-walker.
+However, the code for the page fault exceptions gives hints for where changes need to be made in the Qemu
+source to add a custom exception.\\
+The \texttt{TCGCPUOps} struct includes a function pointer named \texttt{tlb\_fill}. The function is called
+when MMU lookups to the TLB and Qemu's victim TLB fail.
+For the riscv target, the function \texttt{riscv\_cpu\_tlb\_fill} is assigned to the \texttt{tlb\_fill}
+function pointer in \texttt{target/riscv/tcg/tcg-cpu.c}.\\
+The implementation for \texttt{riscv\_cpu\_tlb\_fill} is in \texttt{target/riscv/cpu\_helper.c}. This is a common
+file to be found in a target-specifc directory and contains general functionality to implement the \texttt{TCGCPUOps} struct.\\
+
+%TODO Description of the TLB Exception implementation and how to generally add exceptions to the qemu plattform
+% TODO List of code locations where changes need to be added -> should be usable as back reference for implementing more exceptions
+
+% TODO discussion and reference to READER/SPECIFICATION on what exception numbers and other constants can be used and are free
+%TODO Zwischenschritt: TLB_exception only for special case
+Changing the whole system to start throwing a TLB\_MISS Exception on every virtual address would make it very hard to debug both
+first tries at implementing a handler for the exception and the exception throwing code in Qemu itself.
+And not only would the exception be thrown as soon as virtual memory is activated in \texttt{xv6-riscv:kernel/main.c}, the exception would be thrown
+as soon as exceptions are activated and a memory access happens, because Qemu also uses the \texttt{fill\_tlb} routine to fill the TLB with direct
+virtual-to-physical mappings when no virtual memory is used. This speeds up the execution of the dynamically-translated code, as it can directly
+lookup addresses in the TLB using a fast path.\\
+To properly test the implementation, the \texttt{tlb\_fill} function was replaced to throw the TLB\_MISS exception for
+one specified, page-aligned address and to continue on normally for every other address. The implementation is outlined
+in Listing \ref{lst:specialCaseTLBfill}.
+
+\begin{lstlisting}[language=c,float=t,
+    caption={Alternative Implementation for the RISC-V tlb\_fill function with a special case to start testing TLB Miss Handler implementations},
+    label={lst:specialCaseTLBfill}]
+bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
+    MMUAccessType access_type, int mmu_idx,
+    bool probe, uintptr_t retaddr)
+{
+    RISCVCPU *cpu = RISCV_CPU(cs);
+    CPURISCVState *env = &cpu->env;
+    int mode = mmuidx_priv(mmu_idx);
+    int vm = get_field(env->satp, SATP64_MODE);
+    bool ret = false;
+
+    if(!(vm == VM_1_10_MBARE || mode == PRV_M) &&
+            address == (uint64_t)0x84fff000) {
+        ret = riscv_cpu_tlb_miss_exception(cs,address,size,access_type, mmu_idx, probe, retaddr);
+    } else {
+        ret =  riscv_cpu_tlb_fill(cs,address,size,access_type, mmu_idx, probe, retaddr);
+    }
+    return ret;
+}
+\end{lstlisting}
+
+%TODO Explain what the riscv_cpu_tlb_fill function does originally - in detail
+
+\todo{sequence diagram for function calls accross the qemu repository}
+%TODO Custom TLB Exception based off of the page fault exception
+Adding a new exception to the Qemu emulator requires changes at a number of places. In the following,
+the relevant code locations in the Qemu source are shown.\\
+This may be completely different for other targets, as the exception code is mostly target specific and
+this implementation only looked at the RISC-V target.
+\begin{itemize}
+    \item \texttt{target/riscv/cpu\_bits.h} contains all CPU-definitions specific to the RISC-V target.
+          There is also a enum called \texttt{RISCVException} which contains the number-codes for all RISC-V exceptions.
+          In choosing a appropiate number for a new exception, one should consult the Privileged Architecture Specification \cite{RISCVInstructionSetII}.#
+          There are specific exception code ranges that are designated for custom use. E.g. the codes 24--32 and 48--63.
+\end{itemize}
+%TODO Elabortation on the TLB Fast Path
+\subsection{Adding new CSRs for writing TLB entries}
+
+\subsection{Extending the Qemu Monitor}
+
+
+\todo{move to discussion of implementation at the end of this chapter}
+\section{Further possible extensions to the TLB CSRs}
+With the new CSRs presented above, it is possible to write TLB entries.
+The placement of the entry and thus the entry to be replaced can not be selected.
+The replacement policy would be completely up to the hardware implementation.
+\todo{typical tlb replacement strategies}
+\todo{How does qemu replace TLB entries -> index?}
+It would also be possible to further extend the ISA with additional CSRs to
+support specific selection of entries to be replaced, or to select between
+a number of replacement strategies.
+However, the efficiency of more complex strategies need to be weighed carefully
+against their benefits, since the TLB filling is on the critical path of all
+memory accesses.
+
+\section{xv6}
+\subsection*{}
+\subsection*{}
+
+
+
+
+
 
 % \section{Platform}
 % \subsection{Platform Considerations}
@@ -122,7 +255,7 @@ This is not really virtual memory and works only, because xv6 just added more me
 end of the address space. No mappings are made in between or at high addresses.
 This is where a hash function could come in handy. However collisions and access rights and
 collision detection \ldots
-Verification via % \texttt{\verbatim{readelf -l user/_*}}
+Verification via % \texttt{\verbatim{readelf -l user/\_*}}
 shows that all vaddr are in the low addresses.
 \paragraph*{Fragmentation}
 %Processes have fixed size of memory and may not use all of it
@@ -130,5 +263,7 @@ shows that all vaddr are in the low addresses.
 %Maybe appropiate for embedded applications?
 
 
+
+
 \section{Debugging}
-\subsection{ GDB - custom satps}3
+\subsection{ GDB - custom satps}
