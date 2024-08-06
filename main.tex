@@ -68,8 +68,7 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 %   useful for printing on black-white printers that do a
 %   poor job at rasterizing colored text properly
 %\hypersetup{colorlinks=false}
-
-\addbibresource{example-lit.bib} % The filename of the bibliography
+\addbibresource{clean-lit.bib} % The filename of the bibliography
 
 \usepackage{bytefield}
 \usepackage{calc}
@@ -77,7 +76,7 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 %----------------------------------------------------------------------------------------
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
-\newcommand{\thesistype}{Bachelors} % type of your thesis (Bachelors, Masters, Doctoral ...)
+\newcommand{\thesistype}{Bachelor} % type of your thesis (Bachelors, Masters, Doctoral ...)
 
 %%% CHANGE THIS:
 % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
@@ -233,7 +232,11 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 
 
 \input{chapters/intro.tex}
-\input{chapters/main-part.tex}
+\input{chapters/fundamentals.tex}
+\input{chapters/related_work.tex}
+\input{chapters/theory.tex}
+\input{chapters/impl.tex}
+\input{chapters/eval.tex}
 \input{chapters/conclusion.tex}
 
 
