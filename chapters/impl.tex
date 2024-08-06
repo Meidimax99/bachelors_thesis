@@ -14,7 +14,7 @@ TLB management, exceptions and CSRs. Since the implementation runs on a RISC-V
 the focus will be on the source code for the qemu RISC-V softmmu target which includes
 emulation of a memory management unit.
 
-\TODO{Maybe it is better to not have one block for qemu and one block for xv6, because the development
+\todo{Maybe it is better to not have one block for qemu and one block for xv6, because the development
     was pretty interleaved in the beginning}
 
 \todo{Add references to documentation at appropiate places}
@@ -96,16 +96,26 @@ bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
 
 \todo{sequence diagram for function calls accross the qemu repository}
 %TODO Custom TLB Exception based off of the page fault exception
-Adding a new exception to the Qemu emulator requires changes at a number of places. In the following,
+\paragraph{Adding a new exception}to the Qemu emulator requires changes at a number of places. In the following,
 the relevant code locations in the Qemu source are shown.\\
 This may be completely different for other targets, as the exception code is mostly target specific and
 this implementation only looked at the RISC-V target.
 \begin{itemize}
     \item \texttt{target/riscv/cpu\_bits.h} contains all CPU-definitions specific to the RISC-V target.
           There is also a enum called \texttt{RISCVException} which contains the number-codes for all RISC-V exceptions.
-          In choosing a appropiate number for a new exception, one should consult the Privileged Architecture Specification \cite{RISCVInstructionSetII}.#
+          In choosing a appropiate number for a new exception, one should consult the Privileged Architecture Specification \cite{RISCVInstructionSetII}.
           There are specific exception code ranges that are designated for custom use. E.g. the codes 24--32 and 48--63.
+    \item \texttt{target/riscv/cpu\_helper.c\:riscv\_cpu\_do\_interrupt\(\)} is the target-specific function
+          for triggering interrupts. Here it suffices to add the new exception enum item to the switch case, when
+          the new exception is similar in behavior to exising exceptions.\\
+          Here the new exception is simply supposed to jump into an exception handler in the kernel. A lot of exceptions
+          like page faults share that behavior.
+    \item Finally, if the exception should be delegatable to supervisor mode or user mode, the n-th bit,
+          with n being the exception code, needs to be set in the \texttt{DELEGABLE\_EXCPS} definition in \texttt{target/riscv/csr.c}.
+          This enables the kernel to delegate the exception to another priviledge level by setting the appropiate
+          bit in the \texttt{medeleg} and \texttt{sedeleg} CSRs.
 \end{itemize}
+\todo{what is a csr?}
 %TODO Elabortation on the TLB Fast Path
 \subsection{Adding new CSRs for writing TLB entries}
 
@@ -126,9 +136,9 @@ However, the efficiency of more complex strategies need to be weighed carefully
 against their benefits, since the TLB filling is on the critical path of all
 memory accesses.
 
-\section{xv6}
-\subsection*{}
-\subsection*{}
+% \section{xv6}
+% \subsection*{}
+% \subsection*{}
 
 
 
@@ -147,20 +157,20 @@ memory accesses.
 
 
 
-\section{Relevant Modules in the xv6 Source}
-\paragraph*{kalloc - physical memory allocator}
-\paragraph*{proc}
-\paragraph*{vm.c}
-\subsection*{Syscalls to change}
+% \section{Relevant Modules in the xv6 Source}
+% \paragraph*{kalloc - physical memory allocator}
+% \paragraph*{proc}
+% \paragraph*{vm.c}
+% \subsection*{Syscalls to change}
 % System call interface should stay the same so that existing processes can continue
-% as usual -> new virtual memory scheme should be completely transparent
-\paragraph*{fork}
+% as usual -> new virtual memory scheme should be completely transparent%
+%\paragraph*{fork}
 % creating a new addresse space -> fixed number of processes ? ?
-\paragraph*{exit}
+%\paragraph*{exit}
 % freeing memory?
-\paragraph*{exec}
+%\paragraph*{exec}
 % same as fork?
-\paragraph*{sbrk}
+%\paragraph*{sbrk}
 % allocating new memory
 Sbrk is the system call with which a program can change its program break. The program break
 is the end of the programs data segment. This system call is typically used to either
@@ -210,11 +220,11 @@ One further problem is that deallocation is not working. But in principle, all p
 strictly to one process can be allocated on this sort of stack. The size counter
 needs to be adapted to not only account for the processes own memory, but also
 for all the memory that is allocated for the process.
-\section{Changing physical memory allocation}
-\subsection{Special cases}
-\paragraph*{Kernel direct mapping}
-\paragraph*{MMIO}
-\paragraph*{Trampoline}
+% \section{Changing physical memory allocation}
+% \subsection{Special cases}
+% \paragraph*{Kernel direct mapping}
+% \paragraph*{MMIO}
+% \paragraph*{Trampoline}
 % \section{Modifying Qemu Source}
 % \subsection{TLB Miss Exception}
 % \subsection{CSR Modifications}
