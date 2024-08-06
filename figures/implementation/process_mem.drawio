@@ -1,0 +1,68 @@
+<mxfile host="Electron" modified="2024-07-31T06:32:18.319Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.5.3 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="vuMXtiHbKMxk8BBzRirf" version="24.5.3" type="device">
+  <diagram name="Page-1" id="_lH5tS01xV_JIa1-H95r">
+    <mxGraphModel dx="1430" dy="824" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dONWaBODxDNWv5qdOcwx-1" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="200" width="160" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-2" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="520" y="718.82" as="sourcePoint" />
+            <mxPoint x="560" y="718.82" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-3" value="&lt;pre&gt;AS_START(n)&lt;/pre&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Comic Sans MS;labelBackgroundColor=none;" vertex="1" connectable="0" parent="dONWaBODxDNWv5qdOcwx-2">
+          <mxGeometry x="-0.5286" y="-1" relative="1" as="geometry">
+            <mxPoint x="-9" y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-6" value="Address Space N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="580" y="170" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-8" value="Process data + text" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="640" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-9" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="520" y="199.31000000000006" as="sourcePoint" />
+            <mxPoint x="560" y="199.31000000000006" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-10" value="&lt;pre&gt;AS_END(n)&lt;/pre&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Comic Sans MS;labelBackgroundColor=none;" vertex="1" connectable="0" parent="dONWaBODxDNWv5qdOcwx-9">
+          <mxGeometry x="-0.5286" y="-1" relative="1" as="geometry">
+            <mxPoint x="-10" y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-12" value="User Heap" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="540" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-13" value="User Stack" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="600" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-21" value="Free memory" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="560" y="360" width="160" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-23" value="Guard Page" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="560" y="199.99999999999994" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-24" value="Kernel Stack" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="240" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-25" value="Guard Page" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="560" y="279.99999999999994" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-26" value="Trapframe" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="320" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dONWaBODxDNWv5qdOcwx-27" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=#383838;endWidth=18;endSize=6.830555555555556;width=7.777777777777778;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="639.83" y="550" as="sourcePoint" />
+            <mxPoint x="639.71" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

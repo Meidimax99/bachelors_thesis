@@ -1,579 +1,803 @@
-%% This BibTeX bibliography file was created using BibDesk.
-%% http://bibdesk.sourceforge.net/
+@online{12MemoryManagement,
+  title   = {12. {{Memory Management Unit}} ({{MMU}}) — {{Chromite Core Generator}} 1.0.0 Documentation},
+  url     = {https://chromite.readthedocs.io/en/using-csrbox/mmu.html},
+  urldate = {2024-08-01},
+  file    = {/home/max/Zotero/storage/2MW45F8Y/mmu.html}
+}
 
-%% Created for dh at 2020-03-06 11:02:56 +0100 
+@inproceedings{alamDoItYourselfVirtualMemory2017,
+  title      = {Do-{{It-Yourself Virtual Memory Translation}}},
+  booktitle  = {Proceedings of the 44th {{Annual International Symposium}} on {{Computer Architecture}}},
+  author     = {Alam, Hanna and Zhang, Tianhao and Erez, Mattan and Etsion, Yoav},
+  date       = {2017-06-24},
+  pages      = {457--468},
+  publisher  = {ACM},
+  location   = {Toronto ON Canada},
+  doi        = {10.1145/3079856.3080209},
+  url        = {https://dl.acm.org/doi/10.1145/3079856.3080209},
+  urldate    = {2024-07-25},
+  abstract   = {In this paper, we introduce the Do-It-Yourself virtual memory translation (DVMT) architecture as a flexible complement for current hardware-fixed translation flows. DVMT decouples the virtual-tophysical mapping process from the access permissions, giving applications freedom in choosing mapping schemes, while maintaining security within the operating system. Furthermore, DVMT is designed to support virtualized environments, as a means to collapse the costly, hardware-assisted two-dimensional translations. We describe the architecture in detail and demonstrate its effectiveness by evaluating several different DVMT schemes on a range of virtualized applications with a model based on measurements from a commercial system. We show that different DVMT configurations preserve the native performance, while achieving speedups of 1.2× to 2.0× in virtualized environments.},
+  eventtitle = {{{ISCA}} '17: {{The}} 44th {{Annual International Symposium}} on {{Computer Architecture}}},
+  isbn       = {978-1-4503-4892-8},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/U3ECVKW3/Alam et al. - 2017 - Do-It-Yourself Virtual Memory Translation.pdf}
+}
 
+@article{basuREVISITINGVIRTUALMEMORY,
+  title    = {{{REVISITING VIRTUAL MEMORY}}},
+  author   = {Basu, Arkaprava},
+  abstract = {Page-based virtual memory (paging) is a crucial piece of memory management in today’s computing systems. However, I find that need, purpose and design constraints of virtual memory have changed dramatically since translation lookaside buffers (TLBs) were introduced to cache recently-used address translations: (a) physical memory sizes have grown more than a millionfold, (b) workloads are often sized to avoid swapping information to and from secondary storage, and (c) energy is now a first-order design constraint. Nevertheless, level-one TLBs have remained the same size and are still accessed on every memory reference. As a result, large workloads waste considerable execution time on TLB misses and all workloads spend energy on frequent TLB accesses.},
+  langid   = {english},
+  file     = {/home/max/Zotero/storage/FFL8I5NB/Basu - REVISITING VIRTUAL MEMORY.pdf}
+}
 
-%% Saved with string encoding Unicode (UTF-8) 
+@book{bhattacharjeeArchitecturalOperatingSystem2018,
+  title     = {Architectural and Operating System Support for Virtual Memory},
+  author    = {Bhattacharjee, Abhishek and Lustig, Daniel},
+  date      = {2018},
+  series    = {Synthesis Lectures on Computer Architecture},
+  number    = {42},
+  publisher = {Morgan \& Claypool Publishers},
+  location  = {San Rafael, California},
+  doi       = {10.2200/S00795ED1V01Y201708CAC042},
+  isbn      = {978-1-62705-602-1},
+  langid    = {english},
+  pagetotal = {157},
+  file      = {/home/max/Zotero/storage/CX6CWUPR/Bhattacharjee and Lustig - 2018 - Architectural and operating system support for vir.pdf}
+}
 
+@online{bhushanAnswerDumpContents2012,
+  title        = {Answer to "{{Dump}} the Contents of {{TLB}} Buffer of X86 {{CPU}}"},
+  author       = {Bhushan},
+  date         = {2012-10-07},
+  url          = {https://stackoverflow.com/a/12766195},
+  urldate      = {2024-07-16},
+  organization = {Stack Overflow},
+  file         = {/home/max/Zotero/storage/9WX66ZYJ/dump-the-contents-of-tlb-buffer-of-x86-cpu.html}
+}
 
+@article{chiHashingTechniquesSurvey2018,
+  title        = {Hashing {{Techniques}}: {{A Survey}} and {{Taxonomy}}},
+  shorttitle   = {Hashing {{Techniques}}},
+  author       = {Chi, Lianhua and Zhu, Xingquan},
+  date         = {2018-01-31},
+  journaltitle = {ACM Computing Surveys},
+  shortjournal = {ACM Comput. Surv.},
+  volume       = {50},
+  number       = {1},
+  pages        = {1--36},
+  issn         = {0360-0300, 1557-7341},
+  doi          = {10.1145/3047307},
+  url          = {https://dl.acm.org/doi/10.1145/3047307},
+  urldate      = {2024-04-29},
+  abstract     = {With the rapid development of information storage and networking technologies, quintillion bytes of data are generated every day from social networks, business transactions, sensors, and many other domains. The increasing data volumes impose significant challenges to traditional data analysis tools in storing, processing, and analyzing these extremely large-scale data. For decades, hashing has been one of the most effective tools commonly used to compress data for fast access and analysis, as well as information integrity verification. Hashing techniques have also evolved from simple randomization approaches to advanced adaptive methods considering locality, structure, label information, and data security, for effective hashing. This survey reviews and categorizes existing hashing techniques as a taxonomy, in order to provide a comprehensive view of mainstream hashing techniques for different types of data and applications. The taxonomy also studies the uniqueness of each method and therefore can serve as technique references in understanding the niche of different hashing mechanisms for future development.},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/CFR3S7RQ/Chi and Zhu - 2018 - Hashing Techniques A Survey and Taxonomy.pdf}
+}
 
-@inproceedings{LoesingMD10-tor,
-	Author = {Karsten Loesing and Steven J. Murdoch and Roger Dingledine},
-	Booktitle = {Financial Cryptography (FC)},
-	Crossref = {DBLP:conf/fc/2010w},
-	Date-Added = {2020-03-06 09:45:27 +0100},
-	Date-Modified = {2020-03-06 09:47:58 +0100},
-	Pages = {203--215},
-	Title = {A Case Study on Measuring Statistical Data in the Tor Anonymity Network},
-	Year = {2010},
-	Bdsk-Url-1 = {https://doi.org/10.1007/978-3-642-14992-4%5C_19}}
+@article{choudhuriSoftwareVirtualMemory,
+  title    = {Software {{Virtual Memory Management}} for {{MMU-less Embedded Systems}}},
+  author   = {Choudhuri, Siddharth and Givargis, Tony},
+  abstract = {For an embedded system designer, the rise in processing speeds of embedded processors and microcontroller evolution has lead to the possibility of running computation and data intensive applications on small embedded devices that earlier only ran on desktop-class systems. From a memory stand point, there is a similar need for running larger and more data intensive applications on embedded devices. However, support for large memory adadress spaces, specifically, virtual memory, for MMU-less embedded systems is lacking. In this paper, we present a software virtual memory scheme for MMU-less systems based on an application level virtual memory library and a virtual memory aware assembler. Our virtual memory support is transparent to the programmer, can be tuned for a specific application, correct by construction, and fully automated. Our experiements validate the feasibility of virtual memory for MMU-less embedded systems using benchmark programs.},
+  langid   = {english},
+  file     = {/home/max/Zotero/storage/T6YC94PW/Choudhuri und Givargis - Software Virtual Memory Management for MMU-less Em.pdf}
+}
 
-@proceedings{DBLP:conf/fc/2010w,
-	Date-Added = {2020-03-06 09:45:27 +0100},
-	Date-Modified = {2020-03-06 09:47:01 +0100},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {Financial Cryptography and Data Security, {FC} 2010 Workshops, RLCPS, WECSR, and {WLC} 2010, Tenerife, Canary Islands, Spain, January 25-28, 2010, Revised Selected Papers},
-	Url = {https://doi.org/10.1007/978-3-642-14992-4},
-	Volume = {6054},
-	Year = {2010},
-	Bdsk-Url-1 = {https://doi.org/10.1007/978-3-642-14992-4}}
+@article{coxXv6SimpleUnixlike,
+  title  = {Xv6: A Simple, {{Unix-like}} Teaching Operating System},
+  author = {Cox, Russ and Kaashoek, Frans and Morris, Robert},
+  file   = {/home/max/Zotero/storage/E76CAS2X/Cox et al. - xv6 a simple, Unix-like teaching operating system.pdf}
+}
 
-@book{Lidwell10,
-	Author = {Lidwell, W. and Holden, K. and Butler, J. and Elam, K.},
-	Date-Added = {2020-01-01 00:41:03 +0100},
-	Date-Modified = {2020-01-01 00:41:03 +0100},
-	Edition = 2,
-	Publisher = {Rockport Publishers},
-	Title = {Universal Principles of Design, Revised and Updated: 125 Ways to Enhance Usability, Influence Perception, Increase Appeal, Make Better Design Decisions, and Teach Through Design},
-	Year = {2010}}
+@online{CSCI03001310,
+  title   = {{{CSCI}} 0300/1310: {{Fundamentals}} of {{Computer Systems}}},
+  url     = {https://cs.brown.edu/courses/csci0300/2021/notes/l13.html},
+  urldate = {2024-07-13},
+  file    = {/home/max/Zotero/storage/6993RGG8/l13.html}
+}
 
-@book{Ware12,
-	Address = {San Francisco, CA, USA},
-	Author = {Ware, Colin},
-	Date-Added = {2019-12-30 14:25:55 +0100},
-	Date-Modified = {2019-12-30 14:26:02 +0100},
-	Edition = {3},
-	Isbn = {9780123814647},
-	Publisher = {Morgan Kaufmann Publishers Inc.},
-	Title = {Information Visualization: Perception for Design},
-	Year = {2012}}
+@online{DeepDiveQEMU,
+  title        = {A Deep Dive into {{QEMU}}: {{TCG}} Memory Accesses},
+  shorttitle   = {A Deep Dive into {{QEMU}}},
+  url          = {https://airbus-seclab.github.io/qemu_blog/tcg_p3.html},
+  urldate      = {2024-07-16},
+  abstract     = {A series of posts about QEMU internals:},
+  langid       = {american},
+  organization = {QEMU internals},
+  file         = {/home/max/Zotero/storage/RTCMGWS9/tcg_p3.html}
+}
 
-@book{Carter12,
-	Address = {USA},
-	Author = {Carter, Matt},
-	Date-Added = {2019-12-29 22:23:15 +0100},
-	Date-Modified = {2019-12-29 22:23:27 +0100},
-	Isbn = {9780123859709},
-	Publisher = {Academic Press, Inc.},
-	Title = {Designing Science Presentations: A Visual Guide to Figures, Papers, Slides, Posters, and More},
-	Year = {2012}}
+@article{denningMEMORYWASVIRTUAL,
+  title        = {{{BEFORE MEMORY WAS VIRTUAL}}},
+  author       = {Denning, Peter J},
+  journaltitle = {Virtual Memory},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/T5ZK9U9X/Denning - BEFORE MEMORY WAS VIRTUAL.pdf}
+}
 
-@inproceedings{murdoch_steven_j._chip_2010,
-	Address = {Oakland, CA, USA},
-	Author = {{Murdoch, Steven J.} and {Drimer, Saar} and {Anderson, Ross} and {Bond, Mike}},
-	Booktitle = {2010 {IEEE} {Symposium} on {Security} and {Privacy}},
-	Isbn = {9781424468942},
-	Language = {en},
-	Pages = {433--446},
-	Publisher = {IEEE},
-	Title = {Chip and {PIN} is {Broken}},
-	Url = {http://ieeexplore.ieee.org/document/5504801/},
-	Year = {2010},
-	Bdsk-Url-1 = {http://ieeexplore.ieee.org/document/5504801/}}
+@article{denningVirtualMemory1970b,
+  title        = {Virtual {{Memory}}},
+  author       = {Denning, Peter J.},
+  date         = {1970-09},
+  journaltitle = {ACM Computing Surveys},
+  shortjournal = {ACM Comput. Surv.},
+  volume       = {2},
+  number       = {3},
+  pages        = {153--189},
+  issn         = {0360-0300, 1557-7341},
+  doi          = {10.1145/356571.356573},
+  url          = {https://dl.acm.org/doi/10.1145/356571.356573},
+  urldate      = {2024-07-25},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/EQF8DBIH/Denning - 1970 - Virtual Memory.pdf}
+}
 
-@article{anderson_ross_emv:_2014,
-	Author = {{Anderson, Ross} and {Murdoch, Steven J.}},
-	Doi = {10.1145/2602321},
-	Issn = {00010782},
-	Journal = {Communications of the ACM},
-	Language = {en},
-	Month = jun,
-	Number = {6},
-	Pages = {24--28},
-	Shorttitle = {{EMV}},
-	Title = {{EMV}: why payment systems fail},
-	Url = {http://dl.acm.org/citation.cfm?doid=2602695.2602321},
-	Volume = {57},
-	Year = {2014},
-	Bdsk-Url-1 = {http://dl.acm.org/citation.cfm?doid=2602695.2602321},
-	Bdsk-Url-2 = {https://doi.org/10.1145/2602321}}
+@article{denningVirtualMemory1996,
+  title        = {Virtual Memory},
+  author       = {Denning, Peter J.},
+  date         = {1996-03},
+  journaltitle = {ACM Computing Surveys},
+  shortjournal = {ACM Comput. Surv.},
+  volume       = {28},
+  number       = {1},
+  pages        = {213--216},
+  issn         = {0360-0300, 1557-7341},
+  doi          = {10.1145/234313.234403},
+  url          = {https://dl.acm.org/doi/10.1145/234313.234403},
+  urldate      = {2024-07-25},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/KMNWXXPG/Denning - 1996 - Virtual memory.pdf}
+}
 
-@incollection{kou_weidong_secure_2003,
-	Address = {Berlin, Heidelberg},
-	Author = {{Kou, Weidong} and {Agnew, Gordon}},
-	Booktitle = {Payment {Technologies} for {E}-{Commerce}},
-	Doi = {10.1007/978-3-662-05322-5_10},
-	Isbn = {9783642078873 9783662053225},
-	Language = {en},
-	Pages = {211--226},
-	Publisher = {Springer Berlin Heidelberg},
-	Shorttitle = {Secure {Electronic} {Transactions}},
-	Title = {Secure {Electronic} {Transactions}: {Overview}, {Capabilities}, and {Current} {Status}},
-	Url = {http://www.springerlink.com/index/10.1007/978-3-662-05322-5_10},
-	Year = {2003},
-	Bdsk-Url-1 = {http://www.springerlink.com/index/10.1007/978-3-662-05322-5_10},
-	Bdsk-Url-2 = {https://doi.org/10.1007/978-3-662-05322-5_10}}
+@article{elphinstoneDISSERTATIONSUBMITTEDSCHOOL,
+  title  = {A {{DISSERTATION SUBMITTED TO THE SCHOOL OF COMPUTER SCIENCE AND ENGINEERING OF THE UNIVERSITY OF NEW SOUTH WALES IN PARTIAL FULFILLMENT OF THE REQUIREMENTS FOR THE DEGREE OF DOCTOR OF PHILOSOPHY}}},
+  author = {Elphinstone, Kevin John},
+  langid = {english},
+  file   = {/home/max/Zotero/storage/28LXRS8X/Elphinstone - A DISSERTATION SUBMITTED TO THE SCHOOL OF COMPUTER.pdf}
+}
 
-@article{solat_security_2017,
-	Abstract = {This comprehensive survey deliberated over the security of electronic payment systems. In our research, we focused on either dominant systems or new attempts and innovations to improve the level of security of the electronic payment systems. This survey consists of the Card-present (CP) transactions and a review of its dominant system i.e. EMV including several researches at Cambridge university to designate variant types of attacks against this standard which demonstrates lack of a secure "offline" authentication method that is one of the main purpose of using the smart cards instead of magnetic stripe cards which are not able to participate in authentication process, the evaluation of the EMV migration from RSA cryptosystem to ECC based cryptosystem 3. The evaluation of the Card-not-present transactions approaches including 3D Secure, 3D SET, SET/EMV and EMV/CAP, the impact of concept of Tokenization and the role of Blind Signatures schemes in electronic cash and E-payment systems, use of quantum key distribution (QKD) in electronic payment systems to achieve unconditional security rather than only computational assurance of the security level by using traditional cryptography, the evaluation of Near Field Communication (NFC) and the contactless payment systems such as Google wallet, Android Pay and Apple Pay, the assessment of the electronic currency and peer to peer payment systems such as Bitcoin. The criterion of our survey for the measurement and the judgment about the quality of the security in electronic payment systems was this quote: "The security of a system is only as strong as its weakest link"},
-	Author = {Solat, Siamak},
-	Journal = {arXiv:1701.04556 [cs]},
-	Month = jan,
-	Note = {arXiv: 1701.04556},
-	Shorttitle = {Security of {Electronic} {Payment} {Systems}},
-	Title = {Security of {Electronic} {Payment} {Systems}: {A} {Comprehensive} {Survey}},
-	Url = {http://arxiv.org/abs/1701.04556},
-	Year = {2017},
-	Bdsk-Url-1 = {http://arxiv.org/abs/1701.04556}}
+@article{engelChallengesImplementingSoftwareDefined,
+  title    = {Challenges {{Implementing Software-Defined Virtual Memory}}},
+  author   = {Engel, Michael},
+  langid   = {english},
+  keywords = {todo},
+  file     = {/home/max/Zotero/storage/R42473AH/Engel - Challenges Implementing Software-Defined Virtual M.pdf}
+}
 
-@inproceedings{bond_chip_2014,
-	Abstract = {EMV, also known as "Chip and PIN", is the leading system for card payments worldwide. It is used throughout Europe and much of Asia, and is starting to be introduced in North America too. Payment cards contain a chip so they can execute an authentication protocol. This protocol requires point-of-sale (POS) terminals or ATMs to generate a nonce, called the unpredictable number, for each transaction to ensure it is fresh. We have discovered two serious problems: a widespread implementation flaw and a deeper, more difficult to fix flaw with the EMV protocol itself. The first flaw is that some EMV implementers have merely used counters, timestamps or home-grown algorithms to supply this nonce. This exposes them to a "pre-play" attack which is indistinguishable from card cloning from the standpoint of the logs available to the card-issuing bank, and can be carried out even if it is impossible to clone a card physically. Card cloning is the very type of fraud that EMV was supposed to prevent. We describe how we detected the vulnerability, a survey methodology we developed to chart the scope of the weakness, evidence from ATM and terminal experiments in the field, and our implementation of proof-of-concept attacks. We found flaws in widely-used ATMs from the largest manufacturers. We can now explain at least some of the increasing number of frauds in which victims are refused refunds by banks which claim that EMV cards cannot be cloned and that a customer involved in a dispute must therefore be mistaken or complicit. The second problem was exposed by the above work. Independent of the random number quality, there is a protocol failure: the actual random number generated by the terminal can simply be replaced by one the attacker used earlier when capturing an authentication code from the card. This variant of the pre-play attack may be carried out by malware in an ATM or POS terminal, or by a man-in-the-middle between the terminal and the acquirer. We explore the design and implementation mistakes that enabled these flaws to evade detection until now: shortcomings of the EMV specification, of the EMV kernel certification process, of implementation testing, formal analysis, and monitoring customer complaints. Finally we discuss countermeasures. More than a year after our initial responsible disclosure of these flaws to the banks, action has only been taken to mitigate the first of them, while we have seen a likely case of the second in the wild, and the spread of ATM and POS malware is making it ever more of a threat.},
-	Author = {Bond, M. and Choudary, O. and Murdoch, S. J. and Skorobogatov, S. and Anderson, R.},
-	Booktitle = {2014 {IEEE} {Symposium} on {Security} and {Privacy}},
-	Keywords = {EMV, Pre-Play, cloning},
-	Month = may,
-	Pages = {49--64},
-	Shorttitle = {Chip and {Skim}},
-	Title = {Chip and {Skim}: {Cloning} {EMV} {Cards} with the {Pre}-play {Attack}},
-	Year = {2014}}
+@article{engelReproducingSystemSoftware,
+  title  = {Reproducing {{System Software Research A Case Study}}},
+  author = {Engel, Michael},
+  langid = {english},
+  file   = {/home/max/Zotero/storage/AP3YNSC6/Engel - Reproducing System Software Research A Case Study.pdf}
+}
 
-@article{ortiz_s._is_2006,
-	Author = {{Ortiz, S.}},
-	Issn = {0018-9162},
-	Journal = {Computer},
-	Language = {en},
-	Month = mar,
-	Number = {3},
-	Pages = {18--20},
-	Title = {Is {Near}-{Field} {Communication} {Close} to {Success}?},
-	Url = {http://ieeexplore.ieee.org/document/1607943/},
-	Volume = {39},
-	Year = {2006},
-	Bdsk-Url-1 = {http://ieeexplore.ieee.org/document/1607943/}}
+@article{englerExokernelOperatingSystem,
+  title    = {The {{Exokernel Operating System Architecture}}},
+  author   = {Engler, Dawson R},
+  abstract = {On traditional operating systems only trusted software such as privileged servers or the kernel can manage resources. This thesis proposes a new approach, the exokernel architecture, which makes resource management unprivileged but safe by separating management from protection: an exokernel protects resources, while untrusted application-level software manages them. As a result, in an exokernel system, untrusted software (e.g., library operating systems) can implement abstractions such as virtual memory, file systems, and networking.},
+  langid   = {english},
+  file     = {/home/max/Zotero/storage/ZQR8FPC9/Engler - The Exokernel Operating System Architecture.pdf}
+}
 
-@article{haselsteiner_security_2006,
-	Abstract = {This paper gives a comprehensive analysis of security with respect to NFC. It is not limited to a certain application of NFC, but it uses a systematic approach to analyze the various aspects of security whenever an NFC interface is used. The authors want to clear up many misconceptions about security and NFC in various applications. The paper lists the threats, which are applicable to NFC, and describes solutions to protect against these threats. All of this is given in the context of currently available NFC hardware, NFC applications and possible future developments of NFC.},
-	Author = {Haselsteiner, Ernst and Breitfu{\ss}, Klemens},
-	Language = {en},
-	Month = jan,
-	Pages = {11},
-	Title = {Security in {Near} {Field} {Communication} ({NFC})},
-	Year = {2006}}
+@online{ForkExecUniversity,
+  title   = {Fork() and Exec() | {{University}} of {{Waterloo}}},
+  url     = {https://ece.uwaterloo.ca/~dwharder/icsrts/Tutorials/fork_exec/},
+  urldate = {2024-08-01},
+  file    = {/home/max/Zotero/storage/EXQ5CTGQ/fork_exec.html}
+}
 
-@online{galloway_visa_2019,
-	Abstract = {Visa card vulnerability can bypass contactless transaction limits using a {MITM} attack},
-	Author = {Galloway, Leigh-Anne and Yunusov, Timur},
-	Date = {2019-07-29},
-	File = {Snapshot:/home/cptpie/Zotero/storage/GXG38JY6/visa-card-vulnerability-can-bypass-contactless-limits.html:text/html},
-	Langid = {english},
-	Note = {Accessed: 2019-08-13},
-	Title = {Visa card vulnerability can bypass contactless limits},
-	Url = {https://www.ptsecurity.com/ww-en/about/news/visa-card-vulnerability-can-bypass-contactless-limits/},
-	Urldate = {2019-08-13},
-	Bdsk-Url-1 = {https://www.ptsecurity.com/ww-en/about/news/visa-card-vulnerability-can-bypass-contactless-limits/}}
+@online{GNUGRUBManual,
+  title   = {{{GNU GRUB Manual}} 0.97},
+  url     = {https://www.gnu.org/software/grub/manual/legacy/grub.html#Overview},
+  urldate = {2024-05-13},
+  file    = {/home/max/Zotero/storage/GHWNSP9C/grub.html}
+}
 
-@inproceedings{zhou_nshield_2014,
-	Abstract = {The Near Field Communication ({NFC}) technology is gaining increasing popularity among mobile users. However, as a relatively new and developing technology, {NFC} may also introduce security threats that make mobile devices vulnerable to various malicious attacks. This work presents the first system study on the feasibility of and defense again passive {NFC} eavesdropping. Our experiments show that commodity {NFC}-enabled mobile devices can be eavesdropped from up to 240 cm away, which is at least an order of magnitude of the intended {NFC} communication distance. This finding challenges the general perception that {NFC} is largely immune to eavesdropping because of its short working range. We then present the design of a hardware security system called {nShield}. With a small form factor, {nShield} can be attached to the back of mobile devices to attenuate the signal strength against passive eavesdropping. At the same time, the absorbed {RF} energy is scavenged by {nShield} for its perpetual operation. {nShield} intelligently determines the right attenuation level that is just enough to sustain reliable data communication. We implement a prototype of {nShield}, and evaluate its performance via extensive experiments. Our results show that {nShield} has low power consumption (23 {uW}), can harvest significant amount of power (55 {mW}), and adaptively attenuates the signal strength of {NFC} in a variety of realistic settings, while only introducing insignificant delay (up to 2.2 s).},
-	Author = {Zhou, Ruogu and Xing, Guoliang},
-	Booktitle = {Proceedings of the 12th annual international conference on Mobile systems, applications, and services - {MobiSys} '14},
-	Date = {2014},
-	Eventtitle = {the 12th annual international conference},
-	Isbn = {978-1-4503-2793-0},
-	Langid = {english},
-	Location = {Bretton Woods, New Hampshire, {USA}},
-	Pages = {95--108},
-	Publisher = {{ACM} Press},
-	Shorttitle = {{nShield}},
-	Title = {{nShield}: a noninvasive {NFC} security system for mobiledevices},
-	Url = {http://dl.acm.org/citation.cfm?doid=2594368.2594376},
-	Urldate = {2019-08-18},
-	Bdsk-Url-1 = {http://dl.acm.org/citation.cfm?doid=2594368.2594376}}
+@inproceedings{guptaRebootingVirtualMemory2021,
+  title      = {Rebooting {{Virtual Memory}} with {{Midgard}}},
+  booktitle  = {2021 {{ACM}}/{{IEEE}} 48th {{Annual International Symposium}} on {{Computer Architecture}} ({{ISCA}})},
+  author     = {Gupta, Siddharth and Bhattacharyya, Atri and Oh, Yunho and Bhattacharjee, Abhishek and Falsafi, Babak and Payer, Mathias},
+  date       = {2021-06},
+  pages      = {512--525},
+  publisher  = {IEEE},
+  location   = {Valencia, Spain},
+  doi        = {10.1109/ISCA52012.2021.00047},
+  url        = {https://ieeexplore.ieee.org/document/9499765/},
+  urldate    = {2024-07-25},
+  eventtitle = {2021 {{ACM}}/{{IEEE}} 48th {{Annual International Symposium}} on {{Computer Architecture}} ({{ISCA}})},
+  isbn       = {978-1-66543-333-4},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/PTSX45UB/Gupta et al. - 2021 - Rebooting Virtual Memory with Midgard.pdf}
+}
 
-@inproceedings{lalehTaxonomyFraudsFraud2009,
-	Abstract = {Fraud is growing noticeably with the expansion of modern technology and the universal superhighways of communication, resulting in the loss of billions of dollars worldwide each year. Several recent techniques in detecting fraud are constantly evolved and applied to many commerce areas. The goal of this paper is to propose a new taxonomy and a comprehensive review of different types of fraud and data mining techniques of fraud detection. The novelty of this paper is collecting all types of frauds that can detect by data mining techniques and review some real time approaches that have capability to detect frauds in real time.},
-	Author = {Laleh, Naeimeh and Abdollahi Azgomi, Mohammad},
-	Booktitle = {Information {{Systems}}, {{Technology}} and {{Management}}},
-	Editor = {Prasad, Sushil K. and Routray, Susmi and Khurana, Reema and Sahni, Sartaj},
-	File = {/home/xandy/Zotero/storage/TA6IH3PN/Laleh and Abdollahi Azgomi - 2009 - A Taxonomy of Frauds and Fraud Detection Technique.pdf},
-	Isbn = {978-3-642-00405-6},
-	Keywords = {Bagging,Fraud Detection,Intrusion Detection,Spike Detection,Stacking},
-	Language = {en},
-	Pages = {256-267},
-	Publisher = {{Springer Berlin Heidelberg}},
-	Series = {Communications in {{Computer}} and {{Information Science}}},
-	Title = {A {{Taxonomy}} of {{Frauds}} and {{Fraud Detection Techniques}}},
-	Year = {2009}}
+@online{hajinazarVirtualBlockInterface2020,
+  title       = {The {{Virtual Block Interface}}: {{A Flexible Alternative}} to the {{Conventional Virtual Memory Framework}}},
+  shorttitle  = {The {{Virtual Block Interface}}},
+  author      = {Hajinazar, Nastaran and Patel, Pratyush and Patel, Minesh and Kanellopoulos, Konstantinos and Ghose, Saugata and Ausavarungnirun, Rachata and family=Oliveira Jr., given=Geraldo Francisco, prefix=de, useprefix=false and Appavoo, Jonathan and Seshadri, Vivek and Mutlu, Onur},
+  date        = {2020-05-19},
+  eprint      = {2005.09748},
+  eprinttype  = {arXiv},
+  eprintclass = {cs},
+  url         = {http://arxiv.org/abs/2005.09748},
+  urldate     = {2024-07-25},
+  abstract    = {Computers continue to diversify with respect to system designs, emerging memory technologies, and application memory demands. Unfortunately, continually adapting the conventional virtual memory framework to each possible system configuration is challenging, and often results in performance loss or requires non-trivial workarounds. To address these challenges, we propose a new virtual memory framework, the Virtual Block Interface (VBI). We design VBI based on the key idea that delegating memory management duties to hardware can reduce the overheads and software complexity associated with virtual memory. VBI introduces a set of variable-sized virtual blocks (VBs) to applications. Each VB is a contiguous region of the globally-visible VBI address space, and an application can allocate each semantically meaningful unit of information (e.g., a data structure) in a separate VB. VBI decouples access protection from memory allocation and address translation. While the OS controls which programs have access to which VBs, dedicated hardware in the memory controller manages the physical memory allocation and address translation of the VBs. This approach enables several architectural optimizations to (1) efficiently and flexibly cater to different and increasingly diverse system configurations, and (2) eliminate key inefficiencies of conventional virtual memory. We demonstrate the benefits of VBI with two important use cases: (1) reducing the overheads of address translation (for both native execution and virtual machine environments), as VBI reduces the number of translation requests and associated memory accesses; and (2) two heterogeneous main memory architectures, where VBI increases the effectiveness of managing fast memory regions. For both cases, VBI significanttly improves performance over conventional virtual memory.},
+  langid      = {english},
+  pubstate    = {prepublished},
+  keywords    = {Computer Science - Hardware Architecture},
+  file        = {/home/max/Zotero/storage/99A7JXWZ/Hajinazar et al. - 2020 - The Virtual Block Interface A Flexible Alternativ.pdf}
+}
 
-@article{ferradiWhenOrganizedCrime2016,
-	Abstract = {This paper describes the forensic analysis of what the authors believe to be the most sophisticated smart card fraud encountered to date. In 2010, Murdoch et al. [7] described a man-inthe-middle attack against EMV cards. [7] demonstrated the attack using a general purpose FPGA board, noting that ``miniaturization is mostly a mechanical challenge, and well within the expertise of criminal gangs''. This indeed happened in 2011, when about 40 sophisticated card forgeries surfaced in the field.},
-	Author = {Ferradi, Houda and G{\'e}raud, R{\'e}mi and Naccache, David and Tria, Assia},
-	File = {/home/xandy/Zotero/storage/ASY6T76N/Ferradi et al. - 2016 - When organized crime applies academic results a f.pdf},
-	Issn = {2190-8508, 2190-8516},
-	Journal = {Journal of Cryptographic Engineering},
-	Language = {en},
-	Month = apr,
-	Number = {1},
-	Pages = {49-59},
-	Shorttitle = {When Organized Crime Applies Academic Results},
-	Title = {When Organized Crime Applies Academic Results: A Forensic Analysis of an in-Card Listening Device},
-	Volume = {6},
-	Year = {2016}}
+@inproceedings{halbuerMorselsExplicitVirtual2023,
+  title      = {Morsels: {{Explicit Virtual Memory Objects}}},
+  shorttitle = {Morsels},
+  booktitle  = {Proceedings of the 1st {{Workshop}} on {{Disruptive Memory Systems}}},
+  author     = {Halbuer, Alexander and Dietrich, Christian and Rommel, Florian and Lohmann, Daniel},
+  date       = {2023-10-23},
+  pages      = {52--59},
+  publisher  = {ACM},
+  location   = {Koblenz Germany},
+  doi        = {10.1145/3609308.3625267},
+  url        = {https://dl.acm.org/doi/10.1145/3609308.3625267},
+  urldate    = {2024-05-11},
+  abstract   = {The tremendous growth of RAM capacity – now exceeding multiple terabytes – necessitates a reevaluation of traditional memory-management methods, which were developed when resources were scarce. Current virtual-memory subsystems handle address-space regions as sets of individual 4-KiB pages with demand paging and copy-on-write, resulting in significant management overhead. Although huge pages reduce the number of managed entities, they induce internal fragmentation and have a coarse copy granularity. To address these problems, we introduce Morsels, a novel virtual-memory–management paradigm that is purely based on hardware data structures and enables the efficient sharing of virtual-memory objects between processes and devices while being well suited for non-volatile memory. Our benchmarks show that Morsels reduce the mapping time for a 6.82-GiB machine-learning model by up to 99.8 percent compared to conventional memory mapping in Linux.},
+  eventtitle = {{{DIMES}} '23: 1st {{Workshop}} on {{Disruptive Memory Systems}}},
+  isbn       = {9798400703003},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/SQCMLJR6/Halbuer et al. - 2023 - Morsels Explicit Virtual Memory Objects.pdf}
+}
 
-@online{emvco_emvco_website,
-	Author = {{EMVCo}},
-	File = {Snapshot:/home/cptpie/Zotero/storage/FJ5SU3SY/document-search.html:text/html},
-	Langid = {american},
-	Month = nov,
-	Note = {Accessed: 2019-08-19},
-	Title = {{EMVCo} specification documents regarding {EMV}},
-	Titleaddon = {{EMVCo}},
-	Url = {https://www.emvco.com/document-search/},
-	Urldate = {2019-08-19},
-	Year = {2011},
-	Bdsk-Url-1 = {https://www.emvco.com/document-search/}}
+@article{hatfieldProgramRestructuringVirtual1971,
+  title        = {Program Restructuring for Virtual Memory},
+  author       = {Hatfield, D. J. and Gerald, J.},
+  date         = {1971},
+  journaltitle = {IBM Systems Journal},
+  shortjournal = {IBM Syst. J.},
+  volume       = {10},
+  number       = {3},
+  pages        = {168--192},
+  issn         = {0018-8670},
+  doi          = {10.1147/sj.103.0168},
+  url          = {http://ieeexplore.ieee.org/document/5388264/},
+  urldate      = {2024-07-25},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/4VZNKYMZ/Hatfield und Gerald - 1971 - Program restructuring for virtual memory.pdf}
+}
 
-@online{emvco_emvco_book1,
-	Author = {{EMVCo}},
-	File = {EMVCo - EMVCo - EMV Specification Book 1.pdf:/home/cptpie/Zotero/storage/4XK6CHIY/EMVCo - EMVCo - EMV Specification Book 1.pdf:application/pdf;Snapshot:/home/cptpie/Zotero/storage/TFBIAYFQ/terms-of-use.html:text/html},
-	Langid = {american},
-	Month = nov,
-	Note = {02011},
-	Title = {{EMVCo} - {EMV} Specification Book 1},
-	Titleaddon = {{EMVCo}},
-	Url = {https://www.emvco.com/wp-content/plugins/pmpro-customizations/oy-getfile.php?u=/wp-content/uploads/documents/EMV_v4.3_Book_1_ICC_to_Terminal_Interface_2012060705394541.pdf},
-	Urldate = {2019-08-19},
-	Year = {2011},
-	Bdsk-Url-1 = {https://www.emvco.com/wp-content/plugins/pmpro-customizations/oy-getfile.php?u=/wp-content/uploads/documents/EMV_v4.3_Book_1_ICC_to_Terminal_Interface_2012060705394541.pdf}}
+@article{hatWhatEveryProgrammera,
+  title    = {What {{Every Programmer Should Know About Memory}}},
+  author   = {Hat, Ulrich Drepper Red},
+  abstract = {As CPU cores become both faster and more numerous, the limiting factor for most programs is now, and will be for some time, memory access. Hardware designers have come up with ever more sophisticated memory handling and acceleration techniques–such as CPU caches–but these cannot work optimally without some help from the programmer. Unfortunately, neither the structure nor the cost of using the memory subsystem of a computer or the caches on CPUs is well understood by most programmers. This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.},
+  langid   = {english},
+  file     = {/home/max/Zotero/storage/BHLJSENP/Hat - What Every Programmer Should Know About Memory.pdf}
+}
 
-@online{emvco_emvco_book2,
-	Author = {{EMVCo}},
-	File = {EMVCo - EMVCo - EMV Specification Book 2.pdf:/home/cptpie/Zotero/storage/SB9JN6YV/EMVCo - EMVCo - EMV Specification Book 2.pdf:application/pdf},
-	Langid = {american},
-	Month = nov,
-	Note = {00000},
-	Title = {{EMVCo} - {EMV} Specification Book 2},
-	Titleaddon = {{EMVCo}},
-	Url = {https://www.emvco.com/wp-content/plugins/pmpro-customizations/oy-getfile.php?u=/wp-content/uploads/documents/EMV_v4.3_Book_2_Security_and_Key_Management_20120607061923900.pdf},
-	Urldate = {2019-08-19},
-	Year = {2011},
-	Bdsk-Url-1 = {https://www.emvco.com/wp-content/plugins/pmpro-customizations/oy-getfile.php?u=/wp-content/uploads/documents/EMV_v4.3_Book_2_Security_and_Key_Management_20120607061923900.pdf}}
+@article{heiserAnatomyHighPerformanceMicrokernelb,
+  title  = {Anatomy of a {{High-Performance Microkernel}}},
+  author = {Heiser, Gernot},
+  langid = {english},
+  file   = {/home/max/Zotero/storage/SGWQITK5/Heiser - Anatomy of a High-Performance Microkernel.pdf}
+}
 
-@online{emvco_emvco_book3,
-	Author = {{EMVCo}},
-	File = {EMVCo - EMVCo - EMV Specification Book 3.pdf:/home/cptpie/Zotero/storage/Q5FF9U26/EMVCo - EMVCo - EMV Specification Book 3.pdf:application/pdf},
-	Langid = {american},
-	Month = nov,
-	Note = {00000},
-	Title = {{EMVCo} - {EMV} Specification Book 3},
-	Titleaddon = {{EMVCo}},
-	Url = {https://www.emvco.com/wp-content/plugins/pmpro-customizations/oy-getfile.php?u=/wp-content/uploads/documents/EMV_v4.3_Book_3_Application_Specification_20120607062110791.pdf},
-	Urldate = {2019-08-19},
-	Year = {2011},
-	Bdsk-Url-1 = {https://www.emvco.com/wp-content/plugins/pmpro-customizations/oy-getfile.php?u=/wp-content/uploads/documents/EMV_v4.3_Book_3_Application_Specification_20120607062110791.pdf}}
+@online{HttpsDspaceMit,
+  title   = {{{https://dspace.mit.edu/bitstream/handle/1721.1/16713/42430053-MIT.pdf}}},
+  url     = {https://dspace.mit.edu/bitstream/handle/1721.1/16713/42430053-MIT.pdf},
+  urldate = {2024-07-26}
+}
 
-@online{emvco_emvco_book4,
-	Author = {{EMVCo}},
-	File = {EMVCo - EMVCo - EMV Specification Book 3.pdf:/home/cptpie/Zotero/storage/968SRZFW/EMVCo - EMVCo - EMV Specification Book 3.pdf:application/pdf},
-	Langid = {american},
-	Month = nov,
-	Note = {02011},
-	Title = {{EMVCo} - {EMV} Specification Book 4},
-	Titleaddon = {{EMVCo}},
-	Url = {https://www.emvco.com/wp-content/plugins/pmpro-customizations/oy-getfile.php?u=/wp-content/uploads/documents/EMV_v4.3_Book_3_Application_Specification_20120607062110791.pdf},
-	Urldate = {2019-08-19},
-	Year = {2011},
-	Bdsk-Url-1 = {https://www.emvco.com/wp-content/plugins/pmpro-customizations/oy-getfile.php?u=/wp-content/uploads/documents/EMV_v4.3_Book_3_Application_Specification_20120607062110791.pdf}}
+@online{HttpsS3euwest1Amazonaws,
+  title   = {{{https://s3-eu-west-1.amazonaws.com/downloads-mips/documents/MD00091-2B-MIPS64PRA-AFP-05.04.pdf}}},
+  url     = {https://s3-eu-west-1.amazonaws.com/downloads-mips/documents/MD00091-2B-MIPS64PRA-AFP-05.04.pdf},
+  urldate = {2024-07-04}
+}
 
-@article{Yang10,
-	Author = {Yinghui Yang},
-	Date-Added = {2015-10-06 08:57:40 +0000},
-	Date-Modified = {2015-10-06 08:57:40 +0000},
-	Journal = {Decision Support Systems},
-	Pages = {261--271},
-	Title = {Web user behavioral profiling for user identification},
-	Volume = {49},
-	Year = {2010}}
+@article{iftodeSharedVirtualMemory1999,
+  title        = {Shared Virtual Memory: Progress and Challenges},
+  shorttitle   = {Shared Virtual Memory},
+  author       = {Iftode, L. and Singh, J.P.},
+  date         = {1999-03},
+  journaltitle = {Proceedings of the IEEE},
+  shortjournal = {Proc. IEEE},
+  volume       = {87},
+  number       = {3},
+  pages        = {498--507},
+  issn         = {00189219},
+  doi          = {10.1109/5.747870},
+  url          = {http://ieeexplore.ieee.org/document/747870/},
+  urldate      = {2024-07-25},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/2DK6A5Q8/Iftode und Singh - 1999 - Shared virtual memory progress and challenges.pdf}
+}
 
-@inproceedings{Kopsell06,
-	Author = {Stefan K{\"{o}}psell},
-	Booktitle = {{ETRICS} 2006},
-	Date-Added = {2015-01-19 06:58:00 +0000},
-	Date-Modified = {2015-01-19 07:26:21 +0000},
-	Pages = {221--237},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {{Low Latency Anonymous Communication - How Long Are Users Willing to Wait?}},
-	Volume = {3995},
-	Year = {2006}}
+@online{imfoobar42WhatDifferenceVirtually2018,
+  type         = {Forum post},
+  title        = {What's the Difference between {{Virtually Indexed Physically}} Tagged and {{Virtually Indexed}} and {{Virtually Tagged Paging}}?},
+  author       = {{imfoobar42}},
+  date         = {2018-07-04},
+  url          = {https://stackoverflow.com/q/51175887},
+  urldate      = {2024-08-05},
+  organization = {Stack Overflow},
+  file         = {/home/max/Zotero/storage/VFYK9ZZ9/whats-the-difference-between-virtually-indexed-physically-tagged-and-virtually.html}
+}
 
-@inproceedings{VilaGM03,
-	Author = {Tony Vila and Rachel Greenstadt and David Molnar},
-	Booktitle = {{ICEC} 2003},
-	Date-Added = {2015-01-05 22:30:48 +0000},
-	Date-Modified = {2015-01-19 20:09:15 +0000},
-	Pages = {403--407},
-	Publisher = {{ACM}},
-	Title = {Why we can't be bothered to read privacy policies: models of privacy economics as a lemons market},
-	Year = {2003}}
+@online{IncompleteListQEMU,
+  title   = {An Incomplete List of {{QEMU APIs}}},
+  url     = {https://habkost.net/posts/2016/11/incomplete-list-of-qemu-apis.html},
+  urldate = {2024-07-16},
+  file    = {/home/max/Zotero/storage/L2BU55VW/incomplete-list-of-qemu-apis.html}
+}
 
-@inproceedings{Herrmann12-ipv6prefix,
-	Author = {Dominik Herrmann and Christine Arndt and Hannes Federrath},
-	Booktitle = {1st Workshop on Privacy and Data Protection Technology, co-located with Amsterdam Privacy Conference},
-	Date-Added = {2015-01-05 22:09:26 +0000},
-	Date-Modified = {2015-01-06 07:23:02 +0000},
-	Title = {{IPv6 Prefix Alteration: An Opportunity to Improve Online Privacy}},
-	Year = {2012},
-	Bdsk-Url-1 = {http://arxiv.org/abs/1211.4704}}
+@article{jacobLookSeveralMemory,
+  title    = {A {{Look}} at {{Several Memory Management Units}}, {{TLB-Refill Mechanisms}}, and {{Page Table Organizations}}},
+  author   = {Jacob, Bruce L and Mudge, Trevor N},
+  abstract = {Virtual memory is a staple in modem systems, though there is little agreement on how its functionality is to be implemented on either the hardware or software side of the interface. The myriad of design choices and incompatible hardware mechanisms suggests potential performance problems, especially since increasing numbers of systems (even embedded systems) are using memory management. A comparative study of the implementation choices in virtual memory should therefore aid system-level designers. This paper compares several virtual memory designs, including combinations of hierarchical and inverted page tables on hardwaremanaged and software-managed translation lookaside buffers (TLBs). The simulations show that systems are fairly sensitive to TLB size; that interrupts already account for a large portion of memory-management overhead and can become a significant factor as processors execute more concurrent instructions; and that if one includes the cache misses inflicted on applications by the VM system, the total VM overhead is roughly twice what was thought (10-200/orather than 5-10\%).},
+  langid   = {english},
+  file     = {/home/max/Zotero/storage/MEFE26I7/Jacob and Mudge - A Look at Several Memory Management Units, TLB-Ref.pdf}
+}
 
-@phdthesis{Herrmann14-diss,
-	Author = {Dominik Herrmann},
-	Date-Added = {2015-01-05 20:37:26 +0000},
-	Date-Modified = {2015-01-05 20:38:00 +0000},
-	School = {Universit{\"a}t Hamburg},
-	Title = {{Beobachtungsm{\"o}glichkeiten im Domain Name System: Angriffe auf die Privatsph{\"a}re und Techniken zum Selbstdatenschutz}},
-	Year = {2014}}
+@inproceedings{jacobSoftwaremanagedAddressTranslation1997,
+  title      = {Software-Managed Address Translation},
+  booktitle  = {Proceedings {{Third International Symposium}} on {{High-Performance Computer Architecture}}},
+  author     = {Jacob, B. and Mudge, T.},
+  date       = {1997},
+  pages      = {156--167},
+  publisher  = {IEEE Comput. Soc. Press},
+  location   = {San Antonio, TX, USA},
+  doi        = {10.1109/HPCA.1997.569652},
+  url        = {http://ieeexplore.ieee.org/document/569652/},
+  urldate    = {2024-07-31},
+  abstract   = {In this paper we explore software-managed address translation. The purpose of the study is to specify the memory management design for a high clock-rate PowerPC implementation in which a simple design is a prerequisite for a fast clock and a short design cycle. We show that softwaremanaged address translation is just as efficient as hardware-managed address translation, and it is much more flexible. Operating systems such as OSF/1 and Mach charge between 0.10 and 0.28 cycles per instruction (CPI) for address translation using dedicated memory-management hardware. Software-managed translation requires 0.05 CPI. Mechanisms to support such features as shared memory, superpages, sub-page protection, and sparse address spaces can be defined completely in software, allowing much more flexibility than in hardware-defined mechanisms.},
+  eventtitle = {Third {{International Symposium}} on {{High-Performance Computer Architecture}}},
+  isbn       = {978-0-8186-7764-9},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/ZVR8EQY6/Jacob and Mudge - 1997 - Software-managed address translation.pdf}
+}
 
-@article{HBF:2013,
-	Author = {Herrmann, Dominik and Banse, Christian and Federrath, Hannes},
-	Date-Added = {2015-01-05 16:42:05 +0000},
-	Date-Modified = {2015-01-05 16:42:05 +0000},
-	Journal = {Computers \& Security},
-	Keywords = {own},
-	Month = nov,
-	Pages = {17--33},
-	Title = {{Behavior-based Tracking: Exploiting Characteristic Patterns in DNS Traffic}},
-	Volume = {39A},
-	Year = {2013}}
+@inproceedings{jacobSoftwaremanagedAddressTranslation1997a,
+  title      = {Software-Managed Address Translation},
+  booktitle  = {Proceedings {{Third International Symposium}} on {{High-Performance Computer Architecture}}},
+  author     = {Jacob, B. and Mudge, T.},
+  date       = {1997},
+  pages      = {156--167},
+  publisher  = {IEEE Comput. Soc. Press},
+  location   = {San Antonio, TX, USA},
+  doi        = {10.1109/HPCA.1997.569652},
+  url        = {http://ieeexplore.ieee.org/document/569652/},
+  urldate    = {2024-07-31},
+  eventtitle = {Third {{International Symposium}} on {{High-Performance Computer Architecture}}},
+  isbn       = {978-0-8186-7764-9},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/UJIUZWAT/Jacob and Mudge - 1997 - Software-managed address translation.pdf}
+}
 
-@inproceedings{Herrmann11-NordSec,
-	Author = {Dominik Herrmann and Christoph Gerber and Christian Banse and Hannes Federrath},
-	Booktitle = {NordSec 2010},
-	Date-Added = {2015-01-05 16:42:05 +0000},
-	Date-Modified = {2015-01-19 07:29:27 +0000},
-	Pages = {136--154},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {{Analyzing Characteristic Host Access Patterns for Re-identification of Web User Sessions}},
-	Volume = {7127},
-	Year = {2012}}
+@article{jacobSOFTWAREORIENTEDMEMORYMANAGEMENTDESIGN,
+  title  = {{{SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN}}},
+  author = {Jacob, Bruce Ledley},
+  langid = {english},
+  file   = {/home/max/Zotero/storage/LF3QM2YT/Jacob - SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN.pdf}
+}
 
-@inproceedings{AcarEEJND14,
-	Author = {Gunes Acar and Christian Eubank and Steven Englehardt and Marc Ju{\'{a}}rez and Arvind Narayanan and Claudia D{\'{\i}}az},
-	Booktitle = {CCS 2014},
-	Date-Added = {2015-01-05 16:29:33 +0000},
-	Date-Modified = {2015-01-19 07:27:53 +0000},
-	Pages = {674--689},
-	Publisher = {{ACM}},
-	Title = {The Web Never Forgets: Persistent Tracking Mechanisms in the Wild},
-	Year = {2014}}
+@article{jacobVirtualMemoryContemporary1998,
+  title        = {Virtual Memory in Contemporary Microprocessors},
+  author       = {Jacob, B. and Mudge, T.},
+  year         = {July-Aug./1998},
+  journaltitle = {IEEE Micro},
+  shortjournal = {IEEE Micro},
+  volume       = {18},
+  number       = {4},
+  pages        = {60--75},
+  issn         = {02721732},
+  doi          = {10.1109/40.710872},
+  url          = {http://ieeexplore.ieee.org/document/710872/},
+  urldate      = {2024-04-06},
+  file         = {/home/max/Zotero/storage/VRX9LFYS/document.pdf}
+}
 
-@inproceedings{Herrmann09,
-	Author = {Dominik Herrmann and Rolf Wendolsky and Hannes Federrath},
-	Booktitle = {CCSW 2009},
-	Date-Added = {2015-01-05 15:27:12 +0000},
-	Date-Modified = {2015-01-19 07:28:03 +0000},
-	Pages = {31--42},
-	Publisher = {ACM},
-	Title = {{Website Fingerprinting: Attacking Popular Privacy Enhancing Technologies with the Multinomial Na\"{\i}ve-Bayes Classifier}},
-	Year = {2009}}
+@article{jacobVirtualMemoryIssues1998,
+  title        = {Virtual Memory: Issues of Implementation},
+  shorttitle   = {Virtual Memory},
+  author       = {Jacob, B. and Mudge, T.},
+  date         = {1998-06},
+  journaltitle = {Computer},
+  shortjournal = {Computer},
+  volume       = {31},
+  number       = {6},
+  pages        = {33--43},
+  issn         = {00189162},
+  doi          = {10.1109/2.683005},
+  url          = {http://ieeexplore.ieee.org/document/683005/},
+  urldate      = {2024-04-06},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/47B9CC2X/Jacob and Mudge - 1998 - Virtual memory issues of implementation.pdf}
+}
 
-@inproceedings{WangG13,
-	Author = {Tao Wang and Ian Goldberg},
-	Booktitle = {{WPES} 2013},
-	Date-Added = {2015-01-05 15:25:20 +0000},
-	Date-Modified = {2015-01-19 07:28:58 +0000},
-	Pages = {201--212},
-	Publisher = {{ACM}},
-	Title = {{Improved website fingerprinting on Tor}},
-	Year = {2013}}
+@inproceedings{jaleelInlineInterruptHandling2001,
+  title      = {In-Line Interrupt Handling for Software-Managed {{TLBs}}},
+  booktitle  = {Proceedings 2001 {{IEEE International Conference}} on {{Computer Design}}: {{VLSI}} in {{Computers}} and {{Processors}}. {{ICCD}} 2001},
+  author     = {Jaleel, A. and Jacob, B.},
+  date       = {2001},
+  pages      = {62--67},
+  publisher  = {IEEE Comput. Soc},
+  location   = {Austin, TX, USA},
+  doi        = {10.1109/ICCD.2001.955004},
+  url        = {http://ieeexplore.ieee.org/document/955004/},
+  urldate    = {2024-07-26},
+  abstract   = {The general-purpose precise interrupt mechanism, which has long been used to handle exceptional conditions that occur infrequently, is now being used increasingly often to handle conditions that are neither exceptional nor infrequent. One example is the use of interrupts to perform memory management—e.g., to handle translation lookaside buffer (TLB) misses in today’s microprocessors. Because the frequency of TLB misses tends to increase with memory footprint, there is pressure on the precise interrupt mechanism to become more lightweight. When modern out-of-order processors handle interrupts precisely, they typically begin by flushing the pipeline. Doing so makes the CPU available to execute handler instructions, but it wastes potentially hundreds of cycles of execution time. However, if the handler code is small, it could potentially fit in the reorder buffer along with the user-level code already there. This essentially in-lines the interrupt-handler code. One good example of where this would be both possible and useful is in the TLB-miss handler in a software-managed TLB implementation. The benefits of doing so are two-fold: (1) the instructions that would otherwise be flushed from the pipe need not be re-fetched and re-executed; and (2) any instructions that are independent of the exceptional instruction can continue to execute in parallel with the handler code. In effect, doing so provides us with lockup-free TLBs. We simulate a lockup-free data-TLB facility on a processor model with a 4-way out-of-order core reminiscent of the Alpha 21264. We find that, by using lockup-free TLBs, one can get the performance of a fully associative TLB with a lockup-free TLB of one-fourth the size.},
+  eventtitle = {2001 {{International Conference}} on {{Computer Design}}. {{ICCD}} 2001},
+  isbn       = {978-0-7695-1200-6},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/NMBTEG6G/Jaleel and Jacob - 2001 - In-line interrupt handling for software-managed TL.pdf}
+}
 
-@inproceedings{Raymond00,
-	Author = {Jean-Fran{\c{c}}ois Raymond},
-	Booktitle = {International Workshop on Design Issues in Anonymity and Unobservability},
-	Date-Added = {2015-01-05 15:25:15 +0000},
-	Date-Modified = {2015-01-19 07:28:17 +0000},
-	Pages = {10--29},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {Traffic Analysis: Protocols, Attacks, Design Issues, and Open Problems},
-	Volume = {2009},
-	Year = {2001}}
+@article{kimEfficientSoftwareShared2011,
+  title        = {An Efficient Software Shared Virtual Memory for the Single-Chip Cloud Computer},
+  author       = {Kim, Junghyun and Seo, Sangmin and Lee, Jaejin},
+  date         = {2011-07-11},
+  journaltitle = {Proceedings of the 2nd Asia-Pacific Workshop on Systems, APSys'11},
+  shortjournal = {Proceedings of the 2nd Asia-Pacific Workshop on Systems, APSys'11},
+  doi          = {10.1145/2103799.2103804},
+  abstract     = {The Single-chip Cloud Computer (SCC) is an experimental processor created by Intel Labs. The SCC is based on a message passing architecture and does not provide any hardware cache coherence mechanism. Software or programmers should take care of coherence and consistency of a shared region between different cores. In this paper, we propose an efficient software shared virtual memory (SVM) for the SCC as an alternative to the cache coherence mechanism and report some preliminary results. Our software SVM is based on the commit-reconcile and fence (CRF) memory model and does not require a complicated SVM protocol between cores. We evaluate the effectiveness of our approach by comparing the software SVM with a cache-coherent NUMA machine using three synthetic micro-benchmark applications and five applications from SPLASH-2. Evaluation result indicates that our approach is promising.},
+  file         = {/home/max/Zotero/storage/AMLP2FT9/Kim et al. - 2011 - An efficient software shared virtual memory for th.pdf}
+}
 
-@inproceedings{Hintz02,
-	Author = {Andrew Hintz},
-	Booktitle = {PET Workshop 2002},
-	Date-Added = {2015-01-05 15:25:06 +0000},
-	Date-Modified = {2015-01-19 07:29:11 +0000},
-	Pages = {171--178},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {{Fingerprinting Websites Using Traffic Analysis}},
-	Volume = {2482},
-	Year = {2003}}
+@article{knottHashingFunctions1975,
+  title        = {Hashing Functions},
+  author       = {Knott, G. D.},
+  date         = {1975-03-01},
+  journaltitle = {The Computer Journal},
+  shortjournal = {The Computer Journal},
+  volume       = {18},
+  number       = {3},
+  pages        = {265--278},
+  issn         = {0010-4620, 1460-2067},
+  doi          = {10.1093/comjnl/18.3.265},
+  url          = {https://academic.oup.com/comjnl/article-lookup/doi/10.1093/comjnl/18.3.265},
+  urldate      = {2024-04-29},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/NVE2CCKW/180265.pdf}
+}
 
-@inproceedings{Herrmann14-encdns,
-	Author = {Dominik Herrmann and Karl-Peter Fuchs and Jens Lindemann and Hannes Federrath},
-	Booktitle = {{ESORICS} 2014},
-	Date-Added = {2015-01-05 15:24:24 +0000},
-	Date-Modified = {2015-01-19 07:29:19 +0000},
-	Pages = {37--55},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {{EncDNS: A Lightweight Privacy-Preserving Name Resolution Service}},
-	Volume = {8712},
-	Year = {2014}}
+@inproceedings{kruegerToolsDevelopmentApplicationspecific1993b,
+  title      = {Tools for the Development of Application-Specific Virtual Memory Management},
+  booktitle  = {Proceedings of the Eighth Annual Conference on {{Object-oriented}} Programming Systems, Languages, and Applications},
+  author     = {Krueger, Keith and Loftesness, David and Vahdat, Amin and Anderson, Thomas},
+  date       = {1993-10},
+  pages      = {48--64},
+  publisher  = {ACM},
+  location   = {Washington D.C. USA},
+  doi        = {10.1145/165854.165867},
+  url        = {https://dl.acm.org/doi/10.1145/165854.165867},
+  urldate    = {2024-07-25},
+  eventtitle = {{{OOPSLA93}}: {{Conference}} on {{Object Oriented Programming Systems Languages}} and {{Applications}}},
+  isbn       = {978-0-89791-587-8},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/HSR3P33Y/Krueger et al. - 1993 - Tools for the development of application-specific .pdf}
+}
 
-@inproceedings{FederrathFHP11,
-	Author = {Hannes Federrath and Karl-Peter Fuchs and Dominik Herrmann and Christopher Piosecny},
-	Booktitle = {{ESORICS} 2011},
-	Date-Added = {2015-01-05 15:24:03 +0000},
-	Date-Modified = {2015-01-19 07:28:32 +0000},
-	Pages = {665--683},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {{Privacy-Preserving DNS: Analysis of Broadcast, Range Queries and Mix-Based Protection Methods}},
-	Volume = {6879},
-	Year = {2011}}
+@online{L4ReferenceManual,
+  title   = {L4 {{Reference Manual}}},
+  url     = {https://cgi.cse.unsw.edu.au/~reports/papers/9709.pdf},
+  urldate = {2024-05-07},
+  file    = {/home/max/Zotero/storage/E79CG3I5/9709.pdf}
+}
 
-@misc{Goodson12-privacy,
-	Author = {Scott Goodson},
-	Date-Added = {2015-01-05 15:23:45 +0000},
-	Date-Modified = {2015-01-06 06:55:07 +0000},
-	Howpublished = {Forbes.com, \url{http://onforb.es/wVrU4G} (visited on 6 Jan 2015)},
-	Title = {{If You're Not Paying For It, You Become The Product}},
-	Year = {2012},
-	Bdsk-Url-1 = {http://onforb.es/wVrU4G}}
+@online{L4UserManual,
+  title   = {L4 {{User Manual}}},
+  url     = {https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=564516e3f63dce6c7506a1777dbd6f2e8192fb69},
+  urldate = {2024-05-07},
+  file    = {/home/max/Zotero/storage/TXI2ZF7V/document.pdf}
+}
 
-@incollection{Fabian10,
-	Author = {Fabian, Benjamin and Goertz, Florian and Kunz, Steffen and M{\"u}ller, Sebastian and Nitzsche, Mathias},
-	Booktitle = {AMCIS 2010, SIGeBIZ track},
-	Date-Added = {2015-01-02 13:32:55 +0000},
-	Date-Modified = {2015-01-19 07:28:29 +0000},
-	Pages = {63-75},
-	Publisher = {Springer},
-	Series = {LNBIP},
-	Title = {{Privately Waiting --- A Usability Analysis of the Tor Anonymity Network}},
-	Volume = {58},
-	Year = {2010},
-	Bdsk-Url-1 = {http://dx.doi.org/10.1007/978-3-642-15141-5_6}}
+@misc{L4X2Whitepaper,
+  title = {L4 {{X2 Whitepaper}} - {{Pistachio}}},
+  file  = {/home/max/Zotero/storage/CI73A3DI/whitepaper.pdf}
+}
 
-@misc{Google12,
-	Author = {Jeremy K. Chen},
-	Date-Added = {2015-01-02 10:23:35 +0000},
-	Date-Modified = {2015-01-06 06:54:05 +0000},
-	Howpublished = {Official Google Blog, \url{http://googleblog.blogspot.de/2012/02/google-public-dns-70-billion-requests.html} (visited on 6 Jan 2015)},
-	Title = {{Google Public DNS: 70 billion requests a day and counting}},
-	Year = {2012},
-	Bdsk-Url-1 = {http://www.internetsociety.org/sites/default/files/bp-dnsresiliency-201201-en_0.pdf}}
+@article{liedtkeGuardedPageTables1996,
+  title        = {Guarded Page Tables on {{Mips R4600}} or an Exercise in Architecture-Dependent Micro Optimization},
+  author       = {Liedtke, Jochen and Elphinstone, Kevin},
+  date         = {1996-01},
+  journaltitle = {ACM SIGOPS Operating Systems Review},
+  shortjournal = {SIGOPS Oper. Syst. Rev.},
+  volume       = {30},
+  number       = {1},
+  pages        = {4--15},
+  issn         = {0163-5980},
+  doi          = {10.1145/218646.218647},
+  url          = {https://dl.acm.org/doi/10.1145/218646.218647},
+  urldate      = {2024-05-09},
+  abstract     = {Guarded Page Tables implement huge sparsely occupied address spaces efficiently and have the advantages of multi-level tables (tree structure, hierarchy, sharing). We present an implementation of guarded page tables on the R4600 processor. The paper describes both the architecture-dependent design process of the algorithms and the resulting tool box.},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/QHV4NERC/Liedtke and Elphinstone - 1996 - Guarded page tables on Mips R4600 or an exercise i.pdf}
+}
 
-@inproceedings{goldberg97,
-	Author = {Ian Goldberg and David Wagner and Eric Brewer},
-	Booktitle = {42nd IEEE Spring COMPCON},
-	Date-Modified = {2015-01-19 07:28:37 +0000},
-	Publisher = {IEEE},
-	Title = {{Privacy-enhancing Technologies for the Internet}},
-	Year = {1997}}
+@article{liedtkeHighResolutionMMU,
+  title    = {A {{High Resolution MMU}} for the {{Realization}} of {{Huge Fine-grained Address Spaces}} and {{User Level Mapping}}},
+  author   = {Liedtke, Jochen},
+  abstract = {This paper describes a Memory Management Unit (MMU) which can be used for implementing huge ne-grained address spaces. Granularities down to 16-byte pages seem to be possible. Furthermore, a mechanism is described whichs permits fast and secure mapping operations on user level.},
+  langid   = {english},
+  keywords = {todo},
+  file     = {/home/max/Zotero/storage/FBL9LEMQ/Liedtke - A High Resolution MMU for the Realization of Huge .pdf}
+}
 
-@inproceedings{WendolskyHF07,
-	Author = {Rolf Wendolsky and Dominik Herrmann and Hannes Federrath},
-	Booktitle = {{PET} Workshop 2007},
-	Date-Modified = {2015-01-19 07:28:50 +0000},
-	Pages = {233--253},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {Performance Comparison of Low-Latency Anonymisation Services from a User Perspective},
-	Volume = {4776},
-	Year = {2007}}
+@book{liedtkeRealizationHugeSparselyoccupied1996,
+  title     = {On the Realization of Huge Sparsely-Occupied and Fine-Grained Address Spaces},
+  author    = {Liedtke, Jochen},
+  date      = {1996},
+  series    = {{{GMD-Berichte}}},
+  number    = {276},
+  publisher = {Oldenbourg},
+  location  = {München Wien},
+  isbn      = {978-3-486-24185-3},
+  langid    = {english},
+  pagetotal = {190},
+  file      = {/home/max/Zotero/storage/RPXNV2HF/Liedtke - 1996 - On the realization of huge sparsely-occupied and f.pdf}
+}
 
-@article{chaum81,
-	Author = {David Chaum},
-	Journal = {{Communications of the ACM}},
-	Number = {2},
-	Title = {{Untraceable electronic mail, return addresses, and digital pseudo\-nyms}},
-	Volume = {24},
-	Year = {1981}}
+@article{maruyamaAnalysisDesignAlternatives1977,
+  title        = {Analysis of Design Alternatives for Virtual Memory Indexes},
+  author       = {Maruyama, K. and Smith, S. E.},
+  date         = {1977-04},
+  journaltitle = {Communications of the ACM},
+  shortjournal = {Commun. ACM},
+  volume       = {20},
+  number       = {4},
+  pages        = {245--254},
+  issn         = {0001-0782, 1557-7317},
+  doi          = {10.1145/359461.359471},
+  url          = {https://dl.acm.org/doi/10.1145/359461.359471},
+  urldate      = {2024-07-25},
+  abstract     = {A class of index structures for use in a virtual memory environment is described. Design alternatives within this class of index structures are analyzed. These alternatives include a choice of search strategy, whether or not pages in the index are stuctured, and whether or not keys are compressed. The average cost of retrieving entries from these indexes is expressed as a weighted sum of the cost of a basis key comparison and the cost of crossing a page boundary in the index structure. Formulas for the retrieval costs possible combinations of design alternatives are given. These are used in numerical case studies which compare the retrieval costs of the alternatives. Qualitative comparisons of the maintenance costs (insertion, deletion, reorganization) of the design alternatives are also included.},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/DID6739D/Maruyama und Smith - 1977 - Analysis of design alternatives for virtual memory.pdf}
+}
 
-@inproceedings{BertholdFK00,
-	Author = {Oliver Berthold and Hannes Federrath and Stefan K{\"o}psell},
-	Booktitle = {International Workshop on Design Issues in Anonymity and Unobservability},
-	Date-Modified = {2015-01-19 07:28:11 +0000},
-	Pages = {115--129},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {{Web MIXes: A System for Anonymous and Unobservable Internet Access}},
-	Volume = {2009},
-	Year = {2001}}
+@article{meidingerQemuriscvDigestVol,
+  title  = {Qemu-Riscv {{Digest}}, {{Vol}} 70, {{Issue}} 16},
+  author = {Meidinger, Max},
+  volume = {70},
+  number = {16},
+  langid = {english},
+  file   = {/home/max/Zotero/storage/TUVK8UND/Meidinger - Qemu-riscv Digest, Vol 70, Issue 16.pdf}
+}
 
-@inproceedings{Dingledine04,
-	Author = {Roger Dingledine and Nick Mathewson and Paul F. Syverson},
-	Booktitle = {13th USENIX Security Symposium},
-	Date-Modified = {2015-01-19 07:28:21 +0000},
-	Pages = {303--320},
-	Publisher = {USENIX},
-	Title = {{Tor: The Second-Generation Onion Router}},
-	Year = {2004}}
+@online{MIPSOverviewOSDev,
+  title   = {{{MIPS Overview}} - {{OSDev Wiki}}},
+  url     = {https://wiki.osdev.org/MIPS_Overview#Coprocessor_0_Registers},
+  urldate = {2024-07-04},
+  file    = {/home/max/Zotero/storage/MIQIX665/MIPS_Overview.html}
+}
 
-@techreport{rfc5246,
-	Author = {Tim Dierks and Eric Rescorla},
-	Date-Modified = {2015-01-06 07:02:22 +0000},
-	Howpublished = {Internet Request for Comments},
-	Institution = {RFC Editor},
-	Month = {August},
-	Number = {5246},
-	Title = {{The Transport Layer Security (TLS) Protocol Version 1.2}},
-	Type = {{RFC}},
-	Year = 2008}
+@book{mittelbachTheoryHashFunctions2021,
+  title      = {The {{Theory}} of {{Hash Functions}} and {{Random Oracles}}: {{An Approach}} to {{Modern Cryptography}}},
+  shorttitle = {The {{Theory}} of {{Hash Functions}} and {{Random Oracles}}},
+  author     = {Mittelbach, Arno and Fischlin, Marc},
+  date       = {2021},
+  series     = {Information {{Security}} and {{Cryptography}}},
+  publisher  = {Springer International Publishing},
+  location   = {Cham},
+  doi        = {10.1007/978-3-030-63287-8},
+  url        = {http://link.springer.com/10.1007/978-3-030-63287-8},
+  urldate    = {2024-05-09},
+  isbn       = {978-3-030-63286-1 978-3-030-63287-8},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/73QJLSPL/Mittelbach and Fischlin - 2021 - The Theory of Hash Functions and Random Oracles A.pdf}
+}
 
-@inproceedings{LoesingMD10,
-	Author = {Karsten Loesing and Steven J. Murdoch and Roger Dingledine},
-	Booktitle = {{FC} 2010 Workshops},
-	Date-Modified = {2015-01-19 07:29:31 +0000},
-	Pages = {203--215},
-	Publisher = {Springer},
-	Series = {LNCS},
-	Title = {{A Case Study on Measuring Statistical Data in the Tor Anonymity Network}},
-	Volume = {6054},
-	Year = {2010}}
+@online{MultithreadedTCGQEMU,
+  title   = {Multi-Threaded {{TCG}} — {{QEMU}} Documentation},
+  url     = {https://qemu-project.gitlab.io/qemu/devel/multi-thread-tcg.html},
+  urldate = {2024-07-16},
+  file    = {/home/max/Zotero/storage/P6ID9LYY/multi-thread-tcg.html}
+}
 
-@inproceedings{FuchsHF13,
-	Author = {Karl-Peter Fuchs and Dominik Herrmann and Hannes Federrath},
-	Booktitle = {IFIP SEC 2013},
-	Date-Modified = {2015-01-19 07:29:05 +0000},
-	Pages = {162--175},
-	Publisher = {Springer},
-	Series = {AICT},
-	Title = {Generating Realistic Application Workloads for Mix-Based Systems for Controllable, Repeatable and Usable Experimentation},
-	Volume = {405},
-	Year = {2013}}
+@inproceedings{nagleDesignTradeoffsSoftwaremanaged1993,
+  title      = {Design Tradeoffs for Software-Managed {{TLBs}}},
+  booktitle  = {Proceedings of the 20th Annual International Symposium on {{Computer}} Architecture  - {{ISCA}} '93},
+  author     = {Nagle, David and Uhlig, Richard and Stanley, Tim and Sechrest, Stuart and Mudge, Trevor and Brown, Richard},
+  date       = {1993},
+  pages      = {27--38},
+  publisher  = {ACM Press},
+  location   = {San Diego, California, United States},
+  doi        = {10.1145/165123.165127},
+  url        = {http://portal.acm.org/citation.cfm?doid=165123.165127},
+  urldate    = {2024-07-25},
+  eventtitle = {The 20th Annual International Symposium},
+  isbn       = {978-0-8186-3810-7},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/MB3JDEA4/Nagle et al. - 1993 - Design tradeoffs for software-managed TLBs.pdf}
+}
 
-@inproceedings{BuchananRSS08,
-	Author = {Erik Buchanan and Ryan Roemer and Hovav Shacham and Stefan Savage},
-	Bibsource = {dblp computer science bibliography, https://dblp.org},
-	Biburl = {https://dblp.org/rec/bib/conf/ccs/BuchananRSS08},
-	Booktitle = {Proceedings of the 2008 {ACM} Conference on Computer and Communications Security, {CCS} 2008, Alexandria, Virginia, USA, October 27-31, 2008},
-	Crossref = {DBLP:conf/ccs/2008},
-	Doi = {10.1145/1455770.1455776},
-	Pages = {27--38},
-	Timestamp = {Wed, 14 Nov 2018 10:54:58 +0100},
-	Title = {When good instructions go bad: generalizing return-oriented programming to {RISC}},
-	Url = {https://doi.org/10.1145/1455770.1455776},
-	Year = {2008},
-	Bdsk-Url-1 = {https://doi.org/10.1145/1455770.1455776}}
+@article{naughtonUsingSharedVirtual,
+  title    = {Using {{Shared Virtual Memory}} for {{Parallel Join Processing}}},
+  author   = {Naughton, F},
+  abstract = {In this paper, we show that shared virtual memory, in a shared-nothing multiprocessor, facilitates the design and implementation of parallel join processing algorithms that perform significantly better in the presence of skew than previously proposed parallel join processing algorithms. Repropose twovariants ofan algorithm for parallel join processing using shared virtual memory, and perform a detailed simulation to investigate their performance. The algorithmic unique in that it employs both the shared virtual memory paradigm and the message-passing paradigm used by current sharednothing parallel database systems. The implementation of the algorithm requires few modifications to existing shared-nothing parallel database systems.},
+  langid   = {english},
+  file     = {/home/max/Zotero/storage/PTZ4KF4R/Naughton - Using Shared Virtual Memory for Parallel Join Proc.pdf}
+}
 
-@proceedings{DBLP:conf/ccs/2008,
-	Bibsource = {dblp computer science bibliography, https://dblp.org},
-	Biburl = {https://dblp.org/rec/bib/conf/ccs/2008},
-	Editor = {Peng Ning and Paul F. Syverson and Somesh Jha},
-	Isbn = {978-1-59593-810-7},
-	Publisher = {{ACM}},
-	Timestamp = {Tue, 11 Nov 2008 10:39:24 +0100},
-	Title = {Proceedings of the 2008 {ACM} Conference on Computer and Communications Security, {CCS} 2008, Alexandria, Virginia, USA, October 27-31, 2008},
-	Year = {2008}}
+@article{nivatZbigniewCzechGeorge,
+  title  = {Zbigniew {{J}}. {{Czech}} a,*, {{George Havasb}}, {{Bohdan S}}. {{MajewskiC}}},
+  author = {Nivat, M},
+  langid = {english},
+  file   = {/home/max/Zotero/storage/QZGP7R8E/Nivat - Zbigniew J. Czech a,, George Havasb, Bohdan S. Ma.pdf}
+}
 
-@inproceedings{DietrichKBF18,
-	Author = {Constanze Dietrich and Katharina Krombholz and Kevin Borgolte and Tobias Fiebig},
-	Crossref = {DBLP:conf/ccs/2018},
-	Date-Modified = {2020-03-06 11:02:53 +0100},
-	Pages = {1272--1289},
-	Title = {Investigating System Operators' Perspective on Security Misconfigurations},
-	Year = {2018},
-	Bdsk-Url-1 = {https://doi.org/10.1145/3243734.3243794}}
+@online{osgxAnswerDumpContents2011,
+  title        = {Answer to "{{Dump}} the Contents of {{TLB}} Buffer of X86 {{CPU}}"},
+  author       = {{osgx}},
+  date         = {2011-08-28},
+  url          = {https://stackoverflow.com/a/7218208},
+  urldate      = {2024-07-16},
+  organization = {Stack Overflow},
+  file         = {/home/max/Zotero/storage/JAJ6FVLX/dump-the-contents-of-tlb-buffer-of-x86-cpu.html}
+}
 
-@proceedings{DBLP:conf/ccs/2018,
-	Date-Modified = {2020-03-06 11:02:45 +0100},
-	Publisher = {{ACM}},
-	Title = {Conference on Computer and Communications Security (CCS)},
-	Year = {2018},
-	Bdsk-Url-1 = {http://dl.acm.org/citation.cfm?id=3243734}}
+@online{osgxDumpContentsTLB2011,
+  type         = {Forum post},
+  title        = {Dump the Contents of {{TLB}} Buffer of X86 {{CPU}}},
+  author       = {{osgx}},
+  date         = {2011-07-23},
+  url          = {https://stackoverflow.com/q/6803762},
+  urldate      = {2024-07-16},
+  organization = {Stack Overflow},
+  file         = {/home/max/Zotero/storage/KXV4TJFI/dump-the-contents-of-tlb-buffer-of-x86-cpu.html}
+}
+
+@article{paghCuckooHashing2004,
+  title        = {Cuckoo Hashing},
+  author       = {Pagh, Rasmus and Rodler, Flemming Friche},
+  date         = {2004-05},
+  journaltitle = {Journal of Algorithms},
+  shortjournal = {Journal of Algorithms},
+  volume       = {51},
+  number       = {2},
+  pages        = {122--144},
+  issn         = {01966774},
+  doi          = {10.1016/j.jalgor.2003.12.002},
+  url          = {https://linkinghub.elsevier.com/retrieve/pii/S0196677403001925},
+  urldate      = {2024-04-29},
+  abstract     = {We present a simple dictionary with worst case constant lookup time, equaling the theoretical performance of the classic dynamic perfect hashing scheme of Dietzfelbinger et al. [SIAM J. Comput. 23 (4) (1994) 738–761]. The space usage is similar to that of binary search trees. Besides being conceptually much simpler than previous dynamic dictionaries with worst case constant lookup time, our data structure is interesting in that it does not use perfect hashing, but rather a variant of open addressing where keys can be moved back in their probe sequences. An implementation inspired by our algorithm, but using weaker hash functions, is found to be quite practical. It is competitive with the best known dictionaries having an average case (but no nontrivial worst case) guarantee on lookup time.},
+  langid       = {english},
+  file         = {/home/max/Zotero/storage/DVK2LE7E/Pagh and Rodler - 2004 - Cuckoo hashing.pdf}
+}
+
+@online{ProspectingHashFunctions,
+  title    = {Prospecting for {{Hash Functions}}},
+  url      = {https://nullprogram.com/blog/2018/07/31/},
+  urldate  = {2024-05-08},
+  keywords = {todo},
+  file     = {/home/max/Zotero/storage/8AA5MXDG/31.html}
+}
+
+@online{QEMUMonitorQEMU,
+  title   = {{{QEMU Monitor}} — {{QEMU}} Documentation},
+  url     = {https://qemu-project.gitlab.io/qemu/system/monitor.html},
+  urldate = {2024-07-16},
+  file    = {/home/max/Zotero/storage/5QJKFLNR/monitor.html}
+}
+
+@online{QEMUMonitorWikibooks,
+  title   = {{{QEMU}}/{{Monitor}} - {{Wikibooks}}, Open Books for an Open World},
+  url     = {https://en.wikibooks.org/wiki/QEMU/Monitor},
+  urldate = {2024-07-16},
+  langid  = {english},
+  file    = {/home/max/Zotero/storage/JP8UANBZ/Monitor.html}
+}
+
+@online{RISCVActuallyCalls,
+  title   = {{{RISC-V}} Actually Calls out the Posibility of a Software Filled {{TLB}} in It's Spec. ... | {{Hacker News}}},
+  url     = {https://news.ycombinator.com/item?id=30475735},
+  urldate = {2024-07-04},
+  file    = {/home/max/Zotero/storage/2BSVT8US/item.html}
+}
+
+@article{RISCVInstructionSet,
+  title  = {The {{RISC-V Instruction Set Manual}}: {{Volume II}}: {{Privileged Architecture}}},
+  langid = {english},
+  file   = {/home/max/Zotero/storage/KQXGSPC5/The RISC-V Instruction Set Manual Volume II Priv.pdf}
+}
+
+@article{RISCVInstructionSeta,
+  title  = {The {{RISC-V Instruction Set Manual Volume I}}: {{Unprivileged Architecture}}},
+  langid = {english},
+  file   = {/home/max/Zotero/storage/7I78NIPJ/The RISC-V Instruction Set Manual Volume I Unpriv.pdf}
+}
+
+@inproceedings{sang-kwonleeAdaptivePrefetchingTechnique2001,
+  title      = {Adaptive Prefetching Technique for Shared Virtual Memory},
+  booktitle  = {Proceedings {{First IEEE}}/{{ACM International Symposium}} on {{Cluster Computing}} and the {{Grid}}},
+  author     = {{Sang-Kwon Lee} and {Hee-Chul Yun} and {Joonwon Lee} and {Seungyoul Maeng}},
+  date       = {2001},
+  pages      = {521--526},
+  publisher  = {IEEE Comput. Soc},
+  location   = {Brisbane, Qld., Australia},
+  doi        = {10.1109/CCGRID.2001.923237},
+  url        = {http://ieeexplore.ieee.org/document/923237/},
+  urldate    = {2024-07-01},
+  abstract   = {Though shared virtual memory (SVM) systems promise low cost solutions for high performance computing, they suffer from long memory latencies. These latencies are usually caused by repetitive invalidations on shared data. Since shared data are accessed through synchronizations and the patterns by which threads synchronizes are repetitive, a prefetching scheme based on such repetitiveness would reduce memory latencies. Based on this observation, we propose a prefetching technique which predicts future access behavior by analyzing access history per synchronization variable. Our technique was evaluated on an 8-node SVM system using the SPLASH-2 benchmark. The results show that our technique could achieve 34\% – 45\% reduction in memory access latencies.},
+  eventtitle = {First {{IEEE}}/{{ACM International Symposium}} on {{Cluster Computing}} and the {{Grid}}},
+  isbn       = {978-0-7695-1010-1},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/RPZ3BBQK/Sang-Kwon Lee et al. - 2001 - Adaptive prefetching technique for shared virtual .pdf}
+}
+
+@article{SiFiveInterruptCookbook,
+  title  = {{{SiFive Interrupt Cookbook}}},
+  langid = {english},
+  file   = {/home/max/Zotero/storage/B63IWLU8/SiFive Interrupt Cookbook.pdf}
+}
+
+@inproceedings{skarlatosElasticCuckooPage2020,
+  title      = {Elastic {{Cuckoo Page Tables}}: {{Rethinking Virtual Memory Translation}} for {{Parallelism}}},
+  shorttitle = {Elastic {{Cuckoo Page Tables}}},
+  booktitle  = {Proceedings of the {{Twenty-Fifth International Conference}} on {{Architectural Support}} for {{Programming Languages}} and {{Operating Systems}}},
+  author     = {Skarlatos, Dimitrios and Kokolis, Apostolos and Xu, Tianyin and Torrellas, Josep},
+  date       = {2020-03-09},
+  pages      = {1093--1108},
+  publisher  = {ACM},
+  location   = {Lausanne Switzerland},
+  doi        = {10.1145/3373376.3378493},
+  url        = {https://dl.acm.org/doi/10.1145/3373376.3378493},
+  urldate    = {2024-04-06},
+  abstract   = {The unprecedented growth in the memory needs of emerging memory-intensive workloads has made virtual memory translation a major performance bottleneck. To address this problem, this paper introduces Elastic Cuckoo Page Tables, a novel page table design that transforms the sequential pointer-chasing operation used by conventional multi-level radix page tables into fully-parallel look-ups. The resulting design harvests, for the first time, the benefits of memorylevel parallelism for address translation. Elastic cuckoo page tables use Elastic Cuckoo Hashing, a novel extension of cuckoo hashing that supports efficient page table resizing. Elastic cuckoo page tables efficiently resolve hash collisions, provide process-private page tables, support multiple page sizes and page sharing among processes, and dynamically adapt page table sizes to meet application requirements.},
+  eventtitle = {{{ASPLOS}} '20: {{Architectural Support}} for {{Programming Languages}} and {{Operating Systems}}},
+  isbn       = {978-1-4503-7102-5},
+  langid     = {english},
+  file       = {/home/max/Zotero/storage/36GE97H5/Skarlatos et al. - 2020 - Elastic Cuckoo Page Tables Rethinking Virtual Mem.pdf}
+}
+
+@online{smesoAnswerWhatDifference2018,
+  title        = {Answer to "{{What}}'s the Difference between {{Virtually Indexed Physically}} Tagged and {{Virtually Indexed}} and {{Virtually Tagged Paging}}?"},
+  shorttitle   = {Answer to "{{What}}'s the Difference between {{Virtually Indexed Physically}} Tagged and {{Virtually Indexed}} and {{Virtually Tagged Paging}}?},
+  author       = {{smeso}},
+  date         = {2018-07-07},
+  url          = {https://stackoverflow.com/a/51227226},
+  urldate      = {2024-08-05},
+  organization = {Stack Overflow},
+  file         = {/home/max/Zotero/storage/GDEPWHQK/whats-the-difference-between-virtually-indexed-physically-tagged-and-virtually.html}
+}
+
+@book{tanenbaumModernOperatingSystems2015,
+  title     = {Modern Operating Systems},
+  author    = {Tanenbaum, Andrew S. and Bos, Herbert},
+  date      = {2015},
+  edition   = {4. ed},
+  publisher = {Prentice Hall},
+  location  = {Boston},
+  isbn      = {978-0-13-359162-0 978-1-292-06142-9},
+  langid    = {english},
+  pagetotal = {1101},
+  file      = {/home/max/Zotero/storage/N99882GG/Tanenbaum and Bos - 2015 - Modern operating systems.pdf}
+}
+
+@online{V3ImplementingVictim,
+  title   = {[V3] Implementing Victim {{TLB}} for {{QEMU}} System Emulated {{TLB}} - {{Patchwork}}},
+  url     = {https://patchwork.ozlabs.org/project/qemu-devel/patch/1390930309-21210-1-git-send-email-trent.tong@gmail.com/#701962},
+  urldate = {2024-07-10},
+  file    = {/home/max/Zotero/storage/F98NGJEI/1390930309-21210-1-git-send-email-trent.tong@gmail.com.html}
+}
+
+@article{weissSpectralHashing,
+  title    = {Spectral {{Hashing}}},
+  author   = {Weiss, Yair and Torralba, Antonio and Fergus, Rob},
+  abstract = {Semantic hashing[1] seeks compact binary codes of data-points so that the Hamming distance between codewords correlates with semantic similarity. In this paper, we show that the problem of finding a best code for a given dataset is closely related to the problem of graph partitioning and can be shown to be NP hard. By relaxing the original problem, we obtain a spectral method whose solutions are simply a subset of thresholded eigenvectors of the graph Laplacian. By utilizing recent results on convergence of graph Laplacian eigenvectors to the Laplace-Beltrami eigenfunctions of manifolds, we show how to efficiently calculate the code of a novel datapoint. Taken together, both learning the code and applying it to a novel point are extremely simple. Our experiments show that our codes outperform the state-of-the art.},
+  langid   = {english},
+  file     = {/home/max/Zotero/storage/W94SK9FY/Weiss et al. - Spectral Hashing.pdf}
+}
+
+@online{zagieboyloCostSoftwareBasedMemory2020,
+  title       = {The {{Cost}} of {{Software-Based Memory Management Without Virtual Memory}}},
+  author      = {Zagieboylo, Drew and Suh, G. Edward and Myers, Andrew C.},
+  date        = {2020-09-14},
+  eprint      = {2009.06789},
+  eprinttype  = {arXiv},
+  eprintclass = {cs},
+  url         = {http://arxiv.org/abs/2009.06789},
+  urldate     = {2024-07-25},
+  abstract    = {Virtual memory has been a standard hardware feature for more than three decades. At the price of increased hardware complexity, it has simplified software and promised strong isolation among colocated processes. In modern computing systems, however, the costs of virtual memory have increased significantly. With large memory workloads, virtualized environments, data center computing, and chips with multiple DMA devices, virtual memory can degrade performance and increase power usage. We therefore explore the implications of building applications and operating systems without relying on hardware support for address translation. Primarily, we investigate the implications of removing the abstraction of large contiguous memory segments. Our experiments show that the overhead to remove this reliance is surprisingly small for real programs. We expect this small overhead to be worth the benefit of reducing the complexity and energy usage of address translation. In fact, in some cases, performance can even improve when address translation is avoided.},
+  langid      = {english},
+  pubstate    = {prepublished},
+  keywords    = {Computer Science - Hardware Architecture,Computer Science - Programming Languages},
+  file        = {/home/max/Zotero/storage/C3MQQE3J/Zagieboylo et al. - 2020 - The Cost of Software-Based Memory Management Witho.pdf}
+}
+

@@ -77,8 +77,21 @@
     \caption[RISC-V Sv39 Page Table Entry]{RISC-V Sv39 Page Table Entry}
     \label{fig:fundamentals:sv39pte}
 \end{figure*}
-\
-\begin{figure*}[ht]
+
+
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
+        \bitheader[endianness=big]{63,60,59,44,43,0} \\
+        \bitbox{4}{Mode} &
+        \bitbox{16}{ASID} &
+        \bitbox{44}{PPN} \\
+    \end{bytefield}
+    \caption[RISC-V Sv39 \texttt{satp} CSR]{RISC-V Sv39 \texttt{satp} CSR}
+    \label{fig:fundamentals:sv39satp}
+\end{figure*}
+
+\begin{figure*}[ht!]
     \centering
     \includegraphics[]{figures/simple_mapping.pdf}
 
