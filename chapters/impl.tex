@@ -31,7 +31,7 @@ Tiny Code Generator (TCG) backend with the target-specific functions and structu
 \todo{explain PTE}
 \subsection{Adding the TLB MISS exception}
 The required behavior for the TLB Miss exception is similar to the behavior of a page fault exception.
-The RISC-V Instruction Set Manual: Volume II \cite{RISCVInstructionSetII} describes when page faults
+The RISC-V Instruction Set Manual: Volume II \cite{RISCVInstructionSet} describes when page faults
 are triggered in the virtual address translation process. Page faults are thrown when:
 \begin{itemize}
     \item the valid bit of a PTE is 0; the read bit is 0 and the write bit is 1; any of the reserved
@@ -103,7 +103,7 @@ this implementation only looked at the RISC-V target.
 \begin{itemize}
     \item \texttt{target/riscv/cpu\_bits.h} contains all CPU-definitions specific to the RISC-V target.
           There is also a enum called \texttt{RISCVException} which contains the number-codes for all RISC-V exceptions.
-          In choosing a appropiate number for a new exception, one should consult the Privileged Architecture Specification \cite{RISCVInstructionSetII}.
+          In choosing a appropiate number for a new exception, one should consult the Privileged Architecture Specification \cite{RISCVInstructionSet}.
           There are specific exception code ranges that are designated for custom use. E.g. the codes 24--32 and 48--63.
     \item \texttt{target/riscv/cpu\_helper.c\:riscv\_cpu\_do\_interrupt\(\)} is the target-specific function
           for triggering interrupts. Here it suffices to add the new exception enum item to the switch case, when

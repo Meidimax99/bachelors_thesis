@@ -23,13 +23,18 @@ to write entries to the cache. However, their design uses software page-table
 walks to find translations on cache-miss, while the approach presented in this
 paper presents a software-based TLB fill mechanism with segmented
 memory allocation.\\\\
+% TODO Further elaboration on the Background chapter of jacobSoftwaremanagedAddressTranslation1997
 
 
 \cite{barrTranslationCachingSkip}
 
+% Every walk’s a hit: making page walks single-access cache hits
 
+% Liedtke GPTs + Heise Implementation -> Software Based approach, but still inherently uses a page table
 %TODO split in different areas
 % Software Managed Virtual Memory
 % Hardware optimizations -> Translation caches
 % software optimizations
 % Alternative page table designs
+
+% Related work exploring Other caches, like Page Tables in L2 -> Out of scope for this work

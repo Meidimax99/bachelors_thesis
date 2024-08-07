@@ -19,46 +19,49 @@
 
 \refsection{0}
   \datalist[entry]{nyt/global//global/global/global}
-    \entry{DietrichKBF18}{inproceedings}{}{}
-      \name{author}{4}{}{%
-        {{hash=2142fb95fd3244b3a062a06cd63def07}{%
-           family={Dietrich},
-           familyi={D\bibinitperiod},
-           given={Constanze},
-           giveni={C\bibinitperiod}}}%
-        {{hash=7013c00954646b04183fa1fedcc596be}{%
-           family={Krombholz},
-           familyi={K\bibinitperiod},
-           given={Katharina},
-           giveni={K\bibinitperiod}}}%
-        {{hash=bbca5b2b13ba79651548e9aa6f7496ae}{%
-           family={Borgolte},
+    \entry{barrTranslationCachingSkip}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=63b76c2eb59319582fded5eb9cf58d9b}{%
+           family={Barr},
            familyi={B\bibinitperiod},
-           given={Kevin},
-           giveni={K\bibinitperiod}}}%
-        {{hash=704095eebb063e660c248da087244bfb}{%
-           family={Fiebig},
-           familyi={F\bibinitperiod},
-           given={Tobias},
-           giveni={T\bibinitperiod}}}%
+           given={Thomas\bibnamedelima W},
+           giveni={T\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=e5c80af1f4ba850e3fe9d7de4baebbfd}{%
+           family={Cox},
+           familyi={C\bibinitperiod},
+           given={Alan\bibnamedelima L},
+           giveni={A\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=3c164b1c43ea7ad2d73af93f0d93c003}{%
+           family={Rixner},
+           familyi={R\bibinitperiod},
+           given={Scott},
+           giveni={S\bibinitperiod}}}%
       }
-      \strng{namehash}{6ced0c03c3d81d43a38084c51f110dd5}
-      \strng{fullhash}{79580a0d65a41e7b5dc8714f6c85c70a}
-      \strng{fullhashraw}{79580a0d65a41e7b5dc8714f6c85c70a}
-      \strng{bibnamehash}{6ced0c03c3d81d43a38084c51f110dd5}
-      \strng{authorbibnamehash}{6ced0c03c3d81d43a38084c51f110dd5}
-      \strng{authornamehash}{6ced0c03c3d81d43a38084c51f110dd5}
-      \strng{authorfullhash}{79580a0d65a41e7b5dc8714f6c85c70a}
-      \strng{authorfullhashraw}{79580a0d65a41e7b5dc8714f6c85c70a}
-      \field{labelalpha}{Die+18}
-      \field{sortinit}{D}
-      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \strng{namehash}{76bb08bbda64814d548bb57cabefd18a}
+      \strng{fullhash}{66a43239dc818768189d08be30772117}
+      \strng{fullhashraw}{66a43239dc818768189d08be30772117}
+      \strng{bibnamehash}{66a43239dc818768189d08be30772117}
+      \strng{authorbibnamehash}{66a43239dc818768189d08be30772117}
+      \strng{authornamehash}{76bb08bbda64814d548bb57cabefd18a}
+      \strng{authorfullhash}{66a43239dc818768189d08be30772117}
+      \strng{authorfullhashraw}{66a43239dc818768189d08be30772117}
+      \field{labelalpha}{BCR}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{title}{Investigating System Operators' Perspective on Security Misconfigurations}
-      \field{year}{2018}
-      \field{pages}{1272\bibrangedash 1289}
-      \range{pages}{18}
+      \field{booktitle}{Proceedings of the 37th {{Annual International Symposium}} on {{Computer Architecture}}}
+      \field{isbn}{9781450300537}
+      \field{langid}{english}
+      \field{title}{Translation {{Caching}}: {{Skip}}, {{Don}}’t {{Walk}} (the {{Page Table}})}
+      \field{pages}{48\bibrangedash 59}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1145/1815961.1815970
+      \endverb
+      \verb{file}
+      \verb /home/max/Zotero/storage/6HYFXCGL/Barr et al. - Translation caching.pdf
+      \endverb
     \endentry
     \entry{jacobSoftwaremanagedAddressTranslation1997}{inproceedings}{}{}
       \name{author}{2}{}{%
@@ -99,50 +102,106 @@
       \range{pages}{12}
       \verb{doi}
       \verb 10.1109/HPCA.1997.569652
+      \endverb
+    \endentry
+    \entry{RISCVInstructionSetII}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=1cdbf6b1b2783ec44ba9770f07e6528f}{%
+           family={Waterman},
+           familyi={W\bibinitperiod},
+           given={Andrew},
+           giveni={A\bibinitperiod}}}%
+        {{hash=1a6464ffca8dce3c13915a2dd7bc4841}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Yunsup},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=9a647753aebfc39fa7e1488526e0c068}{%
+           family={Avizienis},
+           familyi={A\bibinitperiod},
+           given={Rimas},
+           giveni={R\bibinitperiod}}}%
+        {{hash=95486d328725c1c6a933929c9442fe2a}{%
+           family={Patterson},
+           familyi={P\bibinitperiod},
+           given={David\bibnamedelima A},
+           giveni={D\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=ab8b3b256286cedf287deca6326c7db0}{%
+           family={Asanovic},
+           familyi={A\bibinitperiod},
+           given={Krste},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{bbdb536115aed621409af18ff2affe53}
+      \strng{fullhash}{54d260460b69dcacfae2f6b2c629e77b}
+      \strng{fullhashraw}{54d260460b69dcacfae2f6b2c629e77b}
+      \strng{bibnamehash}{bbdb536115aed621409af18ff2affe53}
+      \strng{authorbibnamehash}{bbdb536115aed621409af18ff2affe53}
+      \strng{authornamehash}{bbdb536115aed621409af18ff2affe53}
+      \strng{authorfullhash}{54d260460b69dcacfae2f6b2c629e77b}
+      \strng{authorfullhashraw}{54d260460b69dcacfae2f6b2c629e77b}
+      \field{labelalpha}{Wat+24}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{The {{RISC-V Instruction Set Manual}}: {{Volume II}}: {{Privileged Architecture}} version 20240411}
+      \field{year}{2024}
+      \verb{file}
+      \verb /home/max/Zotero/storage/KQXGSPC5/The RISC-V Instruction Set Manual Volume II Priv.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://riscv.org/technical/specifications/
+      \endverb
+      \verb{url}
+      \verb https://riscv.org/technical/specifications/
       \endverb
     \endentry
   \enddatalist
   \datalist[entry]{anyt/global//global/global/global}
-    \entry{DietrichKBF18}{inproceedings}{}{}
-      \name{author}{4}{}{%
-        {{hash=2142fb95fd3244b3a062a06cd63def07}{%
-           family={Dietrich},
-           familyi={D\bibinitperiod},
-           given={Constanze},
-           giveni={C\bibinitperiod}}}%
-        {{hash=7013c00954646b04183fa1fedcc596be}{%
-           family={Krombholz},
-           familyi={K\bibinitperiod},
-           given={Katharina},
-           giveni={K\bibinitperiod}}}%
-        {{hash=bbca5b2b13ba79651548e9aa6f7496ae}{%
-           family={Borgolte},
+    \entry{barrTranslationCachingSkip}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=63b76c2eb59319582fded5eb9cf58d9b}{%
+           family={Barr},
            familyi={B\bibinitperiod},
-           given={Kevin},
-           giveni={K\bibinitperiod}}}%
-        {{hash=704095eebb063e660c248da087244bfb}{%
-           family={Fiebig},
-           familyi={F\bibinitperiod},
-           given={Tobias},
-           giveni={T\bibinitperiod}}}%
+           given={Thomas\bibnamedelima W},
+           giveni={T\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=e5c80af1f4ba850e3fe9d7de4baebbfd}{%
+           family={Cox},
+           familyi={C\bibinitperiod},
+           given={Alan\bibnamedelima L},
+           giveni={A\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=3c164b1c43ea7ad2d73af93f0d93c003}{%
+           family={Rixner},
+           familyi={R\bibinitperiod},
+           given={Scott},
+           giveni={S\bibinitperiod}}}%
       }
-      \strng{namehash}{6ced0c03c3d81d43a38084c51f110dd5}
-      \strng{fullhash}{79580a0d65a41e7b5dc8714f6c85c70a}
-      \strng{fullhashraw}{79580a0d65a41e7b5dc8714f6c85c70a}
-      \strng{bibnamehash}{6ced0c03c3d81d43a38084c51f110dd5}
-      \strng{authorbibnamehash}{6ced0c03c3d81d43a38084c51f110dd5}
-      \strng{authornamehash}{6ced0c03c3d81d43a38084c51f110dd5}
-      \strng{authorfullhash}{79580a0d65a41e7b5dc8714f6c85c70a}
-      \strng{authorfullhashraw}{79580a0d65a41e7b5dc8714f6c85c70a}
-      \field{labelalpha}{Die+18}
-      \field{sortinit}{D}
-      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \strng{namehash}{76bb08bbda64814d548bb57cabefd18a}
+      \strng{fullhash}{66a43239dc818768189d08be30772117}
+      \strng{fullhashraw}{66a43239dc818768189d08be30772117}
+      \strng{bibnamehash}{66a43239dc818768189d08be30772117}
+      \strng{authorbibnamehash}{66a43239dc818768189d08be30772117}
+      \strng{authornamehash}{76bb08bbda64814d548bb57cabefd18a}
+      \strng{authorfullhash}{66a43239dc818768189d08be30772117}
+      \strng{authorfullhashraw}{66a43239dc818768189d08be30772117}
+      \field{labelalpha}{BCR}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{title}{Investigating System Operators' Perspective on Security Misconfigurations}
-      \field{year}{2018}
-      \field{pages}{1272\bibrangedash 1289}
-      \range{pages}{18}
+      \field{booktitle}{Proceedings of the 37th {{Annual International Symposium}} on {{Computer Architecture}}}
+      \field{isbn}{9781450300537}
+      \field{langid}{english}
+      \field{title}{Translation {{Caching}}: {{Skip}}, {{Don}}’t {{Walk}} (the {{Page Table}})}
+      \field{pages}{48\bibrangedash 59}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1145/1815961.1815970
+      \endverb
+      \verb{file}
+      \verb /home/max/Zotero/storage/6HYFXCGL/Barr et al. - Translation caching.pdf
+      \endverb
     \endentry
     \entry{jacobSoftwaremanagedAddressTranslation1997}{inproceedings}{}{}
       \name{author}{2}{}{%
@@ -185,8 +244,60 @@
       \verb 10.1109/HPCA.1997.569652
       \endverb
     \endentry
+    \entry{RISCVInstructionSetII}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=1cdbf6b1b2783ec44ba9770f07e6528f}{%
+           family={Waterman},
+           familyi={W\bibinitperiod},
+           given={Andrew},
+           giveni={A\bibinitperiod}}}%
+        {{hash=1a6464ffca8dce3c13915a2dd7bc4841}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Yunsup},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=9a647753aebfc39fa7e1488526e0c068}{%
+           family={Avizienis},
+           familyi={A\bibinitperiod},
+           given={Rimas},
+           giveni={R\bibinitperiod}}}%
+        {{hash=95486d328725c1c6a933929c9442fe2a}{%
+           family={Patterson},
+           familyi={P\bibinitperiod},
+           given={David\bibnamedelima A},
+           giveni={D\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=ab8b3b256286cedf287deca6326c7db0}{%
+           family={Asanovic},
+           familyi={A\bibinitperiod},
+           given={Krste},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{bbdb536115aed621409af18ff2affe53}
+      \strng{fullhash}{54d260460b69dcacfae2f6b2c629e77b}
+      \strng{fullhashraw}{54d260460b69dcacfae2f6b2c629e77b}
+      \strng{bibnamehash}{bbdb536115aed621409af18ff2affe53}
+      \strng{authorbibnamehash}{bbdb536115aed621409af18ff2affe53}
+      \strng{authornamehash}{bbdb536115aed621409af18ff2affe53}
+      \strng{authorfullhash}{54d260460b69dcacfae2f6b2c629e77b}
+      \strng{authorfullhashraw}{54d260460b69dcacfae2f6b2c629e77b}
+      \field{labelalpha}{Wat+24}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{The {{RISC-V Instruction Set Manual}}: {{Volume II}}: {{Privileged Architecture}} version 20240411}
+      \field{year}{2024}
+      \verb{file}
+      \verb /home/max/Zotero/storage/KQXGSPC5/The RISC-V Instruction Set Manual Volume II Priv.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://riscv.org/technical/specifications/
+      \endverb
+      \verb{url}
+      \verb https://riscv.org/technical/specifications/
+      \endverb
+    \endentry
   \enddatalist
-  \missing{BuchananRSS08}
 \endrefsection
 \endinput
 

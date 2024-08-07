@@ -6,14 +6,22 @@
 
 \label{Intro}
 
+\todo{CITE Architectural and operating system support for virtual memory}
+Virtual memory is used by computer systems at all scales. Everything from systems running in huge data
+centers to embedded computers rely on virtual memory.
+
+
+% Relevance: Most computers today use a page-based virtual memory approach
+% Very short summarization of the way page-based virtual memory works, ending with the amount of memory references
+% barrTranslationCachingSkip -> memory references keep on increasing as memory requirements increase
+
+% Soruce: Virtual memory: issues of implementation
+
 \begin{itemize}
     \item Software Managed TLB
     \item Not based on page tables but a simple function to reduce memory accesses to a minimum
 \end{itemize}
 
-% Relevance: Most computers today use a page-based virtual memory approach
-% Very short summarization of the way page-based virtual memory works, ending with the amount of memory references
-% barrTranslationCachingSkip -> memory references keep on increasing as memory requirements increase
 
 % TODO How do inverted paging schemes compare?
 % -> virtual memory: Issues of impl
@@ -25,6 +33,9 @@
 %       by a simple software-defined function that refills the tlb?
 
 % Relevanz: Virtual memory in embedded devices -> segmented design may suffice
+% -> Reference?
+
+
 % TODO Forschungsfrage
 % TODO Inhaltliche Abgrenzung und Ausschließen von Teilproblemen
 % TODO Aufbau der Arbeit
@@ -34,3 +45,6 @@
 % \subsection{Atlas}
 % \subsection{Overlaying}
 
+%Quick Facts
+% Intel 5 Level Paging intelTLBsPagingStructureCaches2008
+% Sv57 RISC-V Paging RISCVInstructionSet

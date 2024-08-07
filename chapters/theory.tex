@@ -2,20 +2,54 @@
 
 \label{chap:theory}
 
+% Previous approaches aimed to reduce the memory footprint or optimize cache accesses, or reduce page table
+% walks to a minimum, this approach aims to eliminate paging structures completely
+While previous work tried to either reduce the number of memory accesses \todo{CITE Lidtke ,Skip no walk, single hit uppsala paper},
+decrease the occurrence of a TLB miss and decrease the latency of handling a TLB Miss, this paper
+presents an approach to create a virtual memory scheme not requiring paging structures at all.\\
 
+Not unlike the software-managed address translation design presented by Jacob and Mudge \cite{jacobSoftwaremanagedAddressTranslation1997},
+the \textit{softtlb} approach utilizes a exception triggered by a cache miss to invoke a software-defined
+exception handler.\\
+Unlike the \textit{softvm} design, this approach will be based on handling an exception that is triggered
+when die TLB misses \todo{TLB and its role explained?}.
+The handler code for this \textit{TLB\_Miss} exception will from now on be called \textit{TLB Manager}.
+
+The \textit{TLB Manager}s job is then to resolve the exception by filling the TLB for the failing address
+that triggered the exception.
+
+...
+
+\section{Choosing a platform}
+Choosing a platform for designing and implementing the \textit{softtlb} approach is a non-linear tradeoff between
+ease of use and suitability.\\
+A obvious choice for a workbench to design and implement \textit{softtlb} for would be MIPS/L4 \cite{heiserAnatomyHighPerformanceMicrokernel}
+
+\section{Triggering a \textit{TLB\_Miss} exception}
 % \todo{Maybe motivation for VM on specific platforms like embedded platforms}
 % \section{Problem Statement}
 % %Reiteration of Problem Statement in introduction
 % \subsection{Der Trade-off von Hardware supported Virual Memory} % This is motivation
 % \section{Idea}
+
+
 % \section{L4/MIPS als Vorlage für Software TLB Management in RISCV (Qemu)}
 % \subsection{TLB Miss Exception}
 % \subsection{TLB Loading instructions}
 % \paragraph{tlbwi}
 % \paragraph{tlbwr}
+% Comparison to MIPS tlb software
+
+
+
 % \section{Motivation}
 % \subsection{Trade-offs of traditional Virtual Memory Approaches}
 
+% Problems
+% Context switch to handler -> Pipeline flush, reorder buffer flushed
+%   Possible solution in In-Line Interrupt Handling for Software-Managed TLBs
 
 
+% Segmented design: Problems and comparison to contemporary virtual memory systems
+% -> REF Liedtke: On the realization of huge sparsely-occupied and fine-grained address spaces
 
