@@ -843,3 +843,54 @@
   urldate = {2024-05-11},
   file = {/home/max/Zotero/storage/FKHZMEFK/COMAN-THESIS-2021.pdf}
 }
+
+@inproceedings{yanivHashDonCache2016,
+  title = {Hash, {{Don}}'t {{Cache}} (the {{Page Table}})},
+  booktitle = {Proceedings of the 2016 {{ACM SIGMETRICS International Conference}} on {{Measurement}} and {{Modeling}} of {{Computer Science}}},
+  author = {Yaniv, Idan and Tsafrir, Dan},
+  date = {2016-06-14},
+  pages = {337--350},
+  publisher = {ACM},
+  location = {Antibes Juan-les-Pins France},
+  doi = {10.1145/2896377.2901456},
+  url = {https://dl.acm.org/doi/10.1145/2896377.2901456},
+  urldate = {2024-08-07},
+  abstract = {Radix page tables as implemented in the x86-64 architecture incur a penalty of four memory references for address translation upon each TLB miss. These 4 references become 24 in virtualized setups, accounting for 5\%–90\% of the runtime and thus motivating chip vendors to incorporate page walk caches (PWCs). Counterintuitively, an ISCA 2010 paper found that radix page tables with PWCs are superior to hashed page tables, yielding up to 5x fewer DRAM accesses per page walk. We challenge this finding and show that it is the result of comparing against a suboptimal hashed implementation—that of the Itanium architecture. We show that, when carefully optimized, hashed page tables in fact outperform existing PWC-aided x86-64 hardware, shortening benchmark runtimes by 1\%–27\% and 6\%–32\% in bare-metal and virtualized setups, without resorting to PWCs. We further show that hashed page tables are inherently more scalable than radix designs and are better suited to accommodate the ever increasing memory size; their downside is that they make it more challenging to support such features as superpages.},
+  eventtitle = {{{SIGMETRICS}} '16: {{SIGMETRICS}}/{{PERFORMANCE Joint International Conference}} on {{Measurement}} and {{Modeling}} of {{Computer Systems}}},
+  isbn = {978-1-4503-4266-7},
+  langid = {english},
+  file = {/home/max/Zotero/storage/7CLBWNCD/Yaniv and Tsafrir - 2016 - Hash, Don't Cache (the Page Table).pdf}
+}
+
+@inproceedings{barrTranslationCachingSkip,
+  title = {Translation {{Caching}}: {{Skip}}, {{Don}}’t {{Walk}} (the {{Page Table}})},
+  booktitle = {Proceedings of the 37th {{Annual International Symposium}} on {{Computer Architecture}}},
+  author = {Barr, Thomas W and Cox, Alan L and Rixner, Scott},
+  pages = {48--59},
+  publisher = {Association for Computing Machinery},
+  location = {Saint-Malo, France},
+  doi = {10.1145/1815961.1815970},
+  abstract = {This paper explores the design space of MMU caches that accelerate virtual-to-physical address translation in processor architectures, such as x86-64, that use a radix tree page table. In particular, these caches accelerate the page table walk that occurs after a miss in the Translation Lookaside Buffer. This paper shows that the most effective MMU caches are translation caches, which store partial translations and allow the page walk hardware to skip one or more levels of the page table.},
+  eventtitle = {International {{Symposium}} on {{Computer Architecture}}},
+  isbn = {978-1-4503-0053-7},
+  langid = {english},
+  file = {/home/max/Zotero/storage/6HYFXCGL/Barr et al. - Translation caching.pdf}
+}
+
+@article{jaleelInlineInterruptHandling2006,
+  title = {In-Line Interrupt Handling and Lock-up Free Translation Lookaside Buffers ({{TLBs}})},
+  author = {Jaleel, A. and Jacob, B.},
+  date = {2006-05},
+  journaltitle = {IEEE Transactions on Computers},
+  shortjournal = {IEEE Trans. Comput.},
+  volume = {55},
+  number = {5},
+  pages = {559--574},
+  issn = {0018-9340},
+  doi = {10.1109/TC.2006.77},
+  url = {http://ieeexplore.ieee.org/document/1613837/},
+  urldate = {2024-08-07},
+  abstract = {The effects of the general-purpose precise interrupt mechanisms in use for the past few decades have received very little attention. When modern out-of-order processors handle interrupts precisely, they typically begin by flushing the pipeline to make the CPU available to execute handler instructions. In doing so, the CPU ends up flushing many instructions that have been brought in to the reorder buffer. In particular, these instructions may have reached a very deep stage in the pipeline—representing significant work that is wasted. In addition, an overhead of several cycles and wastage of energy (per exception detected) can be expected in refetching and reexecuting the instructions flushed. This paper concentrates on improving the performance of precisely handling software managed translation look-aside buffer (TLB) interrupts, one of the most frequently occurring interrupts. The paper presents a novel method of in-lining the interrupt handler within the reorder buffer. Since the first level interrupt-handlers of TLBs are usually small, they could potentially fit in the reorder buffer along with the user-level code already there. In doing so, the instructions that would otherwise be flushed from the pipe need not be refetched and reexecuted. Additionally, it allows for instructions independent of the exceptional instruction to continue to execute in parallel with the handler code. By in-lining the TLB interrupt handler, this provides lock-up free TLBs. This paper proposes the prepend and append schemes of in-lining the interrupt handler into the available reorder buffer space. The two schemes are implemented on a performance model of the Alpha 21264 processor built by Alpha designers at the Palo Alto Design Center (PADC), California. We compare the overhead and performance impact of handling TLB interrupts by the traditional scheme, the append in-lined scheme, and the prepend in-lined scheme. For small, medium, and large memory footprints, the overhead is quantified by comparing the number and pipeline state of instructions flushed, the energy savings, and the performance improvements. We find that lock-up free TLBs reduce the overhead of refetching and reexecuting the instructions flushed by 30-95 percent, reduce the execution time by 5-25 percent, and also reduce the energy wasted by 30-90 percent.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/P5KGUSLX/Jaleel and Jacob - 2006 - In-line interrupt handling and lock-up free translation lookaside buffers (TLBs).pdf}
+}
