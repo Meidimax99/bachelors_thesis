@@ -115,8 +115,17 @@ this implementation only looked at the RISC-V target.
           This enables the kernel to delegate the exception to another priviledge level by setting the appropiate
           bit in the \texttt{medeleg} and \texttt{sedeleg} CSRs.
 \end{itemize}
-\todo{what is a csr?}
+
+
+%Implementation of CSRs
+
+%   Choosing a CSR number -> back reference to theory section on CSRs
+
+
+
 %TODO Elabortation on the TLB Fast Path
+
+
 \subsection{Adding new CSRs for writing TLB entries}
 
 \subsection{Extending the Qemu Monitor}
@@ -137,6 +146,8 @@ against their benefits, since the TLB filling is on the critical path of all
 memory accesses.
 
 % \section{xv6}
+
+% xv6 TLB flushing
 % \subsection*{}
 % \subsection*{}
 

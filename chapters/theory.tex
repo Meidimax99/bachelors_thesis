@@ -1,6 +1,8 @@
 \chapter{Theory}
 
 \label{chap:theory}
+%elaboration on general costs of page table walks -> basically exactly what related
+% work motivated their designs with
 
 % Previous approaches aimed to reduce the memory footprint or optimize cache accesses, or reduce page table
 % walks to a minimum, this approach aims to eliminate paging structures completely
@@ -24,6 +26,8 @@ that triggered the exception.
 Choosing a platform for designing and implementing the \textit{softtlb} approach is a non-linear tradeoff between
 ease of use and suitability.\\
 A obvious choice for a workbench to design and implement \textit{softtlb} for would be MIPS/L4 \cite{heiserAnatomyHighPerformanceMicrokernel}
+% todo why?
+
 
 \section{Triggering a \textit{TLB\_Miss} exception}
 % \todo{Maybe motivation for VM on specific platforms like embedded platforms}
@@ -40,7 +44,87 @@ A obvious choice for a workbench to design and implement \textit{softtlb} for wo
 % \paragraph{tlbwr}
 % Comparison to MIPS tlb software
 
+\section{Writing TLB entries}
+\subsection{RISC-V CSRs}
+RISC-V and its extensions currently provide no support for modifying the TLB in software.
+RISC-V does however provide a lot of extensibility with the \texttt{Control and Status Registers} (CSRs).\\
+CSRs are part of the RISC-V priviledged architecture and are provided by the \texttt{Zicsr} extension\cite{RISCVInstructionSet}.\\
 
+% Section describing RISC-V CSRs
+\todo{table of csr space in appendix?}
+The RISC-V ISA provides a 12-bit encoding space for 4096 CSRs. A CSR address is logically split
+into four parts: The top two bits \texttt{csr[11:10]} specify whether the CSR is read/write or read-only;
+\texttt{csr[9:8]} encode the minimum priviledge level that is allowed to access the CSR; \texttt{csr[7:4]}
+may be partially used to define a specific use for a range of CSRs. E.g. CSRs with an address
+between \texttt{0x7B0} and \texttt{0x7BF} shall be used for Debug-mode-only CSRs. The format
+of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
+
+% RISC-V CSR address bytefield
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth={2em}, bitformatting={\bfseries}, boxformatting={\centering}]{12}
+        \bitheader[endianness=big]{11,10,9,8,7,4,3,0} \\
+        \bitbox{2}{RW/RO} &
+        \bitbox{2}{Priv} &
+        \bitbox{4}{Useage} &
+        \bitbox{4}{Index}
+    \end{bytefield}
+    \caption[RISC-V CSR address format]{RISC-V CSR address format}
+    \label{fig:theory:csr}
+\end{figure*}
+
+Each legal CSR address identifies a CSR. The size of the CSRs identified by the CSR address depends
+on the values of the SXLEN and UXLEN fields in the \textbf{mstatus} register. Currently, the
+specification \cite{RISCVInstructionSet} allows for 32 bit, 64 bit and 128 bit.\\ \todo{disclaimer which we will be using here?}
+% Short elaboration on using the csr to write TLB entries -> in the end its on the hardware implementor
+RISC-V provides dedicated instructions for read/write and bit manipulation with both register values
+and immediates.
+\todo{ hardware overhead for writing TLB with CSRs -> future work, is it worth it??}
+
+\subsection{CSR format}
+% What format, how big, how many csrs?
+Now with CSRs we have a mechanism to add custom behaviour to the ISA. That answers the ''How?''
+of writing TLB entries in software.\\
+The next step is to figure out what data is required to create a TLB entry and in what format
+this data is best communicated via the CSRs to the computer.\\
+
+% Inspiration: MIPS
+\subsection{MIPS as an inspiration for TLB writes}
+MIPS is a good source of inspiration for a possible CSR format design, since it already provides
+instructions to modify the TLB.\\
+The MIPS64 instruction set manual \cite{MIPS_Architecture_MIPS64_InstructionSet_AFP_P_MD00087_06052016}
+shows a number of different instructions concerned with the invalidation, probing, flushing, reading
+and writing (indexed and random).\\
+The most interesting for a first design would be the \texttt{TLBWR} instruction for writing a TLB
+entry at a random index. With a similar instruction in RISC-V, we can already implement a purely
+software-controlled virtual memory system.\\
+The other types of TLB instructions that MIPS provides are not strictly necesarry,
+except for flushing. Without being able to flush existing translations from the TLB,
+user mode processes may try to access physical mappings stemming from other processes.\todo{can this even happen? -> why else would we need to flush the tlb??}
+But the RISC-V priviledged Architecture already provides this functionality
+with the \texttt{sfence.vma} instruction \cite{riscvreader}.
+
+\paragraph{MIPS - TLBWR} The arguments for the instruction need to be written in some
+other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \texttt{PageMask}.
+
+% TODO ORDER!
+%MIPS TLB Structure
+
+
+% Compare my implementation to a mips one -> Heiser TLB Fastpath
+% Fixed TLB format, but flexibilty of CSR format
+
+% Qemu TLB
+
+% Typical TLB entry format
+
+% selective TLB flushing -> RISCV ASIDs (or even no TLB flushing  because VAs contain ASID?)
+
+% How is the RISCV Tlb indexed -> Check Qemu source
+
+% Replacement policy
+
+% Future work -> finer control
 
 % \section{Motivation}
 % \subsection{Trade-offs of traditional Virtual Memory Approaches}
@@ -53,3 +137,10 @@ A obvious choice for a workbench to design and implement \textit{softtlb} for wo
 % Segmented design: Problems and comparison to contemporary virtual memory systems
 % -> REF Liedtke: On the realization of huge sparsely-occupied and fine-grained address spaces
 
+% Riscv can flush entries of a specific ASID only, this means that it keeps that information
+% Somewhere in the TLB structure
+
+
+% xv6 
+
+% Page size (tlb reach?)
