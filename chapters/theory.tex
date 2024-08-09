@@ -1,6 +1,12 @@
 \chapter{Theory}
 
 \label{chap:theory}
+
+\todo{elaboration on xv6 here or in fundamentals (or an extra platform chapter)?? -> because theory
+    may be independent from the platform in big parts, but still needs to be taken into consideration (like with
+    csrs)}
+
+
 %elaboration on general costs of page table walks -> basically exactly what related
 % work motivated their designs with
 
@@ -123,6 +129,25 @@ other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \te
 % How is the RISCV Tlb indexed -> Check Qemu source
 
 % Replacement policy
+%   MIPS -> Indexed writes
+A advantage of software-managed TLBs is, that the operating system can implement custom
+TLB replacement policies, that may even change depending on workload, programs running
+and other circumstances.\\
+The default replacement strategy for the MIPS \texttt{tlbwr} instruction is to simply
+use the value of the \texttt{C0\_RANDOM} register as the index for the next TLB entry
+to be replaced. The name of that register is missleading, because it is not actually a
+random value, but it is rather decremented on each instruction\cite{heiserAnatomyHighPerformanceMicrokernel}.\\
+It is not clear whether this is a sensible replacement strategy,
+but it can be used to ensure that the same TLB slot is not used for every \texttt{tlbwr} if the implementation
+does not provide for any further replacement strategy.\\
+Some TLB entries can be protecte from this ''random'' replacement by setting a value in the \texttt{C0\_WIRED}
+register. The value in this register represents a lower bound, protecting all TLB entries that lie below it.\\
+This is useful to keep some mappings in the TLB that are valid all the time.
+
+% TODO should this be here? We should probably have a discussion about xv6 first
+%Protected TLB entries in xv6 -> Trampoline page
+Having a protected space of TLB entries can especially be useful for global mappings. xv6 employs such a global
+mapping for every process and the kernel with the trampoline page.\todo{trampoline page should be explained in fundamentals/platform}
 
 % Future work -> finer control
 
@@ -144,3 +169,5 @@ other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \te
 % xv6 
 
 % Page size (tlb reach?)
+
+% Qemu -> TLB structure, replacement
