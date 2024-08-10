@@ -1,6 +1,24 @@
 \chapter{Implementation}
 
 \label{chap:impl}
+
+
+
+
+\section{Programming Platform}
+\subsection{Qemu}
+\subsubsection{TLB}
+% What type of cache modeled? - direct mapped, associative?
+
+\todo{description of Qemu TLB structure in fundamentals, theory or implementation?}
+% Does the qemu tlb implementation impact the theory? -> It should not
+%   It only has impact once we have to decide on a specific format for the tlbh and tlbl csrs
+%   But I can put all the theoretical parts into theory, so ASID etc
+%   and the modification of the theory based on concrete hardware can come into the impl chapter
+%       -> mmuidx and stuff
+
+\subsection{Qemu Monitor}
+\subsection{xv6 RISC-V}
 The implementation consists of two fundamental parts:
 The extension of RISC-V ISA emulated by Qemu and the implementation of a
 TLB Miss Handler.

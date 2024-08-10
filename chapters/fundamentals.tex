@@ -1,117 +1,70 @@
 \chapter{Fundamentals} % Main chapter title
-
 \label{chap:fund}
-% \section{Virtual Memory}
-% Grundlagen auffrischen, kurz die Motivation und Grundkonzepte von Virtual Memory erläutern
-% Da eventuell kurz auf Atlas eingehen und wie sehr sich VM bis jetzt entwickelt hat
-% Quellen:
-% - Lehrbücher: VM Definitionen und Übersichtsbeschreibungen
-% - Architectural and operating system support for virtual memory
 
-% VM Properties and benefits:
+% Hier muss alles rein was benötigt wird um die Arbeit zu verstehen.
+%   Man kann ja sicherlich grundlegendes Verständis von Recherstrukturen und Organisation vorraussetzten
+%   Was also sollte definitiv nochmal erklärt werden?
+%
+%   - Virtual Memory -> Und vor allem die Kosten, das ist ja auch irgendwo der Aufhänger
+%           Der Satz, "tlb is on the critical path of everything really" sollte irgendwann mal kommen
+%   - Motivation für vm
+%   - Organisationsstrukturen auch im vergleich -> Fazit: Page Tables sind überall und werden tiefer -> vor allem wegeb backwards compatiblity?
+%   - Hardware Strukturen für VM - MMU, TLB
+%   - Operating system and VM -> Implemented by OS but fixed structures given by MMU
+%   -> Problem, fehlende flexibilität ->  A look at several ...
+%   -> source: Architectural and operating system support for virtual memory
+%   source: issues of implementation
+
+\section{Virtual Memory}
+
+% VM Properties and benefits: Was für Nutzen hat VM?
 - idealized abstraction of storage resources available on a machine
 - virtual to physical mapping
 - flexibility to place actual data anywhere on the available disk
 - emulate bigger memory than actually available
 - foundation for isolation/security
 - Implement flexible paging the swap pages between main memory and secondary storage
+% Fazit: VM hat sehr nützliche Eigenschaften
 
-% \subsection{What is Virtual Memory}
+% -----------------------------------------------------------------------
 
-
-% Purpose of Section:
-% Ziegen, dass es keinen Standard gibt und es viele Verschiedne Möglichkeiten gibt um VM zu realisieren
-% Quellen:
-% [ A look at several...]
-% [ Issues of implementation]
+% Wie können wir VM realisieren? -> Verschiedene Implementationen, Aber hier nicht auf die HW eingehen
+%   [ A look at several...]
+%   [ Issues of implementation]
 % \section{Implementation of Virtual Memory Systems}
 % \subsection{ Overview of different implementations (Inverted/Hierarchical/Multi-Level)}
 % \subsection{ Comparison of differnt implementations with regards to performance and features like page sharing}
 
+% Fazit -> Hauptproblem von VM sind teure Hauptspeicherzugriffe im kritischen Pfade von allen Memory Operations
+
+% -----------------------------------------------------------------------
+
+% Hardware Strukturen zur beschleunigung von VM
 % \section{Hardware support}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[]{figures/simple_mmu_arch.pdf}
+    \caption[A simplified architecture of CPU, MMU and TLB]{A simplified architecture of CPU, MMU and TLB}
+    \label{fig:fund:simplearch}
+\end{figure*}
+
 % \subsection{MMU & TLB}
-% \subsection{HW-Dependent PTE Structure}
+% \subsection{HW-Dependent PTE Structure} -> inflexibility
 % \subsection{A typical Page Table Walk}
 
-% \section{ Sofware Paging approaches}
+
+
+% Fazit -> Es gibt hardware strukturen die VM beschleunigen können, die machen es auch schneller
+%       ABER: Die machen die VM Software Systeme auch sehr viel rigider und unflexibler
+
+% -----------------------------------------------------------------------
+
+% VM in Software möglich mit ähnlicher Performance wie hw möglich -> Sollte ja mehr Flexibilität geben
+%   [ A look at several...]
+% \section{ Sofware VM Approaches}
+% \section{ Liedtke GPTs}
 % \subsection{More flexibilty}
 
-\todo{general motivation of virtual memory and what it provides}
-\todo{then a discussion on typical virtual memory systems and their trade offs}
 % related work will then come in to discuss approaches close to my approach
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/39,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{39}
-        \bitheader[endianness=big]{38,30,29,21,20,12,11,0} \\
-        \bitbox{9}{VPN[2]} &
-        \bitbox{9}{VPN[1]} &
-        \bitbox{9}{VPN[0]} &
-        \bitbox{12}{Page Offset}\\
-    \end{bytefield}
-    \caption[RISC-V Sv39 Virtual Address]{RISC-V Sv39 Virtual Address}
-    \label{fig:fundamentals:sv39va}
-\end{figure*}
 
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/56,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{56}
-        \bitheader[endianness=big]{55,30,29,21,20,12,11,0} \\
-        \bitbox{26}{PPN[2]} &
-        \bitbox{9}{PPN[1]} &
-        \bitbox{9}{PPN[0]} &
-        \bitbox{12}{Page Offset}\\
-    \end{bytefield}
-    \caption[RISC-V Sv39 Physical Address]{RISC-V Sv39 Physical Address}
-    \label{fig:fundamentals:sv39pa}
-\end{figure*}
-
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
-        \bitheader[endianness=big]{63,62,61,60,54,53,28,27,19,18,10,9,8,7,6,5,4,3,2,1,0} \\
-        \bitbox{1}{N} &
-        \bitbox{2}{\rotatebox{90}{PBMT}} &
-        \bitbox{7}{Reserved} &
-        \bitbox{26}{PPN[2]} &
-        \bitbox{9}{PPN[1]} &
-        \bitbox{9}{PPN[0]} &
-        \bitbox{2}{\rotatebox{90}{RSW}} &
-        \bitbox{1}{D} &
-        \bitbox{1}{A} &
-        \bitbox{1}{G} &
-        \bitbox{1}{U} &
-        \bitbox{1}{X} &
-        \bitbox{1}{W} &
-        \bitbox{1}{R} &
-        \bitbox{1}{V}
-    \end{bytefield}
-    \caption[RISC-V Sv39 Page Table Entry]{RISC-V Sv39 Page Table Entry}
-    \label{fig:fundamentals:sv39pte}
-\end{figure*}
-
-
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
-        \bitheader[endianness=big]{63,60,59,44,43,0} \\
-        \bitbox{4}{Mode} &
-        \bitbox{16}{ASID} &
-        \bitbox{44}{PPN} \\
-    \end{bytefield}
-    \caption[RISC-V Sv39 \texttt{satp} CSR]{RISC-V Sv39 \texttt{satp} CSR}
-    \label{fig:fundamentals:sv39satp}
-\end{figure*}
-
-\begin{figure*}[ht!]
-    \centering
-    \includegraphics[]{figures/simple_mapping.pdf}
-
-    \caption[Simple Mapping Scheme]{Simple Mapping Scheme}
-    \label{fig:theory:simplemapping}
-\end{figure*}
-
-%RISCV - VM - PTE bits, Global bits
-
-\section{Programming Platform}
-\subsection{Qemu}
-\subsection{xv6 RISC-V}
