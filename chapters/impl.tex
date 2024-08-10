@@ -2,34 +2,113 @@
 
 \label{chap:impl}
 
+% -------------------------------------------------------------------------------------------------
+%                                           General TODOs
+% -------------------------------------------------------------------------------------------------
+
+
+\todo{Add references to documentation at appropiate places}
+\todo{ add disclaimer, that most of this information was derived from reading the source code and may in some places not be accurate because the code is pretty complex and
+    i have only been at it for a few months}
 
 % -------------------------------------------------------------------------------------------------
-%                               Chapter structure overview
+%                                    Chapter structure overview
 % -------------------------------------------------------------------------------------------------
 
 %   Source overview
 %     QEMU
 %     xv6
 %   Stage1 - Single Fixed address
-%     Qemu
-%     xv6
+%     Qemu - exception
+%     xv6 - tlb triggerer
 %   Stage2 - VM PTW with TLB miss handler
-%     Qemu -> Extension to all addresses
-%     xv6
+%     Qemu -> Extension to all addresses, csr
+%     xv6 -> tlb miss handler
 %   Stage3 - Dynamic Segmentation allocation scheme (btw -> link to MIPS?)
 %     Qemu -> No more changes needed
 %     xv6 -> A lot of changes here
 %   Debugging
+%   Discussion on implementation
 % -------------------------------------------------------------------------------------------------
 
 % High level description of the development steps and their reasoning
 
 % -------------------------------------------------------------------------------------------------
+% Section on the rationale for choosing this platform -> or just say that this was chosen and dont rationalize it
+
+\section{Programming Platform}
+\subsection{QEMU}
+The \texttt{softtlb} design approach requires the CPU to throw an exception when the TLB misses. There is
+currently neither a RISC-V platform that supports nor a extension to the RISC-V that specifies that behavior.\\
+The logical consequence is to use an emulator and implement the required functionality.\\
+This paper uses the QEMU emulator as a foundation for the implementation. QEMU supports a big range of
+different platforms and is thus not the simplest source to modify. Additionally, detailed documentation
+on internal structures is sparse.\\
+However, QEMU does support a lot of features and extensions of the RISC-V target and is quite performant
+\cite{bellard2005QEMU}.
+
+% -------------------------------------------------------------------------------------------------
+
+%This section is important for the rationale on choosing a format of the CSRs
+%Vielleicht sollte dieser Teil einfach erst im hinblick auf replacement policies Dikutiert werden
+% In meinem Programmiermodell ist ja der TLB nichts weiter als ein Indiziertes array von daten, 
+% Weitere Aspekte sind ja hier erst mal out of scope
+\subsubsection{TLB}
+% What type of cache modeled? - direct mapped, associative?
+
+\todo{description of QEMU TLB structure in fundamentals, theory or implementation?}
+% Does the QEMU tlb implementation impact the theory? -> It should not
+%   It only has impact once we have to decide on a specific format for the tlbh and tlbl csrs
+%   But I can put all the theoretical parts into theory, so ASID etc
+%   and the modification of the theory based on concrete hardware can come into the impl chapter
+%       -> mmuidx and stuff
+
+
+% -------------------------------------------------------------------------------------------------
+
+
+\subsection{xv6-riscv}
+xv6 is a simple teaching operating system loosely following the design of Unix Version 6 \cite{cox2011xv6}.
+It is used to teach an operating systems course and does not contain the complexities of real-life
+operating systems.
+
+% -------------------------------------------------------------------------------------------------
 %                                    SECTION Source Description
 % -------------------------------------------------------------------------------------------------
 \section{Source Overview}
+The implementation consists of two fundamental parts:
+The extension of RISC-V ISA emulated by QEMU and the implementation of a
+TLB Miss Handler.
+
+% -------------------------------------------------------------------------------------------------
 
 \subsection{QEMU}
+\texttt{cputlb.c} found in \texttt{accel/tcg} contains the TLB-handling logic for all
+emulation targets; from there, target-specific functions for TLB management are called.
+The target-specific functions are implemented in \texttt{target/riscv}.\\
+Every target needs to implement the functions in the \texttt{TCGCPUOps} struct in
+\texttt{include/hw/core/tcg-cpu-ops.h}. This struct is part of the glue that connects the target-independent
+Tiny Code Generator (TCG) backend with the target-specific functions and structures.
+
+% -------------------------------------------------------------------------------------------------
+
+\todo{sequence diagram for function calls accross the QEMU repository}
+
+% -------------------------------------------------------------------------------------------------
+
+% TCGCPUOps struct
+% TODO Ausgangspunkt sollte die mmu_lookup1 funktion sein!
+The \texttt{TCGCPUOps} struct includes a function pointer named \texttt{tlb\_fill}. The function is called
+when MMU lookups to the TLB and QEMU's victim TLB fail.
+For the riscv target, the function \texttt{riscv\_cpu\_tlb\_fill} is assigned to the \texttt{tlb\_fill}
+function pointer in \texttt{target/riscv/tcg/tcg-cpu.c}.\\
+The implementation for \texttt{riscv\_cpu\_tlb\_fill} is in \texttt{target/riscv/cpu\_helper.c}. This is a common
+file to be found in a target-specifc directory and contains general functionality to implement the \texttt{TCGCPUOps} struct.\\
+
+
+\todo{explain PTE}
+
+% -------------------------------------------------------------------------------------------------
 
 \subsection{xv6}
 
@@ -44,145 +123,37 @@
 
 % First step in the development process
 % -------------------------------------------------------------------------------------------------
-%                                         SECTION STEP 1
+%                                          SECTION STEP 1
 % -------------------------------------------------------------------------------------------------
 \section{TLB miss handling for a single fixed address}
 
+% Why only start with one fixed address?
+Changing the whole system to start throwing a TLB\_MISS Exception on every virtual address would
+make it very hard to debug both first tries at implementing a handler for the exception and the
+exception throwing code in QEMU itself.
+And not only would the exception be thrown as soon as virtual memory is activated in
+\texttt{xv6-riscv:kernel/main.c}, the exception would be thrown
+as soon as exceptions are activated and a memory access happens, because QEMU also uses the
+\texttt{fill\_tlb} routine to fill the TLB with direct
+virtual-to-physical mappings when no virtual memory is used. This speeds up the execution of
+the dynamically-translated code, as it can directly
+lookup addresses in the TLB using a fast path.\\ \todo{add: dynamically-generated tcg code can
+    directly use the TLB structures}
+To properly test the implementation, the \texttt{tlb\_fill} function was replaced to throw the
+TLB\_MISS exception for
+one specified, page-aligned address and to continue on normally for every other address.
+The implementation is outlined
+in Listing \ref{lst:specialCaseTLBfill}.
 
+% -------------------------------------------------------------------------------------------------
 
 \subsection{QEMU}
+%TODO Explain what the riscv_cpu_tlb_fill function does originally - in detail
+% TODO discussion and reference to READER/SPECIFICATION on what exception numbers and other constants can be used and are free
 
-% \subsection{CSR Modifications}
-% \subsubsection{TLB Modification via CSR}
-% \subsubsection{Switching between HW and SW TLB miss handling}
-
-\subsection{xv6}
-
-% -------------------------------------------------------------------------------------------------
-%                                       END OF SECTION - STEP 1
-% -------------------------------------------------------------------------------------------------
-
-
-
-% Second step: Extending the tlb miss handling to be used for all addresses -> implementing a softvm ptw
-% -------------------------------------------------------------------------------------------------
-%                                         SECTION - STEP 2
-% -------------------------------------------------------------------------------------------------
-\section{Software page table walk and TLB filling}
-
-
-\subsection{QEMU}
-
-\subsection{xv6}
-
-
-% -------------------------------------------------------------------------------------------------
-%                                       END OF SECTION - STEP 2
-% -------------------------------------------------------------------------------------------------
-
-
-% Third step: Dynamic Segmented memory with a simple function and no page table
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-\section{Software-controlled virtual memory without a page-table}
-
-
-% -------------------------------------------------------------------------------------------------
-
-\section{Debugging}
-
-\subsection{Extending the QEMU Monitor}
-
-\subsection{ GDB - custom satps}
-
-
-
-% -------------------------------------------------------------------------------------------------
-%                                   END OF SECTION - Debugging
-% -------------------------------------------------------------------------------------------------
-
-
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-%                                         END OF CHAPTER
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-
-
-
-% -------------------------------------------------------------------------------------------------
-%                                   STUFF THAT NEEDS TO BE SORTED IN
-% -------------------------------------------------------------------------------------------------
-
-
-
-\section{Programming Platform}
-\subsection{QEMU}
-The \texttt{softtlb} design approach requires the CPU to throw an exception when the TLB misses. There is
-currently neither a RISC-V platform that supports nor a extension to the RISC-V that specifies that behavior.\\
-The logical consequence is to use an emulator and implement the required functionality.\\
-This paper uses the QEMU emulator as a foundation for the implementation. QEMU supports a big range of
-different platforms and is thus not the simplest source to modify. Additionally, detailed documentation
-on internal structures is sparse.\\
-However, QEMU does support a lot of features and extensions of the RISC-V target and is quite performant
-\cite{bellard2005QEMU}.
-
-
-
-\subsection{xv6-riscv}
-xv6 is a simple teaching operating system loosely following the design of Unix Version 6 \cite{cox2011xv6}.
-It is used to teach an operating systems course and does not contain the complexities of real-life
-operating systems.
-
-
-
-
-% -------------------------------------------------------------------------------------------------
-
-
-
-
-\subsubsection{TLB}
-% What type of cache modeled? - direct mapped, associative?
-
-\todo{description of QEMU TLB structure in fundamentals, theory or implementation?}
-% Does the QEMU tlb implementation impact the theory? -> It should not
-%   It only has impact once we have to decide on a specific format for the tlbh and tlbl csrs
-%   But I can put all the theoretical parts into theory, so ASID etc
-%   and the modification of the theory based on concrete hardware can come into the impl chapter
-%       -> mmuidx and stuff
-
-
-The implementation consists of two fundamental parts:
-The extension of RISC-V ISA emulated by QEMU and the implementation of a
-TLB Miss Handler.
-
-
-% Introductory section for qemu implementation
-\section{QEMU}
-This section describes the changes introduced to the QEMU emulator.
-It will start with a short overview of the parts of the code relevant for TLB lookups,
-TLB management, exceptions and CSRs. Since the implementation runs on a RISC-V
-the focus will be on the source code for the QEMU RISC-V softmmu target which includes
-emulation of a memory management unit.
-
-
-\todo{Add references to documentation at appropiate places}
-\todo{ add disclaimer, that most of this information was derived from reading the source code and may in some places not be accurate because the code is pretty complex and
-    i have only been at it for a few months}
-
-% -------------------------------------------------------------------------------------------------
-
-% Overview of the QEMU source
-\subsection{A short overview of the QEMU source code}
-\texttt{cputlb.c} found in \texttt{accel/tcg} contains the TLB-handling logic for all
-emulation targets; from there, target-specific functions for TLB management are called.
-The target-specific functions are implemented in \texttt{target/riscv}.\\
-Every target needs to implement the functions in the \texttt{TCGCPUOps} struct in
-\texttt{include/hw/core/tcg-cpu-ops.h}. This struct is part of the glue that connects the target-independent
-Tiny Code Generator (TCG) backend with the target-specific functions and structures.
-
-\todo{explain PTE}
+% Qemu RISCV  exception adding "tutorial"
+%TODO Description of the TLB Exception implementation and how to generally add exceptions to the QEMU plattform
+% TODO List of code locations where changes need to be added -> should be usable as back reference for implementing more exceptions
 
 % -------------------------------------------------------------------------------------------------
 
@@ -202,79 +173,12 @@ are triggered in the virtual address translation process. Page faults are thrown
 Depending on active extensions, there are possibly more scenarios where page faults are triggered.\\
 The page fault will then make the operating system jump to a specific location in the kernel code
 specified by the (physical) address found in the \texttt{mtvec} register.\\
-The TLB Miss exception does not have to trigger in the same situations as the page fault exception, but rather
-before the page table is traversed by the emulated hardware pagetable-walker.
+The TLB Miss exception does not have to trigger in the same situations as the page fault exception,
+but rather before the page table is traversed by the emulated hardware pagetable-walker.
 However, the code for the page fault exceptions gives hints for where changes need to be made in the QEMU
 source to add a custom exception.\\ % Now: Which places need to be changed?
 
 % -------------------------------------------------------------------------------------------------
-
-% TCGCPUOps struct
-% TODO Ausgangspunkt sollte die mmu_lookup1 funktion sein!
-The \texttt{TCGCPUOps} struct includes a function pointer named \texttt{tlb\_fill}. The function is called
-when MMU lookups to the TLB and QEMU's victim TLB fail.
-For the riscv target, the function \texttt{riscv\_cpu\_tlb\_fill} is assigned to the \texttt{tlb\_fill}
-function pointer in \texttt{target/riscv/tcg/tcg-cpu.c}.\\
-The implementation for \texttt{riscv\_cpu\_tlb\_fill} is in \texttt{target/riscv/cpu\_helper.c}. This is a common
-file to be found in a target-specifc directory and contains general functionality to implement the \texttt{TCGCPUOps} struct.\\
-
-% -------------------------------------------------------------------------------------------------
-
-% Qemu RISCV  exception adding "tutorial"
-%TODO Description of the TLB Exception implementation and how to generally add exceptions to the QEMU plattform
-% TODO List of code locations where changes need to be added -> should be usable as back reference for implementing more exceptions
-
-% -------------------------------------------------------------------------------------------------
-
-% TODO discussion and reference to READER/SPECIFICATION on what exception numbers and other constants can be used and are free
-
-% -------------------------------------------------------------------------------------------------
-
-% Why only start with one fixed address?
-Changing the whole system to start throwing a TLB\_MISS Exception on every virtual address would make it very hard to debug both
-first tries at implementing a handler for the exception and the exception throwing code in QEMU itself.
-And not only would the exception be thrown as soon as virtual memory is activated in \texttt{xv6-riscv:kernel/main.c}, the exception would be thrown
-as soon as exceptions are activated and a memory access happens, because QEMU also uses the \texttt{fill\_tlb} routine to fill the TLB with direct
-virtual-to-physical mappings when no virtual memory is used. This speeds up the execution of the dynamically-translated code, as it can directly
-lookup addresses in the TLB using a fast path.\\ \todo{add: dynamically-generated tcg code can directly use the TLB structures}
-To properly test the implementation, the \texttt{tlb\_fill} function was replaced to throw the TLB\_MISS exception for
-one specified, page-aligned address and to continue on normally for every other address. The implementation is outlined
-in Listing \ref{lst:specialCaseTLBfill}.
-
-% -------------------------------------------------------------------------------------------------
-
-% riscv_cpu_tlb_switch function 
-%TODO is this listing really interesting?
-\begin{lstlisting}[language=c,float=t,
-    caption={Alternative Implementation for the RISC-V tlb\_fill function with a special case to start testing TLB Miss Handler implementations},
-    label={lst:specialCaseTLBfill}]
-bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
-    MMUAccessType access_type, int mmu_idx,
-    bool probe, uintptr_t retaddr)
-{
-    RISCVCPU *cpu = RISCV_CPU(cs);
-    CPURISCVState *env = &cpu->env;
-    int mode = mmuidx_priv(mmu_idx);
-    int vm = get_field(env->satp, SATP64_MODE);
-    bool ret = false;
-
-    if(!(vm == VM_1_10_MBARE || mode == PRV_M) &&
-            address == (uint64_t)0x84fff000) {
-        ret = riscv_cpu_tlb_miss_exception(cs,address,size,access_type, mmu_idx, probe, retaddr);
-    } else {
-        ret =  riscv_cpu_tlb_fill(cs,address,size,access_type, mmu_idx, probe, retaddr);
-    }
-    return ret;
-}
-\end{lstlisting}
-
-% -------------------------------------------------------------------------------------------------
-
-%TODO Explain what the riscv_cpu_tlb_fill function does originally - in detail
-
-% -------------------------------------------------------------------------------------------------
-
-\todo{sequence diagram for function calls accross the QEMU repository}
 
 % -------------------------------------------------------------------------------------------------
 
@@ -302,12 +206,30 @@ this implementation only looked at the RISC-V target.
 % -------------------------------------------------------------------------------------------------
 
 
+% \subsection{CSR Modifications}
+% \subsubsection{TLB Modification via CSR}
+% \subsubsection{Switching between HW and SW TLB miss handling}
 
+\subsection{xv6}
+% TODO TLB exception trigger
+
+
+% -------------------------------------------------------------------------------------------------
+%                                       END OF SECTION - STEP 1
 % -------------------------------------------------------------------------------------------------
 
 
 
-%TODO Elabortation on the TLB Fast Path
+% Second step: Extending the tlb miss handling to be used for all addresses -> implementing a softvm ptw
+% -------------------------------------------------------------------------------------------------
+%                                         SECTION - STEP 2
+% -------------------------------------------------------------------------------------------------
+\section{Software page table walk and TLB filling}
+
+
+\subsection{QEMU}
+
+% -------------------------------------------------------------------------------------------------
 
 
 %Implementation of CSRs
@@ -315,13 +237,6 @@ this implementation only looked at the RISC-V target.
 %   Choosing a CSR number -> back reference to theory section on CSRs
 
 \subsection{Adding new CSRs for writing TLB entries}
-
-
-
-\todo{discussion of implementation at the end of this chapter: shortcommings, comparison QEMU - MIPS, comparison xv6 new vm - other vm -> eval??}
-
-% -------------------------------------------------------------------------------------------------
-
 
 % More controll with further CSRs -> MIPS comparison
 \section{Further possible extensions to the TLB CSRs}
@@ -337,13 +252,31 @@ However, the efficiency of more complex strategies need to be weighed carefully
 against their benefits, since the TLB filling is on the critical path of all
 memory accesses.
 
-% -------------------------------------------------------------------------------------------------
 
-% TODO  xv6 TLB flushing
-
+\todo{discussion of implementation at the end of this chapter: shortcommings, comparison QEMU - MIPS, comparison xv6 new vm - other vm -> eval??}
 
 % -------------------------------------------------------------------------------------------------
 
+
+\subsection{xv6}
+% TODO TLB fill manager
+
+% -------------------------------------------------------------------------------------------------
+%                                       END OF SECTION - STEP 2
+% -------------------------------------------------------------------------------------------------
+
+
+% Third step: Dynamic Segmented memory with a simple function and no page table
+% -------------------------------------------------------------------------------------------------
+%                                       STEP 3 - New VM
+% -------------------------------------------------------------------------------------------------
+\section{Software-controlled virtual memory without a page-table}
+\subsection{QEMU}
+
+% -------------------------------------------------------------------------------------------------
+
+
+\subsection{xv6}
 % MODULEs and Systemcalls of xv6 to be discussed
 % \section{Relevant Modules in the xv6 Source}
 % \paragraph*{kalloc - physical memory allocator}
@@ -372,9 +305,36 @@ growproc will then call either uvmalloc() or uvmdealloc(). These functions need 
 changed to use the new allocation scheme.
 
 % -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+
+\section{Simplest Case: Fixed memory area for each process}
+\subsection{Address Spaces}
+The available physical memory is split into evenly sized portions, from now called address space.
+When a new process is started it tries to acquire an address space by checking whether
+there is a free one and then claiming that free address space.
+The number of address spaces will thus limit the number of concurrently running programs.
+Why not just use the Pids and reuse them? The order of termination is not clear, bookkeeping
+may be expensive. PID range is typically a lot bigger -> But this can be limited.
+\subsection{Discussion: Limitations}
+This is not really virtual memory and works only, because xv6 just added more memory at the low
+end of the address space. No mappings are made in between or at high addresses.
+This is where a hash function could come in handy. However collisions and access rights and
+collision detection \ldots
+Verification via % \texttt{\verbatim{readelf -l user/\_*}}
+shows that all vaddr are in the low addresses.
+\paragraph*{Fragmentation}
+%Processes have fixed size of memory and may not use all of it
+\paragraph*{Limited Process count}
+%Maybe appropiate for embedded applications?
+
+
+% -------------------------------------------------------------------------------------------------
+
+
 
 
 % Final allocation scheme
+% TODO this might actually describe an intermediate allocation scheme
 \paragraph*{Experimental Allocation Scheme}
 xv6 keeps all of its unused physical memory in a linked list. The linked list itself is stored
 in the free blocks, as they are not used for anything else. When a process asks for more memory
@@ -424,45 +384,90 @@ for all the memory that is allocated for the process.
 % \paragraph*{Trampoline}
 
 
-% \section{xv6 TLB Miss Handler implementation Idea}
-% \subsection{code outline}
-% \subsection{Simplest case}
-% \subsection{Extrapolation target, most complex case}
-% \subsection{features to be implemented}
-% \subsection{realisation - how far have I come}
+% -------------------------------------------------------------------------------------------------
+%                                    END OF SECTION - Step 3
+% -------------------------------------------------------------------------------------------------
 
-% \section{Implementation description}
-% \subsection{Problems}
-% \subsection{idiosyncracies}
-% \subsection{limitations}
 
-%\section{Veriying the Mapping - Mapping Tester}
-\section{Challange: Modifying code in parts}
-% in order to test single changes, changes should be isolated to a specific
-% kernel module and not change the interface between modules
-\subsection*{Changing the physical memory allocation}
-% each process gets a fixed set of physical pages assigned to it
-% TODO How much processes does xv6 run at a time? -> Least amount of processess to have 
-% the operation continue as usual
 
-\section{Simplest Case: Fixed memory area for each process}
-\subsection{Address Spaces}
-The available physical memory is split into evenly sized portions, from now called address space.
-When a new process is started it tries to acquire an address space by checking whether
-there is a free one and then claiming that free address space.
-The number of address spaces will thus limit the number of concurrently running programs.
-Why not just use the Pids and reuse them? The order of termination is not clear, bookkeeping
-may be expensive. PID range is typically a lot bigger -> But this can be limited.
-\subsection{Discussion: Limitations}
-This is not really virtual memory and works only, because xv6 just added more memory at the low
-end of the address space. No mappings are made in between or at high addresses.
-This is where a hash function could come in handy. However collisions and access rights and
-collision detection \ldots
-Verification via % \texttt{\verbatim{readelf -l user/\_*}}
-shows that all vaddr are in the low addresses.
-\paragraph*{Fragmentation}
-%Processes have fixed size of memory and may not use all of it
-\paragraph*{Limited Process count}
-%Maybe appropiate for embedded applications?
+% TODO Should this be an appendix?
+% -------------------------------------------------------------------------------------------------
+%                                         SECTION - Debugging
+% -------------------------------------------------------------------------------------------------
+
+\section{Debugging}
+
+\subsection{Extending the QEMU Monitor}
+
+\subsection{ GDB - custom satps}
+
+
+% -------------------------------------------------------------------------------------------------
+%                                    END OF SECTION - Debugging
+% -------------------------------------------------------------------------------------------------
+
+
+
+% -------------------------------------------------------------------------------------------------
+%                              SECTION - Discussion (of implementation)
+% -------------------------------------------------------------------------------------------------
+
+
+% -------------------------------------------------------------------------------------------------
+%                          END OF SECTION - Discussion (of implementation)
+% -------------------------------------------------------------------------------------------------
+
+% TODO  xv6 TLB flushing
+
+
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+%                                           END OF CHAPTER
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+
+
+
+% -------------------------------------------------------------------------------------------------
+%                                   STUFF THAT NEEDS TO BE SORTED IN
+% -------------------------------------------------------------------------------------------------
+
+
+
+
+% riscv_cpu_tlb_switch function 
+%TODO is this listing really interesting?
+\begin{lstlisting}[language=c,float=t,
+    caption={Alternative Implementation for the RISC-V tlb\_fill function with a special case to start testing TLB Miss Handler implementations},
+    label={lst:specialCaseTLBfill}]
+bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
+    MMUAccessType access_type, int mmu_idx,
+    bool probe, uintptr_t retaddr)
+{
+    RISCVCPU *cpu = RISCV_CPU(cs);
+    CPURISCVState *env = &cpu->env;
+    int mode = mmuidx_priv(mmu_idx);
+    int vm = get_field(env->satp, SATP64_MODE);
+    bool ret = false;
+
+    if(!(vm == VM_1_10_MBARE || mode == PRV_M) &&
+            address == (uint64_t)0x84fff000) {
+        ret = riscv_cpu_tlb_miss_exception(cs,address,size,access_type, mmu_idx, probe, retaddr);
+    } else {
+        ret =  riscv_cpu_tlb_fill(cs,address,size,access_type, mmu_idx, probe, retaddr);
+    }
+    return ret;
+}
+\end{lstlisting}
+
+.
+% -------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
 
 
