@@ -35,6 +35,14 @@
 % \subsection{ Overview of different implementations (Inverted/Hierarchical/Multi-Level)}
 % \subsection{ Comparison of differnt implementations with regards to performance and features like page sharing}
 
+% -> Most commonly used in todays hardware -> Multi level page tables
+\begin{figure*}[t]
+    \centering
+    \includegraphics[scale=.8]{figures/VM-Tree.pdf}
+    \caption[RISC-V Sv39 3-Level Page Tree]{RISC-V Sv39 3-Level Page Tree}
+    \label{fig:fund:pagetree}
+\end{figure*}
+
 % Fazit -> Hauptproblem von VM sind teure Hauptspeicherzugriffe im kritischen Pfade von allen Memory Operations
 
 % -----------------------------------------------------------------------
@@ -50,6 +58,10 @@
 \end{figure*}
 
 % \subsection{MMU & TLB}
+
+% With only software ptw process would have to context switch to the kernel -> Very expensive
+% With an MMU the processor essentially just freezes until the memory operation has completed
+\cite{jacobVirtualMemoryContemporary1998}
 % \subsection{HW-Dependent PTE Structure} -> inflexibility
 % \subsection{A typical Page Table Walk}
 

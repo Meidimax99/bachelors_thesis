@@ -6,39 +6,57 @@
 
 
 \section{Programming Platform}
-\subsection{Qemu}
+\subsection{QEMU}
+The \texttt{softtlb} design approach requires the CPU to throw an exception when the TLB misses. There is
+currently neither a RISC-V platform that supports nor a extension to the RISC-V that specifies that behavior.\\
+The logical consequence is to use an emulator and implement the required functionality.\\
+This paper uses the QEMU emulator as a foundation for the implementation. QEMU supports a big range of
+different platforms and is thus not the simplest source to modify. Additionally, detailed documentation
+on internal structures is sparse.\\
+However, QEMU does support a lot of features and extensions of the RISC-V target and is quite performant
+\cite{bellard2005QEMU}.
+
+
+
+
+
+\subsection{xv6-riscv}
+xv6 is a simple teaching operating system loosely following the design of Unix Version 6 \cite{cox2011xv6}.
+It is used to teach an operating systems course and does not contain the complexities of real-life
+operating systems.
+
 \subsubsection{TLB}
 % What type of cache modeled? - direct mapped, associative?
 
-\todo{description of Qemu TLB structure in fundamentals, theory or implementation?}
-% Does the qemu tlb implementation impact the theory? -> It should not
+\todo{description of QEMU TLB structure in fundamentals, theory or implementation?}
+% Does the QEMU tlb implementation impact the theory? -> It should not
 %   It only has impact once we have to decide on a specific format for the tlbh and tlbl csrs
 %   But I can put all the theoretical parts into theory, so ASID etc
 %   and the modification of the theory based on concrete hardware can come into the impl chapter
 %       -> mmuidx and stuff
 
-\subsection{Qemu Monitor}
+
 \subsection{xv6 RISC-V}
 The implementation consists of two fundamental parts:
-The extension of RISC-V ISA emulated by Qemu and the implementation of a
+The extension of RISC-V ISA emulated by QEMU and the implementation of a
 TLB Miss Handler.
 
 
 
-\section{Qemu}
-This section describes the changes introduced to the Qemu emulator.
+\section{QEMU}
+This section describes the changes introduced to the QEMU emulator.
 It will start with a short overview of the parts of the code relevant for TLB lookups,
 TLB management, exceptions and CSRs. Since the implementation runs on a RISC-V
-the focus will be on the source code for the qemu RISC-V softmmu target which includes
+the focus will be on the source code for the QEMU RISC-V softmmu target which includes
 emulation of a memory management unit.
 
-\todo{Maybe it is better to not have one block for qemu and one block for xv6, because the development
+\todo{Maybe it is better to not have one block for QEMU and one block for xv6, because the development
     was pretty interleaved in the beginning}
 
 \todo{Add references to documentation at appropiate places}
 \todo{ add disclaimer, that most of this information was derived from reading the source code and may in some places not be accurate because the code is pretty complex and
     i have only been at it for a few months}
-\subsection{A short overview of the Qemu source code}
+\subsection{A short overview of the QEMU source code}
 \texttt{cputlb.c} found in \texttt{accel/tcg} contains the TLB-handling logic for all
 emulation targets; from there, target-specific functions for TLB management are called.
 The target-specific functions are implemented in \texttt{target/riscv}.\\
@@ -63,24 +81,24 @@ The page fault will then make the operating system jump to a specific location i
 specified by the (physical) address found in the \texttt{mtvec} register.\\
 The TLB Miss exception does not have to trigger in similar patterns as the page fault exception, but rather
 before the page table is traversed by the emulated hardware pagetable-walker.
-However, the code for the page fault exceptions gives hints for where changes need to be made in the Qemu
+However, the code for the page fault exceptions gives hints for where changes need to be made in the QEMU
 source to add a custom exception.\\
 The \texttt{TCGCPUOps} struct includes a function pointer named \texttt{tlb\_fill}. The function is called
-when MMU lookups to the TLB and Qemu's victim TLB fail.
+when MMU lookups to the TLB and QEMU's victim TLB fail.
 For the riscv target, the function \texttt{riscv\_cpu\_tlb\_fill} is assigned to the \texttt{tlb\_fill}
 function pointer in \texttt{target/riscv/tcg/tcg-cpu.c}.\\
 The implementation for \texttt{riscv\_cpu\_tlb\_fill} is in \texttt{target/riscv/cpu\_helper.c}. This is a common
 file to be found in a target-specifc directory and contains general functionality to implement the \texttt{TCGCPUOps} struct.\\
 
-%TODO Description of the TLB Exception implementation and how to generally add exceptions to the qemu plattform
+%TODO Description of the TLB Exception implementation and how to generally add exceptions to the QEMU plattform
 % TODO List of code locations where changes need to be added -> should be usable as back reference for implementing more exceptions
 
 % TODO discussion and reference to READER/SPECIFICATION on what exception numbers and other constants can be used and are free
 %TODO Zwischenschritt: TLB_exception only for special case
 Changing the whole system to start throwing a TLB\_MISS Exception on every virtual address would make it very hard to debug both
-first tries at implementing a handler for the exception and the exception throwing code in Qemu itself.
+first tries at implementing a handler for the exception and the exception throwing code in QEMU itself.
 And not only would the exception be thrown as soon as virtual memory is activated in \texttt{xv6-riscv:kernel/main.c}, the exception would be thrown
-as soon as exceptions are activated and a memory access happens, because Qemu also uses the \texttt{fill\_tlb} routine to fill the TLB with direct
+as soon as exceptions are activated and a memory access happens, because QEMU also uses the \texttt{fill\_tlb} routine to fill the TLB with direct
 virtual-to-physical mappings when no virtual memory is used. This speeds up the execution of the dynamically-translated code, as it can directly
 lookup addresses in the TLB using a fast path.\\
 To properly test the implementation, the \texttt{tlb\_fill} function was replaced to throw the TLB\_MISS exception for
@@ -112,10 +130,10 @@ bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
 
 %TODO Explain what the riscv_cpu_tlb_fill function does originally - in detail
 
-\todo{sequence diagram for function calls accross the qemu repository}
+\todo{sequence diagram for function calls accross the QEMU repository}
 %TODO Custom TLB Exception based off of the page fault exception
-\paragraph{Adding a new exception}to the Qemu emulator requires changes at a number of places. In the following,
-the relevant code locations in the Qemu source are shown.\\
+\paragraph{Adding a new exception}to the QEMU emulator requires changes at a number of places. In the following,
+the relevant code locations in the QEMU source are shown.\\
 This may be completely different for other targets, as the exception code is mostly target specific and
 this implementation only looked at the RISC-V target.
 \begin{itemize}
@@ -146,7 +164,7 @@ this implementation only looked at the RISC-V target.
 
 \subsection{Adding new CSRs for writing TLB entries}
 
-\subsection{Extending the Qemu Monitor}
+\subsection{Extending the QEMU Monitor}
 
 
 \todo{move to discussion of implementation at the end of this chapter}
@@ -155,7 +173,7 @@ With the new CSRs presented above, it is possible to write TLB entries.
 The placement of the entry and thus the entry to be replaced can not be selected.
 The replacement policy would be completely up to the hardware implementation.
 \todo{typical tlb replacement strategies}
-\todo{How does qemu replace TLB entries -> index?}
+\todo{How does QEMU replace TLB entries -> index?}
 It would also be possible to further extend the ISA with additional CSRs to
 support specific selection of entries to be replaced, or to select between
 a number of replacement strategies.
@@ -180,7 +198,7 @@ memory accesses.
 % % Why have I not chosen L4, Mips, etc? They already have some preconditions that are pretty good for my work (software handler, tlb instructions)
 % \subsection{xv6}
 % \subsection{RISC-V}
-% \subsection{Qemu}
+% \subsection{QEMU}
 % \paragraph{softmmu Target}
 
 
@@ -254,7 +272,7 @@ for all the memory that is allocated for the process.
 % \paragraph*{Kernel direct mapping}
 % \paragraph*{MMIO}
 % \paragraph*{Trampoline}
-% \section{Modifying Qemu Source}
+% \section{Modifying QEMU Source}
 % \subsection{TLB Miss Exception}
 % \subsection{CSR Modifications}
 % \subsubsection{TLB Modification via CSR}
@@ -305,4 +323,10 @@ shows that all vaddr are in the low addresses.
 
 
 \section{Debugging}
+\subsection{QEMU}
+\
+
+\subsection{QEMU Monitor}
+The QEMU Monitor is a
+
 \subsection{ GDB - custom satps}

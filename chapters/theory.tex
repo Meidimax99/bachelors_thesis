@@ -72,7 +72,7 @@ of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
         \bitheader[endianness=big]{11,10,9,8,7,4,3,0} \\
         \bitbox{2}{RW/RO} &
         \bitbox{2}{Priv} &
-        \bitbox{4}{Useage} &
+        \bitbox{4}{Usage} &
         \bitbox{4}{Index}
     \end{bytefield}
     \caption[RISC-V CSR address format]{RISC-V CSR address format}
@@ -98,7 +98,7 @@ this data is best communicated via the CSRs to the computer.\\
 \subsection{MIPS as an inspiration for TLB writes}
 MIPS is a good source of inspiration for a possible CSR format design, since it already provides
 instructions to modify the TLB.\\
-The MIPS64 instruction set manual \cite{MIPS_Architecture_MIPS64_InstructionSet_AFP_P_MD00087_06052016}
+The MIPS64 instruction set manual \cite{MIPSArchitectureProgrammers2016}
 shows a number of different instructions concerned with the invalidation, probing, flushing, reading
 and writing (indexed and random).\\
 The most interesting for a first design would be the \texttt{TLBWR} instruction for writing a TLB
