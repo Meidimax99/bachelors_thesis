@@ -24,11 +24,14 @@
 %   Stage2 - VM PTW with TLB miss handler
 %     Qemu -> Extension to all addresses, csr
 %     xv6 -> tlb miss handler
+%       Exception vector entry -> state save, kernel stack
 %   Stage3 - Dynamic Segmentation allocation scheme (btw -> link to MIPS?)
 %     Qemu -> No more changes needed
 %     xv6 -> A lot of changes here
 %   Debugging
 %   Discussion on implementation
+%       Concurrency
+%       VM Features
 % -------------------------------------------------------------------------------------------------
 
 % High level description of the development steps and their reasoning

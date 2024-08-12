@@ -1,11 +1,63 @@
 \chapter{Theory}
-
 \label{chap:theory}
+
+
+
+% -------------------------------------------------------------------------------------------------
+%                                            STRUCTURE
+% -------------------------------------------------------------------------------------------------
+
+% Conclusion on previous Work -> Still need a memory access
+
+% The Idea -> Getting rid of any memory access in favor of simple arithmetic operation (eg. hash functions)
+
+% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
+% New Exception - TLB Miss Exception
+% CSRs to write TLBs
+% Exception Handler
+% Exception triggerer for testing
+
+% Writing TLBs -> Implementation Theory
+%       Starting with MIPS for inspiration on how instructions for TLB manipulation may look like
+%       Then continue with a possible RISCV Implementation Idea
+%
+%   Comparison to MIPS
+%       MIPS TLB instructions
+%       MIPS TLB entries -> Qemu TLB?
+%       Replacement
+%   RISCV CSRs
+%       CSRs instructions
+%       Data to be communicated to the cpu
+%       CSRs chosen Format
+
+% xv6 Perspective and specifcs (but still theory!)
+%   Special mappings -> special case in tlb manager (e.g. Trampoline)
+
+% -------------------------------------------------------------------------------------------------
+%                                         END - STRUCTURE
+% -------------------------------------------------------------------------------------------------
+
+% -------------------------------------------------------------------------------------------------
+%                                          SECTION
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+%                                END OF SECTION
+% -------------------------------------------------------------------------------------------------
+
+
+
+
+
+% -------------------------------------------------------------------------------------------------
+%                                      Stuff to be sorted in
+% -------------------------------------------------------------------------------------------------
+
 
 \todo{elaboration on xv6 here or in fundamentals (or an extra platform chapter)?? -> because theory
     may be independent from the platform in big parts, but still needs to be taken into consideration (like with
     csrs)}
 
+% TODO [denningVirtualMemoryDenning1996] -> Overlay problem with segmented designs
 
 %elaboration on general costs of page table walks -> basically exactly what related
 % work motivated their designs with
@@ -150,9 +202,6 @@ Having a protected space of TLB entries can especially be useful for global mapp
 mapping for every process and the kernel with the trampoline page.\todo{trampoline page should be explained in fundamentals/platform}
 
 % Future work -> finer control
-
-% \section{Motivation}
-% \subsection{Trade-offs of traditional Virtual Memory Approaches}
 
 % Problems
 % Context switch to handler -> Pipeline flush, reorder buffer flushed
