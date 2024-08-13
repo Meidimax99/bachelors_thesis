@@ -110,7 +110,8 @@ wird benutzt um eine kleiner Tabelle zu indizieren. Der indizierte PTE verweißt
 nächste kleinere Page Table, die dann entsprechend mit dem nächsten Teil der VPN indiziert wird.
 Je nach implementierung können hier bis zu 5 weitere indirektionen anfallen.
 Ein gängiges Schema wie es z.B. in der RISC-V ISA spezifiziert wird ist Sv39, dass insgesamt
-3 Level pro Page Table Tree vorsieht\cite{riscvreader}.
+3 Level pro Page Table Tree vorsieht\cite{riscvreader}. Dieses Schema is auch nochmal
+in Figure \ref{fig:fund:pagetree} zu sehen.
 \begin{figure*}[t]
     \centering
     \includegraphics[scale=.8]{figures/VM-Tree.pdf}
@@ -130,6 +131,11 @@ es im schlimmsten fall, wenn alle caches missen, zu 5 memory accesses kommen mus
 paging scheme) nur um das Mapping für einen Memory Zugriff zu finden.
 % Lösung? Hashed!
 \subsubsection{Inverted page tables}
+Ein alternatives Paging schema geht von der anderen richtung an das ganze ran und stellt statt einen
+Eintrag pro theoretischer virtueller Page einen PTE pro physischem Frame zur Verfügung.
+Ein physisches Page Frame ist ein Page-aligneter platz im physischen speicher für eine Page.
+Somit ergibt sich die anzahl der physischen Frames durch die Größe des Hauptspeichers geteilt
+durch die Page-Größe \todo{Pages schon definiert? Auch die variable größe?}
 \begin{figure*}[t]
     \centering
     \includegraphics[scale=1]{figures/inverted_pt.pdf}
@@ -200,6 +206,7 @@ paging scheme) nur um das Mapping für einen Memory Zugriff zu finden.
 
 % TODO Short discussion hw and sw vm -> common problem: Page Table Walks require in either case a 
 % lot of memory references. These costs can be aleviated using caches, but will still cost [ cite a source abouts costs here]
+
 
 % -------------------------------------------------------------------------------------------------
 
