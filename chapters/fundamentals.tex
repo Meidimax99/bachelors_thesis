@@ -39,23 +39,40 @@ virtuellen Addressraum verteilen können, sondern auch größer sein können als
 Virtual memory is used in almost every system, ranging from big data center machines to small embedded system.
 Originally, it was developed by the designers of the Atlas Computer to automate the task of swaping data between
 main and secondary memory \cite{denning1997before}.
+
 This was necesarry as programs increased in size faster than main memory did; while single programs
 still fit in memory, operating systems allowed running multiple programs at once, collectively exceeding
 the available physical memory \cite{tanenbaumOS}.
+
 Nowadays, virtual memory is the basis of a lot of memory system requirements such as address
 space protection, isolation of processes, shared memory and more \cite{jacobSoftwaremanagedAddressTranslation1997}.
 It is also completely transparent to the programmer and enables programms to use every available
 address in its virtual address space.\\
+
 Peter Denning calls its wide spread adoption ''[..]one of the engineering triumphs of the computer
 age.''\cite{denning1997before}.
 \subsection{Memory System Requirements/Benefits?}
+Inzwischen erfüllt Virtual Memory noch sehr viel mehr Aufgaben als das Tauschen von Seiten in
+Haupt und Nebenspeicher zu automatisieren. Virtual Memory Systeme sind Grundlage für
+viele weitere Aufgaben und Features des Betriebssystem\cite{jacobSoftwaremanagedAddressTranslation1997}:
+\begin{itemize}
+    \item Address Space Protection / Isolation / Security
+    \item Shared Memory
+    \item Large Address Spaces
+    \item Fine Grained Protection
+    \item Sparse Address Space
+    \item Superpages
+    \item Memory Mapped Files / IO \cite{tanenbaumOS}
+    \item Flexibilität für den Programmieren: Komplette Freiheit der Nutzung des Addressraumes
+\end{itemize}
+Diese Eigenschaften setzen die meisten Leute die auf Applikationsebene Programmieren mehr oder
+weniger als gegeben voraus und machen sich keine weiteren Gedanken darüber\todo{cite?}.
+Durch das immer weiter Auseinanderdriften der CPU und Memory geschwindigkeiten und vor allem
+durch das größer werden von Addressräumen (von 32 auf 64 bit!) \todo{cite} sind die Ansprüche an
+das Virtual Memory system gewachsen und so mussten sich auch die IMplementationen weiterentwickeln.
+
+Im Folgenden werden die meistgenutzten VM systeme betrachtet.
 % VM Properties and benefits: Was für Nutzen hat VM?
-% - idealized abstraction of storage resources available on a machine
-% - virtual to physical mapping
-% - flexibility to place actual data anywhere on the available disk
-% - emulate bigger memory than actually available
-% - foundation for isolation/security
-% - Implement flexible paging the swap pages between main memory and secondary storage
 % Fazit: VM hat sehr nützliche Eigenschaften
 % More: jacob1998virtualissues
 
@@ -100,7 +117,7 @@ This section will provide an overview of the most commonly used virtual memory i
 % -> Most commonly used in todays hardware -> Multi level page tables
 % Fazit -> Hauptproblem von VM sind teure Hauptspeicherzugriffe im kritischen Pfade von allen Memory Operations
 
-
+\todo{discussion: Sind die aktuellen VM systeme (vor allem hierachical) noch Zeitgemäß oder nur noch altlast???}
 % -------------------------------------------------------------------------------------------------
 %                                  END SECTION - VM IMPLEMENTATION
 % -------------------------------------------------------------------------------------------------
