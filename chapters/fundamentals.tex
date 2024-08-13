@@ -18,7 +18,16 @@
 % -------------------------------------------------------------------------------------------------
 % A little bit of history?? -> [Denning VM '96] -> Altas
 % -------------------------------------------------------------------------------------------------
-
+Der erste Computer mit virtual memory war Atlas \cite{fotheringham1961dynamic}. Die Grundidee war den
+Programmen die Illusion zu schaffen, dass sie einen sehr großen Addressraum für sich alleine haben.
+Dieser virtuelle Addressraum war dabei größer als der physische HauptSpeicher selbst.
+Damit wurde auch die Aufgabe den physischen Hauptspeicher zu verwalten komplett vom Program gelöst
+an das betriebssystem gegeben. Dessen Aufgabe ist war es nun die Teile des virtuellen Speicherbereichs
+in den physischen Speicherbereiches zu laden, die auch vom Program in Ausführung benötigt werden.
+\cite{denning1970virtual}.
+Dies erhöht die Flexibilität für Programme extram, da diese nun nicht nur Daten in ihrem ganzen
+virtuellen Addressraum verteilen können, sondern auch größer sein können als der physikalische Speicher
+(solang genug Hintegrundspeicher zur Verfügung steht)\todo{CITE}\todo{thrashing irgendwo erwähnen?}.
 
 % -------------------------------------------------------------------------------------------------
 %                                           VIRTUAL MEMORY
@@ -57,9 +66,6 @@ age.''\cite{denning1997before}.
 % Wie können wir VM realisieren? -> Verschiedene Implementationen, Aber hier nicht auf die HW eingehen
 %   [ A look at several...]
 %   [ Issues of implementation]
-% \section{Implementation of Virtual Memory Systems}
-% \subsection{ Overview of different implementations (Inverted/Hierarchical/Multi-Level)}
-% \subsection{ Comparison of differnt implementations with regards to performance and features like page sharing}
 \subsection{Implementation of Virtual Memory}
 Every virtual memory system has to realize a mapping from virtual addresses of each processes
 private, virtual address space to actual physical addresses that index data in main memory.
