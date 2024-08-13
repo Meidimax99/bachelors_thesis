@@ -47,7 +47,7 @@ the available physical memory \cite{tanenbaumOS}.
 Nowadays, virtual memory is the basis of a lot of memory system requirements such as address
 space protection, isolation of processes, shared memory and more \cite{jacobSoftwaremanagedAddressTranslation1997}.
 It is also completely transparent to the programmer and enables programms to use every available
-address in its virtual address space.\\
+address in its virtual address space\cite{jacob1998look}.\\
 
 Peter Denning calls its wide spread adoption ''[..]one of the engineering triumphs of the computer
 age.''\cite{denning1997before}.
@@ -88,7 +88,29 @@ Every virtual memory system has to realize a mapping from virtual addresses of e
 private, virtual address space to actual physical addresses that index data in main memory.
 This section will provide an overview of the most commonly used virtual memory implementation.
 
+\todo{page table splits, vpn -> tanenbaum}
+% Naiver Page Table ansatz
+Das einfachste wäre natürlich eine große Tabelle mit den virtuellen zu physischen mappings im
+speicher zu halten. Bei einem 32 Bit virtuellen zu physischen mapping mit einer typischen Page Größe
+von 4 KiBi ( $ 2^{12}$Byte), bräuchte man mindestens 20 Bit pro Page Table Entry (PTE), also mindestestens
+\[ 20 * 2^{20} Bit = 20971520 / 8 Byte = 2.5 MiBi \]
+pro Page Table. Und da jeder Prozess eine eigene Pagetable braucht um die Isolation und damit Grundlage
+für Sicherheit im System zu gewährleisten kann das insgesamt recht teuer werden.
+Normalerweise würde man die PTEs auch noch auf wordsize alignen um dann auch noch platz für weitere
+Protection flags zu haben, was dann die größe der Pagetable noch auf 4 MiBi erhöhen würde.
+Bei 64-bit Computern wäre dieser naiver ansatz völlig unpraktikabel.
+\todo{tanenbaum -> numbers for paging}
 \subsubsection{Hierarchical page tables}
+Um die Speicherkosten der Verwaltung der Pages zu reduzieren benutzten die meisten \todo{cite?}
+Virtual Memory Systeme eine Multi-Level Page Table, oder auch hierarchische Page Table genannt.
+Diese ähnelt aber in ihrere Struktur weniger einer Tabelle sondern mehr einem Baum dessen Nodes tabellen
+von PTEs sind.
+Hier wird die Virtuelle Page nummer nochmal in mehrere Teile unterteilt. Jeder Teil der VPN
+wird benutzt um eine kleiner Tabelle zu indizieren. Der indizierte PTE verweißt dann auf die
+nächste kleinere Page Table, die dann entsprechend mit dem nächsten Teil der VPN indiziert wird.
+Je nach implementierung können hier bis zu 5 weitere indirektionen anfallen.
+Ein gängiges Schema wie es z.B. in der RISC-V ISA spezifiziert wird ist Sv39, dass insgesamt
+3 Level pro Page Table Tree vorsieht\cite{riscvreader}.
 \begin{figure*}[t]
     \centering
     \includegraphics[scale=.8]{figures/VM-Tree.pdf}
@@ -102,7 +124,10 @@ This section will provide an overview of the most commonly used virtual memory i
 \end{figure*}
 
 % Fazit -> Viele Main Memory Zugriffe -> Teuer
-
+Das traversieren der Page Table zum finden des Mappings benötigt pro Level eine weitere Memory reference\todo{cite}
+und da das Ermitteln des Mappings auf dem kritischen Pfad jeder Memory-operation befindet,  sodass
+es im schlimmsten fall, wenn alle caches missen, zu 5 memory accesses kommen muss (bei einem 5 -level
+paging scheme) nur um das Mapping für einen Memory Zugriff zu finden.
 % Lösung? Hashed!
 \subsubsection{Inverted page tables}
 \begin{figure*}[t]
