@@ -69,7 +69,12 @@ This section will provide an overview of the most commonly used virtual memory i
 \begin{figure*}[t]
     \centering
     \includegraphics[scale=.8]{figures/VM-Tree.pdf}
-    \caption[RISC-V Sv39 3-Level Page Tree]{RISC-V Sv39 3-Level Page Tree}
+    \caption[RISC-V Sv39 3-Level Page Tree]{Three-step page walk with a RISC-V Sv39 Page Table Tree:
+        The value in the \texttt{satp} register is the base of the root page table; \texttt{VPN[2]}
+        is the index into the root page table; the indexed \texttt{PTE} points to the next page table.
+        This traversal continues until the bottom of the page table is reached. The last \texttt{PTE}
+        contains the \texttt{PPN} of the physical address which can then be combined with the offset
+        bits to make the full physical address}
     \label{fig:fund:pagetree}
 \end{figure*}
 
@@ -77,28 +82,40 @@ This section will provide an overview of the most commonly used virtual memory i
 
 % Lösung? Hashed!
 \subsubsection{Inverted page tables}
-
+\begin{figure*}[t]
+    \centering
+    \includegraphics[scale=1]{figures/inverted_pt.pdf}
+    \caption[Simple Inverted Page Table Design]{A inverted page table has an entry for every physical
+        page frame, reducing memory accesses to a minimum of one. Collisions in the hash table (red arrows) can
+        make the access much more expensive. }
+    \label{fig:fund:pagetree}
+\end{figure*}
 % Fazit-> Nachteile von Invertierten Page Tables [siehe auch hash dont cache!]
 % -> Most commonly used in todays hardware -> Multi level page tables
 % Fazit -> Hauptproblem von VM sind teure Hauptspeicherzugriffe im kritischen Pfade von allen Memory Operations
 
-% -------------------------------------------------------------------------------------------------
 
 % -------------------------------------------------------------------------------------------------
-
-
-\begin{figure*}[t]
-    \centering
-    \includegraphics[]{figures/simple_mmu_arch.pdf}
-    \caption[A simplified architecture of CPU, MMU and TLB]{A simplified architecture of CPU, MMU and TLB}
-    \label{fig:fund:simplearch}
-\end{figure*}
-
+%                                  END SECTION - VM IMPLEMENTATION
 % -------------------------------------------------------------------------------------------------
 
+
+
+% -------------------------------------------------------------------------------------------------
+%                                            VM HARDWARE
 % -------------------------------------------------------------------------------------------------
 
 \section{Memory Management Hardware}
+\begin{figure*}[t]
+    \centering
+    \includegraphics[scale=1.2]{figures/simple_mmu_arch.pdf}
+    \caption[A simplified architecture of CPU, MMU and TLB]{A simplified architecture of CPU, MMU and TLB:
+        User-level programs running on the \texttt{CPU} try to access main memory with virtual
+        addresses; virtual addresses get transparently translated to physical addresses by the
+        \texttt{MMU} by either looking up the address in the TLB or by performing a page table
+        lookup with the hardware-supported page table design}
+    \label{fig:fund:simplearch}
+\end{figure*}
 % Davor sollte der Page Table walk bekannt sein
 \subsection{MMU}
 \subsection{TLB}
