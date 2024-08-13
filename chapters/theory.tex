@@ -20,6 +20,7 @@
 % Writing TLBs -> Implementation Theory
 %       Starting with MIPS for inspiration on how instructions for TLB manipulation may look like
 %       Then continue with a possible RISCV Implementation Idea
+%       I-TLB and D-TLB out of scope
 %
 %   Comparison to MIPS
 %       MIPS TLB instructions
@@ -32,6 +33,8 @@
 
 % xv6 Perspective and specifcs (but still theory!)
 %   Special mappings -> special case in tlb manager (e.g. Trampoline)
+
+%Design of Segmented VM softtlb -> Assumption: Process Memory allocation Model -> Only growing upwards
 
 % -------------------------------------------------------------------------------------------------
 %                                         END - STRUCTURE

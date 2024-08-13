@@ -20,18 +20,39 @@
 % -------------------------------------------------------------------------------------------------
 
 
+% -------------------------------------------------------------------------------------------------
+%                                           VIRTUAL MEMORY
+% -------------------------------------------------------------------------------------------------
+
+
 \section{Virtual Memory}
-
+\subsection{Motivation}
+Virtual memory is used in almost every system, ranging from big data center machines to small embedded system.
+Originally, it was developed by the designers of the Atlas Computer to automate the task of swaping data between
+main and secondary memory \cite{denning1997before}.
+This was necesarry as programs increased in size faster than main memory did; while single programs
+still fit in memory, operating systems allowed running multiple programs at once, collectively exceeding
+the available physical memory \cite{tanenbaumOS}.
+Nowadays, virtual memory is the basis of a lot of memory system requirements such as address
+space protection, isolation of processes, shared memory and more \cite{jacobSoftwaremanagedAddressTranslation1997}.
+It is also completely transparent to the programmer and enables programms to use every available
+address in its virtual address space.\\
+Peter Denning calls its wide spread adoption ''[..]one of the engineering triumphs of the computer
+age.''\cite{denning1997before}.
+\subsection{Memory System Requirements/Benefits?}
 % VM Properties and benefits: Was für Nutzen hat VM?
-- idealized abstraction of storage resources available on a machine
-- virtual to physical mapping
-- flexibility to place actual data anywhere on the available disk
-- emulate bigger memory than actually available
-- foundation for isolation/security
-- Implement flexible paging the swap pages between main memory and secondary storage
+% - idealized abstraction of storage resources available on a machine
+% - virtual to physical mapping
+% - flexibility to place actual data anywhere on the available disk
+% - emulate bigger memory than actually available
+% - foundation for isolation/security
+% - Implement flexible paging the swap pages between main memory and secondary storage
 % Fazit: VM hat sehr nützliche Eigenschaften
+% More: jacob1998virtualissues
 
-% ----------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+%                                IMPLEMENTATION OF VIRTUAL MEMORY
+% -------------------------------------------------------------------------------------------------
 
 % Wie können wir VM realisieren? -> Verschiedene Implementationen, Aber hier nicht auf die HW eingehen
 %   [ A look at several...]
@@ -39,8 +60,12 @@
 % \section{Implementation of Virtual Memory Systems}
 % \subsection{ Overview of different implementations (Inverted/Hierarchical/Multi-Level)}
 % \subsection{ Comparison of differnt implementations with regards to performance and features like page sharing}
+\subsection{Implementation of Virtual Memory}
+Every virtual memory system has to realize a mapping from virtual addresses of each processes
+private, virtual address space to actual physical addresses that index data in main memory.
+This section will provide an overview of the most commonly used virtual memory implementation.
 
-% -> Most commonly used in todays hardware -> Multi level page tables
+\subsubsection{Hierarchical page tables}
 \begin{figure*}[t]
     \centering
     \includegraphics[scale=.8]{figures/VM-Tree.pdf}
@@ -48,12 +73,19 @@
     \label{fig:fund:pagetree}
 \end{figure*}
 
+% Fazit -> Viele Main Memory Zugriffe -> Teuer
+
+% Lösung? Hashed!
+\subsubsection{Inverted page tables}
+
+% Fazit-> Nachteile von Invertierten Page Tables [siehe auch hash dont cache!]
+% -> Most commonly used in todays hardware -> Multi level page tables
 % Fazit -> Hauptproblem von VM sind teure Hauptspeicherzugriffe im kritischen Pfade von allen Memory Operations
 
-% -----------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
 
-% Hardware Strukturen zur beschleunigung von VM
-% \section{Hardware support}
+% -------------------------------------------------------------------------------------------------
+
 
 \begin{figure*}[t]
     \centering
@@ -62,7 +94,14 @@
     \label{fig:fund:simplearch}
 \end{figure*}
 
-% \subsection{MMU & TLB}
+% -------------------------------------------------------------------------------------------------
+
+% -------------------------------------------------------------------------------------------------
+
+\section{Memory Management Hardware}
+% Davor sollte der Page Table walk bekannt sein
+\subsection{MMU}
+\subsection{TLB}
 
 % With only software ptw process would have to context switch to the kernel -> Very expensive
 % With an MMU the processor essentially just freezes until the memory operation has completed
@@ -74,21 +113,32 @@
 
 % Fazit -> Es gibt hardware strukturen die VM beschleunigen können, die machen es auch schneller
 %       ABER: Die machen die VM Software Systeme auch sehr viel rigider und unflexibler
+% Kurze Diskussion -> Machen Hardware strukture das wirklich schneller? [ A look at ...]
+% -------------------------------------------------------------------------------------------------
 
-% -----------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
 
+\section{Sofware-based Virtual Memory System}
 % VM in Software möglich mit ähnlicher Performance wie hw möglich -> Sollte ja mehr Flexibilität geben
 %   [ A look at several...]
 % \section{ Sofware VM Approaches}
 % \section{ Liedtke GPTs}
 % \subsection{More flexibilty}
 
+\section{HW VM vs SW VM}
 % related work will then come in to discuss approaches close to my approach
 
+
 % -------------------------------------------------------------------------------------------------
+
+% -------------------------------------------------------------------------------------------------
+
 % TODO Short discussion hw and sw vm -> common problem: Page Table Walks require in either case a 
 % lot of memory references. These costs can be aleviated using caches, but will still cost [ cite a source abouts costs here]
 
 % -------------------------------------------------------------------------------------------------
 
+% -------------------------------------------------------------------------------------------------
+
+% All approaches are based on a table.
 % Überleitung zu meinem Thema -> Avoid all memory references and just have a simple (hash?) function that realizes VM
