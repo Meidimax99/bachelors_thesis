@@ -135,17 +135,59 @@ Ein alternatives Paging schema geht von der anderen richtung an das ganze ran un
 Eintrag pro theoretischer virtueller Page einen PTE pro physischem Frame zur Verfügung.
 Ein physisches Page Frame ist ein Page-aligneter platz im physischen speicher für eine Page.
 Somit ergibt sich die anzahl der physischen Frames durch die Größe des Hauptspeichers geteilt
-durch die Page-Größe \todo{Pages schon definiert? Auch die variable größe?}
-\begin{figure*}[t]
-    \centering
-    \includegraphics[scale=1]{figures/inverted_pt.pdf}
-    \caption[Simple Inverted Page Table Design]{A inverted page table has an entry for every physical
-        page frame, reducing memory accesses to a minimum of one. Collisions in the hash table (red arrows) can
-        make the access much more expensive. }
-    \label{fig:fund:pagetree}
+durch die Page-Größe \todo{Pages schon definiert? Auch die variable größe?}.
+Vor allem für 64-bit Addressräume hat das den enormen Vorteil, dass nur so viele Seiten verwaltet
+werden müssen die es auch tatsächlich physisch gibt.\\
+Das Pagetable design hat noch den Vorteil, dass man im besten Fall deutlich weniger Hauptspeicherzugriffe
+benötigt. In dem einfachen Design aus Figure \ref{fig:fund:inverted} kann der entsprechende
+Page Table entry schon mit zwei Speicherlookups gefunden werden.
+
+% worst case -> collision count only bound by page frame number
+Da allerdings die Page Frame INdizies durch eine Hashfunktion aus der VPN berechnet werden, kann es zu
+Hashkollisionen kommen. Da die Länge einer Kollisionskette nicht absehbar ist, ist die maximale
+Anzahl der Speicherzugriffe um den richtigen PTE zu finden nur durch die maximale Anzahl der
+Page Frames und damit durch die größe des Hauptspeichers beschränkt.
+
+% hierachical -> fixed number of refs (but memory usage)
+Hier haben die hierarchieschen multi-level page tables den entscheidenden Vorteil, dass sie immer
+die feste Anzahl an Speicherzugriffen benötigen um den PTE zu ermitteln.
+% Hash anchor to reduce the collision count
+Typische Inverted page table designs haben meistens noch eine sogenannte Hash Anchor Table, die zwischen
+dem Output der Hashfunktion und der Page Table liegt. Hat der Hash anchor doppelte größe
+der Pagetable, lässt sich die durchschnittliche Collision Chain Length halbieren.
+Allerdings wird nun mindestens eine Speicherreferenz in jedem Fall mehr gebraucht.
+\cite{jacob1998virtualissues}
+
+% Inverted Page Table figure
+\centering
+\includegraphics[scale=1]{figures/inverted_pt.pdf}
+\caption[Simple Inverted Page Table Design]{A inverted page table has an entry for every physical
+    page frame, reducing memory accesses to a minimum of one. Collisions in the hash table (red arrows) can
+    make the access much more expensive. }
+\label{fig:fund:inverted}
 \end{figure*}
 % Fazit-> Nachteile von Invertierten Page Tables [siehe auch hash dont cache!]
+Inverted Page Tables reduzieren zwar die durchschnittliche Zugriffszeit auf die PTEs enorm, sie machen
+es jedoch schwerer andere features wie superpages und memory sharing zu unterstützen.
+Die Power Architecture unterstützt dies zum Beispiel durch einen zweistufigen übersetzungsprozess\cite{yaniv2016hash}.
+% [hash dont cache] -> Hashed paging performs better
+
+
+% [hash dont cache] -> superpages are harder
+
+% [issues of impl] -> 
+
+% [ A look at several] -> 
+
 % -> Most commonly used in todays hardware -> Multi level page tables
+Einen klaren sieger in der debatte hashed vs radix \todo{radix begriff noch einführen} gibt es nicht
+und kommerzielle Hardware unterstützt verschiedenste designs die nicht standatisiert sich und z.t.
+stark unterscheiden \cite{jacob1998look}.
+
+Moderne INtel prozessoren unterstützen inzwischen radix designs mit einer tiefe von bis zu 5 ebenen,
+die nach wie vor 4KB pages benutzten um Kompatibilität zu bewaren.
+
+% Todo, aber größere pages erhöhen tlb reach usw
 % Fazit -> Hauptproblem von VM sind teure Hauptspeicherzugriffe im kritischen Pfade von allen Memory Operations
 
 \todo{discussion: Sind die aktuellen VM systeme (vor allem hierachical) noch Zeitgemäß oder nur noch altlast???}
@@ -174,6 +216,9 @@ durch die Page-Größe \todo{Pages schon definiert? Auch die variable größe?}
 \subsection{MMU}
 \subsection{TLB}
 
+
+% Gute quelle für alles hier : [jacob2010memory
+]
 % With only software ptw process would have to context switch to the kernel -> Very expensive
 % With an MMU the processor essentially just freezes until the memory operation has completed
 \cite{jacobVirtualMemoryContemporary1998}
@@ -214,3 +259,4 @@ durch die Page-Größe \todo{Pages schon definiert? Auch die variable größe?}
 
 % All approaches are based on a table.
 % Überleitung zu meinem Thema -> Avoid all memory references and just have a simple (hash?) function that realizes VM
+% [ a look at severeal ] -> conlsion
