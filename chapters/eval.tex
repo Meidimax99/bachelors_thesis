@@ -1,5 +1,34 @@
 \chapter{Evaluation}
 
+% -------------------------------------------------------------------------------------------------
+%                                         Copy Paste from Discussion
+% -------------------------------------------------------------------------------------------------
+
+% Possible performance improvements:
+% In-Line Interrupt Handling for Software-Managed TLBs -> reducing size
+% of miss handler -> inlining it into reorder buffer
+
+\section{Restrictions of the current design}
+A segmented design has some restrictions compared to contemporary virtual memory
+systems. In the following, important requirements to typical virtual memory
+systems are presented and how the presented design can hold up.
+\todo{How it fullfills these requirements now, how it may or may not fullfill currently
+    unsupported requirements.}
+
+
+%Flexibility limitation -> flexibility of the virtual memory system
+% is still restricted by the tlb structure
+% -> other approach jacobSoftwaremanagedAddressTranslation1997
+
+% Vergleich MIPS Page table fast path
+
+% Inside L4 Mips fastpath vs slowpath
+
+% Harware erweiterung wenn die funktion parametrisierbar ist
+
+% -------------------------------------------------------------------------------------------------
+%                                          Discussion CP End
+% -------------------------------------------------------------------------------------------------
 \label{chap:eval}
 
 % Qualitative Vergleiche

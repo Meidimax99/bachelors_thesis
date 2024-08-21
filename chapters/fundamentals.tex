@@ -69,7 +69,7 @@ Diese Eigenschaften setzen die meisten Leute die auf Applikationsebene Programmi
 weniger als gegeben voraus und machen sich keine weiteren Gedanken darüber\todo{cite?}.
 Durch das immer weiter Auseinanderdriften der CPU und Memory geschwindigkeiten und vor allem
 durch das größer werden von Addressräumen (von 32 auf 64 bit!) \todo{cite} sind die Ansprüche an
-das Virtual Memory system gewachsen und so mussten sich auch die IMplementationen weiterentwickeln.
+das Virtual Memory system gewachsen und so mussten sich auch die Implementationen weiterentwickeln.
 
 Im Folgenden werden die meistgenutzten VM systeme betrachtet.
 % VM Properties and benefits: Was für Nutzen hat VM?
@@ -86,7 +86,7 @@ Im Folgenden werden die meistgenutzten VM systeme betrachtet.
 \subsection{Implementation of Virtual Memory}
 Every virtual memory system has to realize a mapping from virtual addresses of each processes
 private, virtual address space to actual physical addresses that index data in main memory.
-This section will provide an overview of the most commonly used virtual memory implementation.
+This section will provide an overview of the most commonly used virtual memory implementation.\\
 
 \todo{page table splits, vpn -> tanenbaum}
 % Naiver Page Table ansatz
@@ -101,6 +101,7 @@ Protection flags zu haben, was dann die größe der Pagetable noch auf 4 MiBi er
 Bei 64-bit Computern wäre dieser naiver ansatz völlig unpraktikabel.
 \todo{tanenbaum -> numbers for paging}
 \subsubsection{Hierarchical page tables}
+\todo{Verschiedene andere namen -> aus den übersichtspapern [a look at several, issues of impl]}
 Um die Speicherkosten der Verwaltung der Pages zu reduzieren benutzten die meisten \todo{cite?}
 Virtual Memory Systeme eine Multi-Level Page Table, oder auch hierarchische Page Table genannt.
 Diese ähnelt aber in ihrere Struktur weniger einer Tabelle sondern mehr einem Baum dessen Nodes tabellen
@@ -160,12 +161,12 @@ Allerdings wird nun mindestens eine Speicherreferenz in jedem Fall mehr gebrauch
 
 % Inverted Page Table figure
 \begin{figure*}[t]
-\centering
-\includegraphics[scale=1]{figures/inverted_pt.pdf}
-\caption[Simple Inverted Page Table Design]{A inverted page table has an entry for every physical
-    page frame, reducing memory accesses to a minimum of one. Collisions in the hash table (red arrows) can
-    make the access much more expensive. }
-\label{fig:fund:inverted}
+    \centering
+    \includegraphics[scale=1]{figures/inverted_pt.pdf}
+    \caption[Simple Inverted Page Table Design]{A inverted page table has an entry for every physical
+        page frame, reducing memory accesses to a minimum of one. Collisions in the hash table (red arrows) can
+        make the access much more expensive. }
+    \label{fig:fund:inverted}
 \end{figure*}
 % Fazit-> Nachteile von Invertierten Page Tables [siehe auch hash dont cache!]
 Inverted Page Tables reduzieren zwar die durchschnittliche Zugriffszeit auf die PTEs enorm, sie machen
@@ -203,6 +204,11 @@ die nach wie vor 4KB pages benutzten um Kompatibilität zu bewaren.
 % -------------------------------------------------------------------------------------------------
 
 \section{Memory Management Hardware}
+Um die Umwandlung der virtuellen in physische Addressen weiter zu beschleuningen nutzen die meisten
+modernen Rechner extra hardwarebausteine. Diese bestehen aus einem Hardware Page Table walker (MMU) und
+einem Translation Cache, meistens Translation Lookaside Buffer (TLB) genannt\cite{jacobVirtualMemoryContemporary1998}.
+% Frage: Besteht das MMU aus TLB + State Walker oder ist MMU der State Walker und TLB einfach extra?
+% FIGURE Simple HW Architecture for VM Acceleration Hardware
 \begin{figure*}[t]
     \centering
     \includegraphics[scale=1.2]{figures/simple_mmu_arch.pdf}
@@ -213,17 +219,26 @@ die nach wie vor 4KB pages benutzten um Kompatibilität zu bewaren.
         lookup with the hardware-supported page table design}
     \label{fig:fund:simplearch}
 \end{figure*}
+% End Figure
+
 % Davor sollte der Page Table walk bekannt sein
 \subsection{MMU}
+Das Memory Management Unit (MMU) übernimmt die Aufgabe der addressübersetzung für den Computer.
+Dabei steht es zwischen dem Prozessor, der hauptsächlich mit virtuellen Addressen arbeitet und dem
+Memory Bus, der mit physischen Adressen zugegriffen wird. Greift der Prozessor auf eine gewisse
+virtuelle addresse zu, so führt das MMU einen Page Table walk durch um die zu der virtuellen
+Addresse passende physische addresse zu bestimmen. Währenddessen ist der Prozessor effektiv eingefrohren\cite{jacobVirtualMemoryContemporary1998}
+\todo{more fine-grained citation? -> Probably not, these are only fundamentals, should however quote overarching works}
 \subsection{TLB}
+Weil es sehr teuer wäre bei jedem Lade oder Speicher Memory Zugriff einmal die Page Table in hardware zu durchgehen,
+gibt es einen Cache für die Übersetzungen, den Translation Lookaside Buffer (TLB). Dieser Cache enthält
+most recent Translations von virtueller zu physischer addresse.\\
+Das MMU kann also erst mal in den TLB schauen, der parallelisiert und damit extrem schnell durchsucht
+werden kann \cite{drepper2007every}.
 
 
-% Gute quelle für alles hier : [jacob2010memory
-]
-% With only software ptw process would have to context switch to the kernel -> Very expensive
-% With an MMU the processor essentially just freezes until the memory operation has completed
+% Gute quelle für alles hier : [jacob2010memory]
 \cite{jacobVirtualMemoryContemporary1998}
-% \subsection{HW-Dependent PTE Structure} -> inflexibility
 % \subsection{A typical Page Table Walk}
 
 
@@ -242,10 +257,52 @@ die nach wie vor 4KB pages benutzten um Kompatibilität zu bewaren.
 % \section{ Liedtke GPTs}
 % \subsection{More flexibilty}
 
+
+
+
+
+
+
 \section{HW VM vs SW VM}
 % related work will then come in to discuss approaches close to my approach
+% With only software ptw process would have to context switch to the kernel -> Very expensive
+% With an MMU the processor essentially just freezes until the memory operation has completed
+% \subsection{HW-Dependent PTE Structure} -> inflexibility
+Zwischen hardware und software managed translations gibt es einige Erwägungen die in betracht
+gezogen werden sollten.
+
+\paragraph{Feste Paging Structuren} Bei Hardware Managed Virtual Memory sind die structuren für
+für die Page Tables und Page Table Entries fest von der Microarchitecture definiert.
+Dadurch kann das Betriebssystem das Memory Management nicht auf seine zwecke und seinen Use case
+zurecht schneiden und ist stuck mit dem fixen design.
+Dieses erschwert auch die Portabilität von Systemsoftware, da es keinen Standard für diese
+Memory Management Strukturen gibt.
+Bei diesen gibt es auch keinerlei standartisierung obwohl es keine bedeutenden Performance unterschiede
+in den Verschiedenen designs  gibt \cite{jacob1998look}.
+
+\paragraph{Pipeline freezing / flushing} Bei einem TLB Miss \todo{schon definiert?} kommt es bei
+einem hardware verwalteten TLB nur zu einem einfrieren der Pipeline (zumindest für die Instruktionen
+die abhängig von dem Speicherzugriff sind). Bei einem software verwalteten TLB wird die Kontrolle
+jedoch zurück an das Betriebssystem über eine Exception gegeben, die entsprechend vermerkt,
+dass sich die benötigte Adresse nicht im TLB befindet (TLB Miss Exception).
+Der Sprung zurück ins Betriebssystem sorgt für einen Context-Switch, es muss also der Zustand
+des aktuellen Prozesses gespeichert werden. Dabei wird der Reorder buffer geflushed und die
+pipeline massiv gestört. Durch den switch in den Kernel kann es langfristig auch noch zu weiteren
+Data und Instruction misses kommen, da ja der Kerneleintritt sicherlich einige Cache lines die der
+laufende Prozess benötigt hat überschrieben hat.
+
+\paragraph{Embedded} Auch für embedded systems wird es interessanter virtual memory zu nutzen.
+Diese würden sicherlich von flexibleren designs profitieren. Außerdem würde die ein Einsparen
+an Chipgröße durch weglassen des MMUs auch die Kosten in der Produktion senken. \cite{jacob1998look}
+\todo{weiß ja nicht}
 
 
+% Conclusion of HW vs SW
+\cite{jacob1998look} schließt in einer vergleichenden Studie verschiedener HW und SW memory designs,
+dass wohl HW basierte Ansätze grundsätzlich performanter sind, aber das SW basierte designs durchaus
+viable sind, wenn die caches groß genug sind um die Anzahl der Cache misses zu reduzieren.
+Besonders bezüglich der flexibilität haben sw ansätze auch einen großen vorteil, da das VM system
+vollständig durch das OS definiert werden kann.
 % -------------------------------------------------------------------------------------------------
 
 % -------------------------------------------------------------------------------------------------
