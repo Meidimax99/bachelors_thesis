@@ -94,3 +94,20 @@ Sie zeigen eine 2.3\% performance Verbesserung mit dem der abflachung des Page T
 Beide Ansätze zielen auf eine Optimierung des Zugriffes auf die Page Table Strukturen hin und sind
 damit getrennt von dieser Arbeit zu sehen, da diese Arbeit darauf abzielt, ohne diese Strukturen
 auszukommen.
+
+
+% -------------------------------------------------------------------------------------------------
+
+% Elastic Cuckoo Page Table
+\textbf{\cite{skarlatos2020elastic}} presents a novel page table design called \textit{Elastic Cuckoo Page
+    Tables}. Das Design nutzt den Memory-level Parallelismus aus um Page Tabel lookups komplett parallelisiert
+anstellen zu können. At the core of the design lies the Elastic Cuckoo Hashing algorithm witch allows
+multiple hashing locations for a given element and also allows the hash table to be efficitenly gradually
+resized. Skarlatos et all. show an application execution speed up of 3-18\% using the Elastic Cuckoo
+Page Table design.\\
+
+
+
+The related work presented here focuses on optimizing current page table designs and their hardware
+support. This work will explore the feasibility of implementing virtual memory without any page table
+whatsoever. % How? -> Theory!

@@ -100,6 +100,8 @@ Normalerweise würde man die PTEs auch noch auf wordsize alignen um dann auch no
 Protection flags zu haben, was dann die größe der Pagetable noch auf 4 MiBi erhöhen würde.
 Bei 64-bit Computern wäre dieser naiver ansatz völlig unpraktikabel.
 \todo{tanenbaum -> numbers for paging}\\
+
+
 \subsubsection{Hierarchical page tables}
 \todo{Verschiedene andere namen -> aus den übersichtspapern [a look at several, issues of impl], radix tree}\\
 Um die Speicherkosten der Verwaltung der Pages zu reduzieren benutzten die meisten \todo{cite?}
@@ -130,6 +132,7 @@ Das traversieren der Page Table zum finden des Mappings benötigt pro Level eine
 und da das Ermitteln des Mappings auf dem kritischen Pfad jeder Memory-operation befindet,  sodass
 es im schlimmsten fall, wenn alle caches missen, zu 5 memory accesses kommen muss (bei einem 5 -level
 paging scheme) nur um das Mapping für einen Memory Zugriff zu finden.
+
 % Lösung? Hashed!
 \subsubsection{Inverted page tables}
 Ein alternatives Paging schema geht von der anderen richtung an das ganze ran und stellt statt einen
@@ -141,7 +144,7 @@ Vor allem für 64-bit Addressräume hat das den enormen Vorteil, dass nur so vie
 werden müssen die es auch tatsächlich physisch gibt.\\
 Das Pagetable design hat noch den Vorteil, dass man im besten Fall deutlich weniger Hauptspeicherzugriffe
 benötigt. In dem einfachen Design aus Figure \ref{fig:fund:inverted} kann der entsprechende
-Page Table entry schon mit zwei Speicherlookups gefunden werden.
+Page Table entry schon mit zwei Speicherlookups gefunden werden \cite{skarlatos2020elastic}.
 
 % worst case -> collision count only bound by page frame number
 Da allerdings die Page Frame INdizies durch eine Hashfunktion aus der VPN berechnet werden, kann es zu
@@ -152,12 +155,14 @@ Page Frames und damit durch die größe des Hauptspeichers beschränkt.
 % hierachical -> fixed number of refs (but memory usage)
 Hier haben die hierarchieschen multi-level page tables den entscheidenden Vorteil, dass sie immer
 die feste Anzahl an Speicherzugriffen benötigen um den PTE zu ermitteln.
+
 % Hash anchor to reduce the collision count
 Typische Inverted page table designs haben meistens noch eine sogenannte Hash Anchor Table, die zwischen
 dem Output der Hashfunktion und der Page Table liegt. Hat der Hash anchor doppelte größe
 der Pagetable, lässt sich die durchschnittliche Collision Chain Length halbieren.
-Allerdings wird nun mindestens eine Speicherreferenz in jedem Fall mehr gebraucht.
-\cite{jacob1998virtualissues}
+Allerdings wird nun mindestens eine Speicherreferenz in jedem Fall mehr gebraucht \cite{jacob1998virtualissues}.
+Alternative inverted page table designes erlauben eine dynamische größenänderung der Tabelle um
+Hash Collisionen zu verhindern. Dies ist jedoch sehr teuer und wird in der Regel vermieden \cite{skarlatos2020elastic}.
 
 % Inverted Page Table figure
 \begin{figure*}[t]
@@ -168,6 +173,7 @@ Allerdings wird nun mindestens eine Speicherreferenz in jedem Fall mehr gebrauch
         make the access much more expensive. }
     \label{fig:fund:inverted}
 \end{figure*}
+
 % Fazit-> Nachteile von Invertierten Page Tables [siehe auch hash dont cache!]
 Inverted Page Tables reduzieren zwar die durchschnittliche Zugriffszeit auf die PTEs enorm, sie machen
 es jedoch schwerer andere features wie superpages und memory sharing zu unterstützen.
