@@ -31,7 +31,20 @@ systems are presented and how the presented design can hold up.
 % -------------------------------------------------------------------------------------------------
 \label{chap:eval}
 
-% Qualitative Vergleiche
+% Qualitative Vergleiche anhand der Memory System Requirements
+\section{Memory System Requirements}
+Für eine qualitative Analyse des implementierten Virtual Memory Systems bietet \cite{jacobSoftwaremanagedAddressTranslation1997}
+eine gute Vorlage. Dort wurden die zentralen Anforderungen an ein Virtual Memory System auf Grundlage
+von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
+
+% Was ist mit dem paging passiert -> Automatisches Tauschen von Seiten zwischen Haupt und Nebenspeicher?
+% In xv6 nicht implementiert, könnte es mit dem Segmentierten Design implementiert werden
+
+% Allgemeine Discussion eines Segmentierten Designs
+% \cite{skarlatos2020elastic}
+% \cite{tanenbaumOS}
+% \cite{denning1997before}??
+
 
 % Ohne caches -> Emualtion vs Real Hardware -> Warum keine quantitaive analyse
 
@@ -39,13 +52,14 @@ systems are presented and how the presented design can hold up.
 
 \section{cost analysis}
 % Theoretische Kostenanalyse -> context switch in sw (ausblick inline?)
+% -> Optimization -> Reserve Registers for kernel handler, but this wont be good 
+% -> l4 20 year paper -> registeres important for optiization
 \section{performance?}
 \subsection{Problems with measuring performance of an emulated system}
 % Liedtke gpts?
 
-\section{Memory System Requirements}
-\cite{jacobSoftwaremanagedAddressTranslation1997}
 
+% \section{Other operating system features in light of the segmented design}
 % TODO discussion (extra chapter?) about whether fork makes sense with 
 % this segmented allokation approach
 
