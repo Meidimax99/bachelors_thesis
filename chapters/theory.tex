@@ -59,7 +59,39 @@
 % Conclusion on previous Work -> Still need a memory access
 
 % The Idea -> Getting rid of any memory access in favor of simple arithmetic operation (eg. hash functions)
+Die grundlegende Idee dieser Arbeit ist es die Page Table Strukturen, seien es Hashed Page Tables oder
+Radix Page Tables, oder andere Designs wie sie in Related work presentiert wurden, komplett loszuwerden.
+Diese sollen durch eine einfache funktion ersetzt werden die das Mapping von virtuellen zu physischen
+Addressen realisiert.\\
+Offensichtliche Kandidaten für so eine Funktion wären natürlich Hashfunktionen. Vor allem die in
+\cite{skarlatos2020elastic} vorgestellte Elastic Cuckoo Hash function verfügt schon über Eigenschaften
+die für ein direktes virtual-physical mapping, statt einem virtual-hash table index, nützlich wären.
+\todo{Das mit den Cuckoo hash ist vielleicht für diese Stelle schon zu viel detail}.
+Der wichtigste Aspekt diese Funktion ist allerdings, dass sie, anders als alle anderen Page Table designs,
+keine Speicherorte referenziert, also praktisch komplett ohne einen Zustand auskommt.\\
+Die phyische Addresse soll also möglichs nur aus informationen,  die in registern zur verfügung
+gestellt werden können, ermittelt werden.\\
+% Wie related das zu: Demand Paging?, Virtual Memory Requirements, Features wie page sharing
+Für einen ersten Proof of Concept soll die funktion in einem Exception Handler implementiert werden.
+Diese Excepion handler wird getriggert sobald es zu einem TLB miss kommt, das heißt wenn ein
+gesuchtes Mapping für einen Speicherzugriff nicht im TLB zu finden war.
 
+%Implementation Platform
+Diese Kapitel betrachtet zwar nur die Theorie des softtlb desings, allerdings muss diese in Kontext
+der gewählten Platform gestellt werden und wird daher an manchen Stellen in tieferes Detail der konkreten
+Platform eintauchen als man für eine theoretische Ausarbeitung des Designs erwarten würde.
+Das ist wichtig um dem späteren Implementierungskapitel den nötigen Kontext zu liefern.\\
+Als Platform für die Implementierung wurde der Einfachkeit halber das xv6-riscv educational operating
+system \cite{cox2011xv6} gewählt.\\
+\textit{Xv6} wird am MIT genutzt um Operating Systems Kurse zu bieten und bietet mit dem Handbuch eine
+einfache und verständliche Platform die ein vereinfachtes Unix Version 6 Interface implementiert.\\
+Xv6 gibt es in einer x86 version und in einer RISC-V version, es wurde hier die RISC-V version verwendet.
+\\
+Da im Rahme der Implementierung einer neuen Exception das nutzen echter RISC-V Hardware nicht möglich
+ist, muss ein Emulator benutzt werden um die nötigen Änderungen an der ISA zu implementieren und zu nutzen.
+Dafür wurde der Qemu Emulator gewählt, da dieser sehr Umfassend und performant ist und außerdem einen
+TLB emuliert.
+% Zukünftige Idee -> Configurierbarer "stateless" physical frame calculator hw baustein
 
 % What to do to realize this idea? (basically top level overview of the theory and impl chapters)
 % New Exception - TLB Miss Exception
@@ -136,6 +168,8 @@ representation of the thing they describe.
 
 % -------------------------------------------------------------------------------------------------
 
+% A look at input and output data
+% Calculation of addresses
 
 
 % xv6 Perspective and specifcs (but still theory!)
@@ -144,8 +178,6 @@ representation of the thing they describe.
 %Design of Segmented VM softtlb -> Assumption: Process Memory allocation Model -> Only growing upwards
 % Segmentation -> ASIDs -> HW support for Address Space Protection
 % -> [jacob1998virtualissues]
-
-
 
 % -------------------------------------------------------------------------------------------------
 %                                      Stuff to be sorted in
