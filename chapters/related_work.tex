@@ -30,9 +30,7 @@ Dabei gibt es verschiedene Ansätze oder Winkel um das System anzugehen:
 % -------------------------------------------------------------------------------------------------
 
 % In Cache Software Managed Address Translation
-\textbf{\cite{jacobSoftwaremanagedAddressTranslation1997}}
-
-explores software-managedaddress translation and analyses the efficiency of a PowerPC implementation
+\textbf{\cite{jacobSoftwaremanagedAddressTranslation1997}}explores software-managedaddress translation and analyses the efficiency of a PowerPC implementation
 of the presented design they call \textit{softvm}. They show that
 software-managed address translation can achieve better performance and
 at the same time simplify hardware by dispensing with translation caches and
@@ -51,9 +49,7 @@ memory allocation.\\
 % -------------------------------------------------------------------------------------------------
 
 % Translation Caching skip dont walk -> Translation Caches
-\textbf{\cite{barrTranslationCachingSkip}}
-
-betrachtet den Design Space der Translation Caches in MMUs. Diese Caches sind nicht mit den TLBs
+\textbf{\cite{barrTranslationCachingSkip}}betrachtet den Design Space der Translation Caches in MMUs. Diese Caches sind nicht mit den TLBs
 vergleichbar, die ganze übersetzungen von virtuellen zu PTEs enthalten. Die Translation Caches
 die hier betrachtet werden enthalten partielle Übersetzungen, die es bei einem Cache Hit möglich
 machen einzelne Schritte beim durchschreiten des Page Table Baumes zu überspringen und somit
@@ -70,9 +66,7 @@ betracht.
 % -------------------------------------------------------------------------------------------------
 
 % Hash dont Cache
-\textbf{\cite{yaniv2016hash}}
-
-fordert die Ergebnise von \cite{barrTranslationCachingSkip} heraus und argumentiert, dass die erzielten
+\textbf{\cite{yaniv2016hash}}fordert die Ergebnise von \cite{barrTranslationCachingSkip} heraus und argumentiert, dass die erzielten
 Ergebnisse auf einer subobtimalen implementation der invertierten Page table basieren.\\
 Sie schließen, dass eine gut optimierte Invertierte Page Table auch eine mit PWCs ausgestattete
 Radix Page Table outperformed. Sie gehen jedoch auch auf die conceptuellen nachteile von Invertierten
@@ -87,9 +81,7 @@ Page Table strukturen zu verwenden.
 % -------------------------------------------------------------------------------------------------
 
 % Every walk’s a hit: making page walks single-access cache hits
-\textbf{\cite{park2022every}}
-
-idenzifiziert, dass die heutigen Speicherkapazitäten die TLB Coverage weiter und weiter übertreffen
+\textbf{\cite{park2022every}} idenzifiziert, dass die heutigen Speicherkapazitäten die TLB Coverage weiter und weiter übertreffen
 und somit speicherhungrige Applikationen unter vielen Page Table Walks (PTWs) leiden.\\
 Es werden zwei Ansätze vorgestellt um die damit verbundenen Kosten zu reduzieren:
 Der erste Ansatz zielt darauf ab die anzahl der Speicherreferenzen pro PTW zu reduzieren. Dabei werden
