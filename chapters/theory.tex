@@ -94,6 +94,14 @@ TLB emuliert.
 % Zukünftige Idee -> Configurierbarer "stateless" physical frame calculator hw baustein
 
 % What to do to realize this idea? (basically top level overview of the theory and impl chapters)
+Dieser Abschnitt enthält die theoretischen Ausarbeitungen zu den einzelnen Bestandteilen die für
+die Implementation des Software kontrollierten TLB Miss Handlers benötigt werden. Diese Bestandteile
+sind wie folgt:
+\begin{itemize}
+    \item Die Erweiterung des Qemu Emulators um einen Exceptionwurf bei TLB Miss
+    \item Einen Maschine-Mode Traphandler in xv6 der die neue TLB Miss Exception entsprechend behandelt
+    \item Eine Möglichkeit um TLB einträge mittels spezieller Instruktionen zu schreiben
+\end{itemize}
 % New Exception - TLB Miss Exception
 % CSRs to write TLBs
 % Exception Handler

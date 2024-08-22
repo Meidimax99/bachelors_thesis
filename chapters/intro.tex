@@ -62,3 +62,24 @@ most-priviledged machine mode. This paper will explore just that.
 % WHAT DOES THIS PAPER DO
 % -> SW TLB Handling Proof Of concept on riscv
 % -> Use that TLB handling to realize a Segmented vm design not using any page tables
+
+% Inhaltsbeschreibung
+Kapitel 2 gibt eine Übersicht über ein bisschen Historie und die Grundlagen von Virtuellen
+Speichersystemen. Das dort zusammengefasste Wissen stellt die Grundlage für den restlichen Teil der
+Arbeit dar.\\
+Kapitel 3 beschäftigt sich mit verwandten Arbeiten die sich auch mit der Optimierung des VM Systems
+beschäftigen.\\
+Kapitel 4 beschreibt die Theoretische Ausarbeitung der \textit{softtlb} Idee und stellt so mit die
+Grundlage für die Implementierung da.\\
+Die Implementierung wird in Kapitel 5 beschrieben. Dort wird näher auf die Eigenheiten der
+Programmierplattformen eingegangen und der Implementationsprozess schrittweiße dargestellt.
+Dort findet sich auch eine Übersicht der Debuggingtechniken die zur Verifikation und Fehlersuche
+verwendet wurden.\\
+Das sechste Kapitel setzt sich kritisch mit dem erziehlten Stand der theoretischen Ausarbeitung und
+der Implementation außeinander und beleuchtet das Ergebnis im lichte typischer Requirements an
+andere Virtuelle Speichersysteme. Dort schließt sich noch eine Diskussion über eine weitere
+Vertiefung des Ansatzes an.\\
+Im siebten Kapitel werden noch Vorschläge für auf diese Arbeit aufbauende Arbeiten gemacht. Diese
+nehmen noch Bezug auf zuvor ausgeschlossene Themen wie Hardwareoptimierungen der Idee.\todo{future  work:
+    Hardware stateless hash mmu, der meine Idee in hardware realisiert}\\
+Das achte und letzte Kapitel gibt eine zusammenfassende Einschätzung der Arbeit ab.\\
