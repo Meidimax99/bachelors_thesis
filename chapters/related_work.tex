@@ -1,15 +1,38 @@
 \chapter{Related Work}
 
 \label{chap:related}
+Diese Arbeit lässt sich grob in den Raum von Virtual Memory Optimierung einordnen.
+Es gibt eine große Menge an Literatur die sich mit der der Optimierung des Virtual Memory Systems
+beschäftigt. Dieses liegt schließlich auf dem kritischen Pfad jeder Memory Operation.\\
+Dabei gibt es verschiedene Ansätze oder Winkel um das System anzugehen:
+\todo{Diese Punkte müssen noch zusammengefasst werden}\\
+\begin{itemize}
+    \item Die Pagetablestruktur, z.B. invertiert oder hierarchisch
+    \item Caching von Seiten, PTEs im TLB und indizierung von Caches
+    \item Replacementstrategien der Caches
+    \item Cachegrößen, Assoziativität
+    \item translation caches in MMU (not TLB), Page Walk caching
+    \item TODO weitere Aspekte
+    \item software optimizations
+    \item Hardware optimazations, hardware support, flexibility
+\end{itemize}
 
-% \section{Liedtke: Guarded Page Tables}
-% \todo{Should this be in the fundamentals chapter? Inverted Page tables are used relatively much}
-% \section{Inverted Page Tables}
+% -------------------------------------------------------------------------------------------------
 
-% \section{Other software-based TLB miss handlers / Page table walkers?}
+% Guarded Page Tables
+\textbf{\cite{liedtkeGPT}}
 
-\cite{jacobSoftwaremanagedAddressTranslation1997} explores software-managed
-address translation and analyses the efficiency of a PowerPC implementation
+% -------------------------------------------------------------------------------------------------
+
+% MIPS GPT Impl
+\textbf{\cite{heiserAnatomyHighPerformanceMicrokernel}}
+
+% -------------------------------------------------------------------------------------------------
+
+% In Cache Software Managed Address Translation
+\textbf{\cite{jacobSoftwaremanagedAddressTranslation1997}}
+
+explores software-managedaddress translation and analyses the efficiency of a PowerPC implementation
 of the presented design they call \textit{softvm}. They show that
 software-managed address translation can achieve better performance and
 at the same time simplify hardware by dispensing with translation caches and
@@ -22,22 +45,60 @@ Not unlike this paper, they extend the PowerPC architecture by two new instructi
 to write entries to the cache. However, their design uses software page table
 walks to find translations on cache-miss, while the approach presented in this
 paper presents a software-based TLB fill mechanism with segmented
-memory allocation.\\\\
+memory allocation.\\
 % TODO Further elaboration on the Background chapter of jacobSoftwaremanagedAddressTranslation1997
 
+% -------------------------------------------------------------------------------------------------
 
-\cite{barrTranslationCachingSkip}
+% Translation Caching skip dont walk -> Translation Caches
+\textbf{\cite{barrTranslationCachingSkip}}
+
+betrachtet den Design Space der Translation Caches in MMUs. Diese Caches sind nicht mit den TLBs
+vergleichbar, die ganze übersetzungen von virtuellen zu PTEs enthalten. Die Translation Caches
+die hier betrachtet werden enthalten partielle Übersetzungen, die es bei einem Cache Hit möglich
+machen einzelne Schritte beim durchschreiten des Page Table Baumes zu überspringen und somit
+einen oder mehrere Speicherzugriffe einzusparen. Sonst würde die Übersetzung pro Level eine
+Speicherreferenz benötigen. Diese Caches werden auch Page Walk Caches (PWC) \cite{yaniv2016hash} genannt.\\
+Betrachtet wird das konkrete Translation Cache Design von AMD und Intel plattformen und vergleichend
+mit 3 weiteren von den Authoren vorgeschlagenen Designs präsentiert. Barr et al. schließen,
+dass die Radix Page tables durch cachen von Einträgen auf hohen Page Table levels invertierte Page
+Table designs autperformen können.\\
+Diese Arbeit beschäftigt sich mit der Optimierung des Memory Pfades durch abschaffen der Page Tables
+und durch einen Software-Kontrollierten TLB und zieht Caches, abgesehen von dem TLB nicht weiter in
+betracht.
+
+% -------------------------------------------------------------------------------------------------
+
+% Hash dont Cache
+\textbf{\cite{yaniv2016hash}}
+
+fordert die Ergebnise von \cite{barrTranslationCachingSkip} heraus und argumentiert, dass die erzielten
+Ergebnisse auf einer subobtimalen implementation der invertierten Page table basieren.\\
+Sie schließen, dass eine gut optimierte Invertierte Page Table auch eine mit PWCs ausgestattete
+Radix Page Table outperformed. Sie gehen jedoch auch auf die conceptuellen nachteile von Invertierten
+Page tables ein, z.B. ist es schwieriger Super Pages zu implementieren.\\
+Die Arbeit beschäftigt sich näher mir den unterschieden verschiedener Page Table designs und auch mit
+den Requirements an ein Memory system (wie zum Beispiel superpages oder page sharing). Diese Requirements sind auch
+für das hier vorgestellte Design wichtig. Sonst zielt diese Arbeit aber eher darauf ab keine
+Page Table strukturen zu verwenden.
+
+
+
+% -------------------------------------------------------------------------------------------------
 
 % Every walk’s a hit: making page walks single-access cache hits
+\textbf{\cite{park2022every}}
 
-% Liedtke GPTs + Heise Implementation -> Software Based approach, but still inherently uses a page table
-%TODO split in different areas
-% Software Managed Virtual Memory
-% Hardware optimizations -> Translation caches
-% software optimizations
-% Alternative page table designs
-
-% Related work exploring Other caches, like Page Tables in L2 -> Out of scope for this work
-
-
-% TODO Mips
+idenzifiziert, dass die heutigen Speicherkapazitäten die TLB Coverage weiter und weiter übertreffen
+und somit speicherhungrige Applikationen unter vielen Page Table Walks (PTWs) leiden.\\
+Es werden zwei Ansätze vorgestellt um die damit verbundenen Kosten zu reduzieren:
+Der erste Ansatz zielt darauf ab die anzahl der Speicherreferenzen pro PTW zu reduzieren. Dabei werden
+zwei Level der Page Table in ein Level verbunden.
+Der zweite Ansatz ändert die Cache replacement policy so ab, dass Cache Einträge die PTEs enthalten
+bei Perioden mit vielen TLB misses eher im Cache behalten werden, so dass die PTWs direkt über
+den Cache laufen können und nicht erst aus dem Hauptspeicher geladen werden müssen.\\
+Sie zeigen eine 2.3\% performance Verbesserung mit dem der abflachung des Page Table Trees,
+6.2\% durch die Cache Priorisierung und combiniert eine verbesserung der Performance um 9.2\%.
+Beide Ansätze zielen auf eine Optimierung des Zugriffes auf die Page Table Strukturen hin und sind
+damit getrennt von dieser Arbeit zu sehen, da diese Arbeit darauf abzielt, ohne diese Strukturen
+auszukommen.

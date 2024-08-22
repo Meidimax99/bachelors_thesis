@@ -99,9 +99,9 @@ für Sicherheit im System zu gewährleisten kann das insgesamt recht teuer werde
 Normalerweise würde man die PTEs auch noch auf wordsize alignen um dann auch noch platz für weitere
 Protection flags zu haben, was dann die größe der Pagetable noch auf 4 MiBi erhöhen würde.
 Bei 64-bit Computern wäre dieser naiver ansatz völlig unpraktikabel.
-\todo{tanenbaum -> numbers for paging}
+\todo{tanenbaum -> numbers for paging}\\
 \subsubsection{Hierarchical page tables}
-\todo{Verschiedene andere namen -> aus den übersichtspapern [a look at several, issues of impl]}
+\todo{Verschiedene andere namen -> aus den übersichtspapern [a look at several, issues of impl], radix tree}\\
 Um die Speicherkosten der Verwaltung der Pages zu reduzieren benutzten die meisten \todo{cite?}
 Virtual Memory Systeme eine Multi-Level Page Table, oder auch hierarchische Page Table genannt.
 Diese ähnelt aber in ihrere Struktur weniger einer Tabelle sondern mehr einem Baum dessen Nodes tabellen
