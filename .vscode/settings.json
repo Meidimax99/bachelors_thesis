@@ -7,6 +7,12 @@
             ]
         },
         {
+            "name": "make simple",
+            "tools": [
+                "make simple"
+            ]
+        },
+        {
             "name": "latexmk",
             "tools": [
                 "latexmk"
@@ -72,6 +78,13 @@
             "name": "make",
             "command": "make",
             "args": []
+        },
+        {
+            "name": "make simple",
+            "command": "make",
+            "args": [
+                "simple"
+            ]
         }
     ]
 }
