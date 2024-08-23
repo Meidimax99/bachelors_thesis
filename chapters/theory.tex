@@ -123,6 +123,54 @@ representation of the thing they describe.
 % -------------------------------------------------------------------------------------------------
 % Throwing a TLB Miss exception
 
+\section{TLB Miss Exception}
+\todo{ist dieser Abschnitt vielleicht eher der Idee zuzuordnen? So in der Art sollte es
+    auf jeden Fall in die Idee, aber vielleicht nicht in diesem Detail, vielleicht nur einmal
+    den ''typischen'' controlflow durchgehen und dann einmal den Modifizierten für softtlb}
+\\
+Damit das Betriebssystem im Falle eines TLB Misses sich um das füllen des TLBs kümmern kann
+braucht es zunächst einmal einen Mechanismus um das Betriebssystem wissen zu lassen,
+das es zu einem entsprechenden TLB Miss gekommen ist. In Betriebssystemen, die keinen
+software managed TLB, wie z.b. MIPS \cite{MIPSArchitectureProgrammers2016} umfassen, ist der
+Zugriff auf den TLB in der Regel komplett transparent für das Betriebssystem und somit auch wenn
+es zu einem TLB miss kommt. Normalerweiße würde dann die Hardware State Machine aktiviert werden
+die dann einen entsprechenden Page Table Walk durchführt um den TLB zu füllen.
+\todo{
+    explain normal pipeline for TLB misses -> like here + with repeating of fauling instruction
+    -> tlb as interface between virtual and physical memory\\
+    Aber vielleicht nicht hier
+}\\
+Statt das nun aber das MMU anfängt nach dem passenden PTE zu der virtuellen Adresse zu suchen,
+soll ein Exception geworfen werden, die das Betriebssystem abfängt um den TLB dann in Software
+zu füllen.\\
+Im folgenden wird zunächst der allgemeine RISCV-Trap mechanismus betrachtet und dann
+wird erleutert wie eine neue Exception in RISC-V hinzugefügt werden kann, bzw. was alles beachtet
+werden muss.
+\subsection{RISC-V Traps}
+% exceptions vs interrupts
+Traps sind Teil der RISC-V privilegierten Architecture. Sie bieten einen Mechanismus
+um auf externe Events und auf unusual runtime events, also Exceptions, zu reagieren\cite{riscvreader}.
+Der Begriff Trap ist ein Überbegriff der nochmal in Interrupts - asynchrone Events - und
+Exceptions - synchrone Events - aufgeteilt wird.\\
+Besonders von Interesse sind hier die Exceptions, da ein TLB Miss beim ausführen einer Instruktion
+passiert, also synchron zur Clock des Prozessors. Allerdings ist es für das Arbeiten mit
+dem Qemu und dem xv6 Quellcode auch wichtig die Interrupts mit im Kopf zu behalten, da auf der
+einen Seite der Qemu Code exceptions und interrupts in den gleichen Funktionen behandelt und
+auf der anderen Seite xv6, bzw. RiscV im allgemeinen einen vereinten Vektor für das handling
+von Interrupts und Exceptions nutzt\cite{RISCVInstructionSet}. \\
+
+% Exception registers
+% Exception number
+
+% Exception Enable (global local)
+
+% precice (Source?)
+\subsection{Considerations for new exceptions}
+
+% -------------------------------------------------------------------------------------------------
+
+% -------------------------------------------------------------------------------------------------
+
 % Catching New Exception
 %   Current xv6 machine mode exception handler ( -> maybe too implementation specific)
 %   riscv interrupt mechanism (precice, vectorized)
@@ -131,6 +179,9 @@ representation of the thing they describe.
 
 
 \section{TLB Miss Exception}
+
+
+
 % -------------------------------------------------------------------------------------------------
 
 % -------------------------------------------------------------------------------------------------
