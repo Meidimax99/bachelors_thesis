@@ -171,15 +171,29 @@ prefix dargestellt. \todo{Weil die Exception am ende als M-Mode exception konzip
 
 % TODO sortierung der Register nach rolle?
 
-% Data for excaption handling -> mcause, mtval, mepc, mscratch
-\textbf{Exception Vector} Der Hart \todo{Begriff Hart schon eingeführt?}
+% Vector -> mtvec
+\textbf{Exception Vector} Der Hart \todo{Begriff Hart schon eingeführt?} bei dem zu einem
+außerordentlichen Zustand gekommen ist muss wissen wo die Kernel Routine ist zu der er zur
+Exception behandlung springen muss. Dafür enthält \texttt{BASE} field des registers eine
+4-Byte alignten physischen Adresse zu der der Program Counter im Exception fall gesetzt wird.\\
+Das \texttt{MODE} field erlaut es zwischen einem \texttt{direct} und \texttt{vectored} Mode
+umzuschalten. Im \texttt{MODE=Direct} wird bei allen Traps der PC zu BASE gesetzt, bei
+\texttt{MODE=Vectored} wird der PC für asynchrone interrupts zu $ BASE+4*CAUSE $ gesetzt.\\
 % Delegation -> medeleg
 
-\textbf{Context Information} For
-% Vector -> mtvec
+% Data for exception handling -> mcause, mtval, mepc, mscratch
+\textbf{Context Information} Um die Exception ordentlich zu behandeln sind einige
+Kontextinformationen notwendig. Das \textbf{mcause} Registe enthält den den Exeption Code
+der Exception; \textbf{mepc} enthält den Program Counter der Instruktion die zum werfen der
+exception geeführt hat; und \textbf{mtval} enthält exception spezifische informationen wie
+zum Beispiel die virtuelle Addresse die eine Page Fault Exception ausgelößt hat.\\
 
-\textbf{Delegation}
+\textbf{Delegation} Normalerweiße werden alle Exceptions im machine mode behandelt, allerdings
+kann es manchmal auch sinnvoll sein die die Exception in einem niedrigeren Privilegienmodus
+zu behandeln. Mit dem Bitfield im \textbf{medeleg} register kann man für einzelne Exceptions
+auswählen, ob diese zum nächst-niedrigeren Privilegienmodus weitergereich werden sollen.
 
+% Zusammenspiel der Register im Exception Fall -> xv6 Book Exception Machinery
 % Exception number
 
 % Exception Enable (global local)
