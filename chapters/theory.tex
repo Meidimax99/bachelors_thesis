@@ -147,6 +147,7 @@ Im folgenden wird zunächst der allgemeine RISCV-Trap mechanismus betrachtet und
 wird erleutert wie eine neue Exception in RISC-V hinzugefügt werden kann, bzw. was alles beachtet
 werden muss.
 \subsection{RISC-V Traps}
+\todo{Das hier alles in fundamentals?}\\
 % exceptions vs interrupts
 Traps sind Teil der RISC-V privilegierten Architecture. Sie bieten einen Mechanismus
 um auf externe Events und auf unusual runtime events, also Exceptions, zu reagieren\cite{riscvreader}.
@@ -186,20 +187,57 @@ umzuschalten. Im \texttt{MODE=Direct} wird bei allen Traps der PC zu BASE gesetz
 Kontextinformationen notwendig. Das \textbf{mcause} Registe enthält den den Exeption Code
 der Exception; \textbf{mepc} enthält den Program Counter der Instruktion die zum werfen der
 exception geeführt hat; und \textbf{mtval} enthält exception spezifische informationen wie
-zum Beispiel die virtuelle Addresse die eine Page Fault Exception ausgelößt hat.\\
+zum Beispiel die virtuelle Addresse die eine Page Fault Exception ausgelößt hat.
+\textbf{mstatus} enthält allgemeine Informationen zum aktuellen Zustand der Hardware.\\
 
 \textbf{Delegation} Normalerweiße werden alle Exceptions im machine mode behandelt, allerdings
 kann es manchmal auch sinnvoll sein die die Exception in einem niedrigeren Privilegienmodus
 zu behandeln. Mit dem Bitfield im \textbf{medeleg} register kann man für einzelne Exceptions
-auswählen, ob diese zum nächst-niedrigeren Privilegienmodus weitergereich werden sollen.
+auswählen, ob diese zum nächst-niedrigeren Privilegienmodus weitergereich werden sollen.\\
+
+% Exception number
+\textbf{Exception Code} Jeder exception ist eine eindeutige nummer, der Exception code zugewießen
+\cite{riscvreader}. Diese findet sich beim behandeln der Exception im mcause register wieder.
 
 % Zusammenspiel der Register im Exception Fall -> xv6 Book Exception Machinery
-% Exception number
 
-% Exception Enable (global local)
+\textbf{What the Hardware does} Wenn eine Exception getriggert wird macht die Hardware folgendes:
+\begin{enumerate}
+    \item Interrupts are disabled by clearing the MIE bit in \textbf{mstatus}
+    \item PC is copied to mepc
+    \item the current mode is saved to the MPP field in mstatus
+    \item mcause is set to the proper exception code
+    \item the mode is set to the machine mode
+    \item Pc is set to stvec
+    \item execution continues at the new pc
+\end{enumerate}
+
+
+
 
 % precice (Source?)
 \subsection{Considerations for new exceptions}
+RISC-V ist eine ISA bei der Erweiterbarkeit mit eingebaut ist. Genau dafür gibt es in den
+Exception Codes extra Bereiche die für neue custom exceptions vorgesehen sind \cite{RISCVInstructionSet}.
+
+
+% -------------------------------------------------------------------------------------------------
+%               ALTERNATIVE IDEE -> UNGEFÄHR AN DEN IMPL SCHRITTEN ORIENTIEREN
+% -------------------------------------------------------------------------------------------------
+
+\begin{figure*}[ht!]
+    \centering
+    \includegraphics[scale=1.5]{figures/theory_normal_tlb_miss.pdf}
+    \caption[Usual TLB Miss]{This figure shows what usually happens when the TLB misses:
+        the miss will invoke the hardware state machine page table tree walker; the walker traverses
+        the page table tree and if a valid PTE is found, the mapping is added to the TLB. The processor
+        then executes the failing instruction again which will then result in a TLB hit}
+    \label{fig:theory:normal_tlb_miss}
+\end{figure*}
+% -------------------------------------------------------------------------------------------------
+
+% -------------------------------------------------------------------------------------------------
+
 
 % -------------------------------------------------------------------------------------------------
 
