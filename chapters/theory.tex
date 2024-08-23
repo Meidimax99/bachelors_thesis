@@ -160,6 +160,26 @@ auf der anderen Seite xv6, bzw. RiscV im allgemeinen einen vereinten Vektor für
 von Interrupts und Exceptions nutzt\cite{RISCVInstructionSet}. \\
 
 % Exception registers
+Für das Auslößen und Behandeln von Exceptions sind 6 register zentral. Diese gibt es sowohl
+für den Supervisor Mode (starting with an s) als auch den Machine Mode (starting with an m).
+\todo{priviledge modes schon eingeführt?} Ob für die Exception die machine mode variante des
+registers oder die Supervisor Mode Variante verwendet werden sollte hängt von dem Modus ab
+in dem die Exception behandelt wird. Im folgenden werden alle Register nur mit dem M-Mode \todo{
+    M-Mode als abkürzung für Machine Mode schon eingeführt?
+}
+prefix dargestellt. \todo{Weil die Exception am ende als M-Mode exception konzipiert wurde?}
+
+% TODO sortierung der Register nach rolle?
+
+% Data for excaption handling -> mcause, mtval, mepc, mscratch
+\textbf{Exception Vector} Der Hart \todo{Begriff Hart schon eingeführt?}
+% Delegation -> medeleg
+
+\textbf{Context Information} For
+% Vector -> mtvec
+
+\textbf{Delegation}
+
 % Exception number
 
 % Exception Enable (global local)
