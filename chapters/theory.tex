@@ -234,6 +234,26 @@ Exception Codes extra Bereiche die für neue custom exceptions vorgesehen sind \
         then executes the failing instruction again which will then result in a TLB hit}
     \label{fig:theory:normal_tlb_miss}
 \end{figure*}
+
+\begin{figure*}[ht!]
+    \centering
+    \includegraphics[scale=1.5]{figures/theory_sw_ptw.pdf}
+    \caption[Software Page Table Walker]{This figure shows what usually happens when the TLB misses:
+        the miss will invoke the hardware state machine page table tree walker; the walker traverses
+        the page table tree and if a valid PTE is found, the mapping is added to the TLB. The processor
+        then executes the failing instruction again which will then result in a TLB hit}
+    \label{fig:theory:normal_tlb_miss}
+\end{figure*}
+
+\begin{figure*}[ht!]
+    \centering
+    \includegraphics[scale=1.5]{figures/theory_mapping_fx.pdf}
+    \caption[Virtual Memory using a mapping function]{This figure shows what usually happens when the TLB misses:
+        the miss will invoke the hardware state machine page table tree walker; the walker traverses
+        the page table tree and if a valid PTE is found, the mapping is added to the TLB. The processor
+        then executes the failing instruction again which will then result in a TLB hit}
+    \label{fig:theory:normal_tlb_miss}
+\end{figure*}
 % -------------------------------------------------------------------------------------------------
 
 % -------------------------------------------------------------------------------------------------
