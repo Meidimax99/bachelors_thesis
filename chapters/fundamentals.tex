@@ -18,43 +18,31 @@
 % -------------------------------------------------------------------------------------------------
 % A little bit of history?? -> [Denning VM '96] -> Altas
 % -------------------------------------------------------------------------------------------------
-Der erste Computer mit virtual memory war Atlas \cite{fotheringham1961dynamic}. Die Grundidee war den
-Programmen die Illusion zu schaffen, dass sie einen sehr großen Addressraum für sich alleine haben.
-Dieser virtuelle Addressraum war dabei größer als der physische HauptSpeicher selbst.
-Damit wurde auch die Aufgabe den physischen Hauptspeicher zu verwalten komplett vom Program gelöst
-an das betriebssystem gegeben. Dessen Aufgabe ist war es nun die Teile des virtuellen Speicherbereichs
-in den physischen Speicherbereiches zu laden, die auch vom Program in Ausführung benötigt werden.
-\cite{denning1970virtual}.
-Dies erhöht die Flexibilität für Programme extram, da diese nun nicht nur Daten in ihrem ganzen
-virtuellen Addressraum verteilen können, sondern auch größer sein können als der physikalische Speicher
-(solang genug Hintegrundspeicher zur Verfügung steht)\todo{CITE}\todo{thrashing irgendwo erwähnen?}.
 
 % -------------------------------------------------------------------------------------------------
 %                                           VIRTUAL MEMORY
 % -------------------------------------------------------------------------------------------------
 
-
 \section{Virtual Memory}
-\subsection{Motivation}
-Virtual memory is used in almost every system, ranging from big data center machines to small embedded system.
-Originally, it was developed by the designers of the Atlas Computer to automate the task of swaping data between
-main and secondary memory \cite{denning1997before}.
-
-This was necesarry as programs increased in size faster than main memory did; while single programs
+\textit{Virtual Memory} was first introduced in the Atlas System \cite{fotheringham1961dynamic} to
+automate the task of swapping pages between main and secondary memory, when main memory was full.
+The idea was to make to programms completely unaware of of the real, physical memory by providing
+an abstraction layer called virtual memory.\\
+With virtual memory, programs appear to have whole memory space of the machine at their disposal (flexibility) and
+nobody to share it with (isolation).\\
+The task of managing a programs memory, no matter where in its virtual address space it is, and putting it somewhere
+in physical memory now falls to the operating system \cite{denning1970virtual}.\\
+This was not only a nice-to-have, but a necessity. The size of programs was increasing faster than the size of main
+memory did; while single programs
 still fit in memory, operating systems allowed running multiple programs at once, collectively exceeding
 the available physical memory \cite{tanenbaumOS}.
 
-Nowadays, virtual memory is the basis of a lot of memory system requirements such as address
-space protection, isolation of processes, shared memory and more \cite{jacobSoftwaremanagedAddressTranslation1997}.
-It is also completely transparent to the programmer and enables programms to use every available
-address in its virtual address space\cite{jacob1998look}.\\
-
-Peter Denning calls its wide spread adoption ''[..]one of the engineering triumphs of the computer
-age.''\cite{denning1997before}.
 \subsection{Memory System Requirements/Benefits?}
-Inzwischen erfüllt Virtual Memory noch sehr viel mehr Aufgaben als das Tauschen von Seiten in
-Haupt und Nebenspeicher zu automatisieren. Virtual Memory Systeme sind Grundlage für
-viele weitere Aufgaben und Features des Betriebssystem\cite{jacobSoftwaremanagedAddressTranslation1997}:
+In modern systems, \textit{Virtual Memory} does a lot more than swapping pages between main memory and secondary
+storage. It is the foundation for a number of requirements to the memory system that are taken for granted
+\cite{jacobSoftwaremanagedAddressTranslation1997}.
+\\
+\textbf{}
 \begin{itemize}
     \item Address Space Protection / Isolation / Security
     \item Shared Memory
@@ -227,6 +215,8 @@ einem Translation Cache, meistens Translation Lookaside Buffer (TLB) genannt\cit
 \end{figure*}
 % End Figure
 
+% -------------------------------------------------------------------------------------------------
+
 % Davor sollte der Page Table walk bekannt sein
 \subsection{MMU}
 Das Memory Management Unit (MMU) übernimmt die Aufgabe der addressübersetzung für den Computer.
@@ -247,6 +237,10 @@ werden kann \cite{drepper2007every}.
 \cite{jacobVirtualMemoryContemporary1998}
 % \subsection{A typical Page Table Walk}
 
+% -------------------------------------------------------------------------------------------------
+\subsection{PWCs}
+\cite{barrTranslationCachingSkip}
+\cite{yaniv2016hash}
 
 
 % Fazit -> Es gibt hardware strukturen die VM beschleunigen können, die machen es auch schneller
@@ -259,16 +253,15 @@ werden kann \cite{drepper2007every}.
 \section{Sofware-based Virtual Memory System}
 % VM in Software möglich mit ähnlicher Performance wie hw möglich -> Sollte ja mehr Flexibilität geben
 %   [ A look at several...]
-% \section{ Sofware VM Approaches}
-% \section{ Liedtke GPTs}
-% \subsection{More flexibilty}
+% \subsection{Guarded Page Tables}
 
 
 
 
 
 
-
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
 \section{HW VM vs SW VM}
 % related work will then come in to discuss approaches close to my approach
 % With only software ptw process would have to context switch to the kernel -> Very expensive
