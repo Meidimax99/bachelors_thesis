@@ -244,7 +244,7 @@ this implementation only looked at the RISC-V target.
 \subsection{Adding new CSRs for writing TLB entries}
 
 % More controll with further CSRs -> MIPS comparison
-\section{Further possible extensions to the TLB CSRs}
+%\section{Further possible extensions to the TLB CSRs}
 \todo{typical tlb replacement strategies}
 \todo{How does QEMU replace TLB entries -> index?} % Direct mapped
 With the new CSRs presented above, it is possible to write TLB entries.
@@ -475,10 +475,67 @@ bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
 % -------------------------------------------------------------------------------------------------
 
 
+\begin{figure*}[ht!]
+    \centering
+    \includegraphics[scale=1.5]{figures/theory_sw_ptw.pdf}
+    \caption[Software Page Table Walker]{Instead of transfering control over to the MMU to fill in the missing mapping,
+        the TLB Miss exception invokes a software page table walker}
+    \label{fig:theory:sw_ptw}
+\end{figure*}
 
 
 
 
+
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/56,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{56}
+        \bitheader[endianness=big]{55,30,29,21,20,12,11,0} \\
+        \bitbox{26}{PPN[2]} &
+        \bitbox{9}{PPN[1]} &
+        \bitbox{9}{PPN[0]} &
+        \bitbox{12}{Page Offset}\\
+    \end{bytefield}
+    \caption[RISC-V Sv39 Physical Address]{RISC-V Sv39 Physical Address}
+    \label{fig:theory:sv39pa}
+\end{figure*}
+
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
+        \bitheader[endianness=big]{63,62,61,60,54,53,28,27,19,18,10,9,8,7,6,5,4,3,2,1,0} \\
+        \bitbox{1}{N} &
+        \bitbox{2}{\rotatebox{90}{PBMT}} &
+        \bitbox{7}{Reserved} &
+        \bitbox{26}{PPN[2]} &
+        \bitbox{9}{PPN[1]} &
+        \bitbox{9}{PPN[0]} &
+        \bitbox{2}{\rotatebox{90}{RSW}} &
+        \bitbox{1}{D} &
+        \bitbox{1}{A} &
+        \bitbox{1}{G} &
+        \bitbox{1}{U} &
+        \bitbox{1}{X} &
+        \bitbox{1}{W} &
+        \bitbox{1}{R} &
+        \bitbox{1}{V}
+    \end{bytefield}
+    \caption[RISC-V Sv39 Page Table Entry]{RISC-V Sv39 Page Table Entry}
+    \label{fig:theory:sv39pte}
+\end{figure*}
+
+
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
+        \bitheader[endianness=big]{63,60,59,44,43,0} \\
+        \bitbox{4}{Mode} &
+        \bitbox{16}{ASID} &
+        \bitbox{44}{PPN} \\
+    \end{bytefield}
+    \caption[RISC-V Sv39 \texttt{satp} CSR]{RISC-V Sv39 \texttt{satp} CSR}
+    \label{fig:theory:sv39satp}
+\end{figure*}
 
 
 

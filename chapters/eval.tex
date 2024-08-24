@@ -1,63 +1,21 @@
 \chapter{Evaluation}
-
-% -------------------------------------------------------------------------------------------------
-%                                         Copy Paste from Discussion
-% -------------------------------------------------------------------------------------------------
-
-% Possible performance improvements:
-% In-Line Interrupt Handling for Software-Managed TLBs -> reducing size
-% of miss handler -> inlining it into reorder buffer
-
-\section{Restrictions of the current design}
-A segmented design has some restrictions compared to contemporary virtual memory
-systems. In the following, important requirements to typical virtual memory
-systems are presented and how the presented design can hold up.
-\todo{How it fullfills these requirements now, how it may or may not fullfill currently
-    unsupported requirements.}
-
-
-%Flexibility limitation -> flexibility of the virtual memory system
-% is still restricted by the tlb structure
-% -> other approach jacobSoftwaremanagedAddressTranslation1997
-
-% Vergleich MIPS Page table fast path
-
-% Inside L4 Mips fastpath vs slowpath
-
-% Harware erweiterung wenn die funktion parametrisierbar ist
-
-% -------------------------------------------------------------------------------------------------
-%                                          Discussion CP End
-% -------------------------------------------------------------------------------------------------
 \label{chap:eval}
 
-% Qualitative Vergleiche anhand der Memory System Requirements
-\section{Memory System Requirements}
-Für eine qualitative Analyse des implementierten Virtual Memory Systems bietet \cite{jacobSoftwaremanagedAddressTranslation1997}
-eine gute Vorlage. Dort wurden die zentralen Anforderungen an ein Virtual Memory System auf Grundlage
-von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 
-% Was ist mit dem paging passiert -> Automatisches Tauschen von Seiten zwischen Haupt und Nebenspeicher?
-% In xv6 nicht implementiert, könnte es mit dem Segmentierten Design implementiert werden
-
-% Allgemeine Discussion eines Segmentierten Designs
-% \cite{skarlatos2020elastic}
-% \cite{tanenbaumOS}
-% \cite{denning1997before}??
-
-
-% Ohne caches -> Emualtion vs Real Hardware -> Warum keine quantitaive analyse
+\section{Qualitative analysis}
+\subsection{Cost}
+% Context Switch
+% -> Inline Handler + Vergleich mit größe de Heiser fast TLB miss handlers
+% Annahme: Mein TLB miss handler/mapping function könnte sehr klein sein wenn sie 
+% nur sehr gut optimiert wird und dann könnte man sie eventuell inlinen!
+% Hardware Freeze on HW MMU Walk (but independent instruktions can go on -> issues of impl)
 
 % Passt das in eine Cache line -> code localität
 
-\section{cost analysis}
+
 % Theoretische Kostenanalyse -> context switch in sw (ausblick inline?)
 % -> Optimization -> Reserve Registers for kernel handler, but this wont be good 
 % -> l4 20 year paper -> registeres important for optiization
-\section{performance?}
-\subsection{Problems with measuring performance of an emulated system}
-% Liedtke gpts?
-
 
 % \section{Other operating system features in light of the segmented design}
 % TODO discussion (extra chapter?) about whether fork makes sense with 
@@ -65,5 +23,60 @@ von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 
 % Instruction Count, Software Page Walk vs TLB manager
 
+% switching to kernel evicts other cache entries for kernel in real hardware
+\subsection{Design Restrictions} % Generall Segmented Design shortcommings
+% Allgemeine Discussion eines Segmentierten Designs
+% \cite{skarlatos2020elastic}
+% \cite{tanenbaumOS}
+% \cite{denning1997before}??
 % TODO [denningVirtualMemoryDenning1996] -> Overlay problem with segmented designs
+
+
+% Restrictions of the Segmented design ( da kann ich auch allgemeine Punkte zu segmentierten
+% speicherdesigns aus grundlagendpapern rausnehmen)
+
+%Flexibility limitation -> flexibility of the virtual memory system
+% is still restricted by the tlb structure
+% -> other approach jacobSoftwaremanagedAddressTranslation1997
+
+% More fine grained controll over TLBs via CSRs -> Inspo mips ( Evaluation of Implementation, not necesarrily design)
+
+\subsection{Memory System Requirements} % Shortcommings of my implementation
+Für eine qualitative Analyse des implementierten Virtual Memory Systems bietet \cite{jacobSoftwaremanagedAddressTranslation1997}
+eine gute Vorlage. Dort wurden die zentralen Anforderungen an ein Virtual Memory System auf Grundlage
+von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
+
+
+%Kein Demand Paging, Kein swapping so möglich
+% Was ist mit dem paging passiert -> Automatisches Tauschen von Seiten zwischen Haupt und Nebenspeicher?
+% In xv6 nicht implementiert, könnte es mit dem Segmentierten Design implementiert werden
+
+% TODO -> Perspektive richtung Embedded, wo isolation gewünscht aber kein Nebenspeicher existiert
+% Idee -> Address spaces with different sizes, so that slots can be swapped, or address spaces can be merged
+% Memory hungry process can get multiple Address spaces
+
+%
+\section{Quantitative Analysis}
+\subsection{Problems with measuring performance of an emulated system}
+% Warum geht es nicht -> Emuliert
+
+% Ohne caches -> Emualtion vs Real Hardware -> Warum keine quantitaive analyse
+
+
+
+
+%?????
+
+
+% Vergleich MIPS Page table fast path
+
+% Inside L4 Mips fastpath vs slowpath
+
+
+
+
+% Harware erweiterung wenn die funktion parametrisierbar ist
+
+
+
 
