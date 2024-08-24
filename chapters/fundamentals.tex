@@ -324,6 +324,128 @@ vollständig durch das OS definiert werden kann.
 
 % -------------------------------------------------------------------------------------------------
 
+
+\section{RISC-V Basics}
+Die Implementation die in dieser Arbeit vorgestellt läuft auf einer RISC-V Platform. Daher ist
+es notwendig ein paar Grundlagen zur RISC-V Platform durchzugehen. Relevant sind hier vor allem
+das Virtual Memory System, der Exception/Trap Mechanismus und die Control und Status Registers (CSRs), die
+die Grundlage der Erweiterung von RISC-V darstellen.
+% -------------------------------------------------------------------------------------------------
+
+\subsection{Sv39 Virtual Memory}
+% -------------------------------------------------------------------------------------------------
+
+\subsection{Traps}
+\todo{Das hier alles in fundamentals?}\\
+% exceptions vs interrupts
+Traps sind Teil der RISC-V privilegierten Architecture. Sie bieten einen Mechanismus
+um auf externe Events und auf unusual runtime events, also Exceptions, zu reagieren\cite{riscvreader}.
+Der Begriff Trap ist ein Überbegriff der nochmal in Interrupts - asynchrone Events - und
+Exceptions - synchrone Events - aufgeteilt wird.\\
+Besonders von Interesse sind hier die Exceptions, da ein TLB Miss beim ausführen einer Instruktion
+passiert, also synchron zur Clock des Prozessors. Allerdings ist es für das Arbeiten mit
+dem Qemu und dem xv6 Quellcode auch wichtig die Interrupts mit im Kopf zu behalten, da auf der
+einen Seite der Qemu Code exceptions und interrupts in den gleichen Funktionen behandelt und
+auf der anderen Seite xv6, bzw. RiscV im allgemeinen einen vereinten Vektor für das handling
+von Interrupts und Exceptions nutzt\cite{RISCVInstructionSet}. \\
+
+% Exception registers
+Für das Auslößen und Behandeln von Exceptions sind 6 register zentral. Diese gibt es sowohl
+für den Supervisor Mode (starting with an s) als auch den Machine Mode (starting with an m).
+\todo{priviledge modes schon eingeführt?} Ob für die Exception die machine mode variante des
+registers oder die Supervisor Mode Variante verwendet werden sollte hängt von dem Modus ab
+in dem die Exception behandelt wird. Im folgenden werden alle Register nur mit dem M-Mode \todo{
+    M-Mode als abkürzung für Machine Mode schon eingeführt?
+}
+prefix dargestellt. \todo{Weil die Exception am ende als M-Mode exception konzipiert wurde?}
+
+% TODO sortierung der Register nach rolle?
+
+% Vector -> mtvec
+\textbf{Exception Vector} Der Hart \todo{Begriff Hart schon eingeführt?} bei dem zu einem
+außerordentlichen Zustand gekommen ist muss wissen wo die Kernel Routine ist zu der er zur
+Exception behandlung springen muss. Dafür enthält \texttt{BASE} field des registers eine
+4-Byte alignten physischen Adresse zu der der Program Counter im Exception fall gesetzt wird.\\
+Das \texttt{MODE} field erlaut es zwischen einem \texttt{direct} und \texttt{vectored} Mode
+umzuschalten. Im \texttt{MODE=Direct} wird bei allen Traps der PC zu BASE gesetzt, bei
+\texttt{MODE=Vectored} wird der PC für asynchrone interrupts zu $ BASE+4*CAUSE $ gesetzt.\\
+% Delegation -> medeleg
+
+% Data for exception handling -> mcause, mtval, mepc, mscratch
+\textbf{Context Information} Um die Exception ordentlich zu behandeln sind einige
+Kontextinformationen notwendig. Das \textbf{mcause} Registe enthält den den Exeption Code
+der Exception; \textbf{mepc} enthält den Program Counter der Instruktion die zum werfen der
+exception geeführt hat; und \textbf{mtval} enthält exception spezifische informationen wie
+zum Beispiel die virtuelle Addresse die eine Page Fault Exception ausgelößt hat.
+\textbf{mstatus} enthält allgemeine Informationen zum aktuellen Zustand der Hardware.\\
+
+\textbf{Delegation} Normalerweiße werden alle Exceptions im machine mode behandelt, allerdings
+kann es manchmal auch sinnvoll sein die die Exception in einem niedrigeren Privilegienmodus
+zu behandeln. Mit dem Bitfield im \textbf{medeleg} register kann man für einzelne Exceptions
+auswählen, ob diese zum nächst-niedrigeren Privilegienmodus weitergereich werden sollen.\\
+
+% Exception number
+\textbf{Exception Code} Jeder exception ist eine eindeutige nummer, der Exception code zugewießen
+\cite{riscvreader}. Diese findet sich beim behandeln der Exception im mcause register wieder.
+
+% Zusammenspiel der Register im Exception Fall -> xv6 Book Exception Machinery
+
+\textbf{What the Hardware does} Wenn eine Exception getriggert wird macht die Hardware folgendes:
+\begin{enumerate}
+    \item Interrupts are disabled by clearing the MIE bit in \textbf{mstatus}
+    \item PC is copied to mepc
+    \item the current mode is saved to the MPP field in mstatus
+    \item mcause is set to the proper exception code
+    \item the mode is set to the machine mode
+    \item Pc is set to stvec
+    \item execution continues at the new pc
+\end{enumerate}
+% -------------------------------------------------------------------------------------------------
+
+\subsection{Contol and Status Registers}
+% Section describing RISC-V CSRs -> Originally in theory
+\todo{table of csr space in appendix?}
+The RISC-V ISA provides a 12-bit encoding space for 4096 CSRs. A CSR address is logically split
+into four parts: The top two bits \texttt{csr[11:10]} specify whether the CSR is read/write or read-only;
+\texttt{csr[9:8]} encode the minimum priviledge level that is allowed to access the CSR; \texttt{csr[7:4]}
+may be partially used to define a specific use for a range of CSRs. E.g. CSRs with an address
+between \texttt{0x7B0} and \texttt{0x7BF} shall be used for Debug-mode-only CSRs. The format
+of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
+
+% RISC-V CSR address bytefield
+\begin{figure*}[h!]
+    \centering
+    \begin{bytefield}[bitwidth={2em}, bitformatting={\bfseries}, boxformatting={\centering}]{12}
+        \bitheader[endianness=big]{11,10,9,8,7,4,3,0} \\
+        \bitbox{2}{RW/RO} &
+        \bitbox{2}{Priv} &
+        \bitbox{4}{Usage} &
+        \bitbox{4}{Index}
+    \end{bytefield}
+    \caption[RISC-V CSR address format]{RISC-V CSR address format}
+    \label{fig:theory:csr}
+\end{figure*}
+
+Each legal CSR address identifies a CSR. The size of the CSRs identified by the CSR address depends
+on the values of the SXLEN and UXLEN fields in the \textbf{mstatus} register. Currently, the
+specification \cite{RISCVInstructionSet} allows for 32 bit, 64 bit and 128 bit.\\ \todo{disclaimer which we will be using here?}
+% Short elaboration on using the csr to write TLB entries -> in the end its on the hardware implementor
+RISC-V provides dedicated instructions for read/write and bit manipulation with both register values
+and immediates.
+\todo{ hardware overhead for writing TLB with CSRs -> future work, is it worth it??}
+
+% What format, how big, how many csrs?
+Now with CSRs we have a mechanism to add custom behaviour to the ISA. That answers the ''How?''
+of writing TLB entries in software.\\
+The next step is to figure out what data is required to create a TLB entry and in what format
+this data is best communicated via the CSRs to the computer.\\
+% -------------------------------------------------------------------------------------------------
+
+
+
+
+
+
 % All approaches are based on a table.
 % Überleitung zu meinem Thema -> Avoid all memory references and just have a simple (hash?) function that realizes VM
 % [ a look at severeal ] -> conlsion

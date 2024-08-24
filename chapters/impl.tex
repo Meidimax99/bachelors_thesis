@@ -333,10 +333,7 @@ This is where a hash function could come in handy. However collisions and access
 collision detection \ldots
 Verification via % \texttt{\verbatim{readelf -l user/\_*}}
 shows that all vaddr are in the low addresses.
-\paragraph*{Fragmentation}
-%Processes have fixed size of memory and may not use all of it
-\paragraph*{Limited Process count}
-%Maybe appropiate for embedded applications?
+
 
 
 % -------------------------------------------------------------------------------------------------
@@ -407,28 +404,78 @@ for all the memory that is allocated for the process.
 % -------------------------------------------------------------------------------------------------
 
 \section{Debugging}
+Wenn man gleichzeitig Änderung am Qemu Emulator und an xv6 durchführt, kann es schwierig sein
+herauszufinden wo der Fehler liegt. Hier wird zunächst einmal beschrieben wie man Qemu und
+xv6 einzeln debuggen kann und darauf wird ein gemeinsamer Debugging Prozess aufgezeigt.
+Das kann zum Beispiel nützlich sein wenn man versucht den Code Pfad zwischen Software und
+Emulierter Hardware nachzuverfolgen.\\
+Hier wird keine Anleitung zum benutzen von GDB geliefert, sondern nur ein paar eigenheiten
+und tricks die beim debuggen des Codes für diese Arbeit nützlich waren. Vielleicht sind
+diese ja auch in anderen Szenarios nützlich.
+\subsection{xv6}
+Das Makefile im xv6-riscv source repository verfügt über die Regel qemu-gdb um xv6 in qemu
+mit einem GDB server zu starten. In einem anderen Terminal kann man dann gdb mit der binary
+die man debuggen möchte starten und dann mit \texttt{target remote:<port>} eine verbindung
+zum gdbstub herstellen.\\
+Ein Kommentar im makefile legt zwar nahe, dass die Makefile rule zum Debuggen vom user mode
+gedacht ist, aber tatsächlich hält einen nichts auf auch den kernel zu debuggen. Das ist
+für Änderungen am Memory system auch sehr nützlich.\\
+\textbf{Debugging user mode} Für das debuggen eines user mode programms will man oft bei
+der main Funktion anfangen. Breakt man auf die Funktion wird ein Breakpoint auf eine eine recht
+niedrige virtuelle Addresse gesetzt. Hat man den Breakpoint schon gesetzt bevor man überhaupt
+den Kernel gestartet hat kann es dann beim start sein, dass man direkt wieder stoppt.
+Das liegt dann daran, dass man sich gerade im Qemu boot ROM befindet, der von Qemu in
+das emulierte Memory Layout in den Bereich von \texttt{0x0 - 0x1000} gemappt wurde.
+Der debugger unterscheidet hier nicht zwischen virtuellen und physischen Addressen und
+schaut lediglich was im PC steht.
+\todo{das satp PPN field könnte noch für weitere infos benutzt werden (Konfiguration der vm für den process)}
 
-\subsection{Extending the QEMU Monitor}
+\textbf{Debugging the kernel} Nach dem ersetzen des virtuellen Memorysystems hat sich beim
+debuggen des Kernels ein interessanter effekt bemerktbar gemacht: Sobald in der
+\texttt{kvminithart()} funktion das \texttt{satp} register gesetzt wird kann GDB den code zu der
+aktuellen addresse (und allen folgenden) anzeigen.\\
+Das ist dem Wert des \texttt{satp} registers geschuldet. Nach dem Umbau des VM systems enthält
+dieses nicht mehr die \texttt{PPN}. Nur noch das \texttt{MODE} und \texttt{ASID} Feld sind
+für das neue system von bedeutung. Es gibt auch gar keine Page table mehr auf die die PPN zeigen
+könnte.\\
+Dieses Verhalten lässte vermuten, dass der von qemu implementierte GDBstub den hardware-emulierten
+page walk macht um an die physischen addressen und damit an den Code zu kommen. Das funktioniert
+natürlich nicht ohne page table.\\
+Eine Möglichkeit den kernel wieder ordentlich in gdb debuggen zu können, wäre es die kernel
+page table wieder so wie zuvor aufzubauen. Da aber die mappings im Kernel alle direkte mappings
+sind, reicht es auch einen PTE für die addresse \texttt{0x80000000} bei der der kernel code
+anfängt, hinter der PPN in \texttt{satp} abzulegen.\\
+% wie muss der PTE aussehen?
+Im Code wurde dafür eine ganze Page wie folgt allokiert:
+\begin{lstlisting}[language=c,float=h!,
+    label={lst:fake_pt}]
+    uint64 *pt = (uint64*)kalloc();
+    for(uint64 i = 0 ; i < 512; i++) {
+      pt[i] = 0xffffffffffffffff;
+    }
+    pt[2] = ((0x80000000 >> 2)| PTE_V | PTE_X | PTE_W | PTE_R);
+\end{lstlisting}
+Es würde allerdings auch reichen nur den Platz für einen einzelnen PTE
+zu allokieren. Die PPN muss allerdings dann so gesetzt werden,
+dass mindestens der Eintrag bei Index 2 vorhanden ist. Interpretiert man
+die Adresse \texttt{0x80000000} als virtuelle Addresse, so ergibt sich
+nämlich für das \texttt{VPN[2]} Feld der Wert 2.\\
+Setzt man diesen Top-level page table entry als valide, so wird der Speicher
+an dieser Stelle 1 GB Superpage behandelt. Das reicht aus um den Kernelcode
+abzudecken und der Code kann beim Debuggen wieder wie gehabt gesehen werden.
 
-\subsection{ GDB - custom satps}
+\subsection{QEMU Monitor}
+Mit dem Qemu monitor lassen sich allerlei informationen über die laufende
+emulation anzeigen lassen. Besonders interessant für diese Arbeit wäre der
+monitor für die aktuell im emulierten TLB enthaltene Mappings. Gerade für
+RISC-V war dieser allerdings nicht verfügbar.
+\todo{Beschreibung der TLB strukturen früher im kapitel}
+
 
 
 % -------------------------------------------------------------------------------------------------
 %                                    END OF SECTION - Debugging
 % -------------------------------------------------------------------------------------------------
-
-
-
-% -------------------------------------------------------------------------------------------------
-%                              SECTION - Discussion (of implementation)
-% -------------------------------------------------------------------------------------------------
-
-
-% -------------------------------------------------------------------------------------------------
-%                          END OF SECTION - Discussion (of implementation)
-% -------------------------------------------------------------------------------------------------
-
-% TODO  xv6 TLB flushing
 
 
 % -------------------------------------------------------------------------------------------------
@@ -448,7 +495,7 @@ for all the memory that is allocated for the process.
 
 % riscv_cpu_tlb_switch function 
 %TODO is this listing really interesting?
-\begin{lstlisting}[language=c,float=t,
+\begin{lstlisting}[language=c,float=h!,
     caption={Alternative Implementation for the RISC-V tlb\_fill function with a special case to start testing TLB Miss Handler implementations},
     label={lst:specialCaseTLBfill}]
 bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,

@@ -24,6 +24,8 @@
 % Instruction Count, Software Page Walk vs TLB manager
 
 % switching to kernel evicts other cache entries for kernel in real hardware
+
+% -------------------------------------------------------------------------------------------------
 \subsection{Design Restrictions} % Generall Segmented Design shortcommings
 % Allgemeine Discussion eines Segmentierten Designs
 % \cite{skarlatos2020elastic}
@@ -41,6 +43,12 @@
 
 % More fine grained controll over TLBs via CSRs -> Inspo mips ( Evaluation of Implementation, not necesarrily design)
 
+\paragraph*{Fragmentation}
+%Processes have fixed size of memory and may not use all of it
+\paragraph*{Limited Process count}
+%Maybe appropiate for embedded applications?
+
+% -------------------------------------------------------------------------------------------------
 \subsection{Memory System Requirements} % Shortcommings of my implementation
 Für eine qualitative Analyse des implementierten Virtual Memory Systems bietet \cite{jacobSoftwaremanagedAddressTranslation1997}
 eine gute Vorlage. Dort wurden die zentralen Anforderungen an ein Virtual Memory System auf Grundlage
@@ -56,6 +64,7 @@ von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 % Memory hungry process can get multiple Address spaces
 
 %
+% -------------------------------------------------------------------------------------------------
 \section{Quantitative Analysis}
 \subsection{Problems with measuring performance of an emulated system}
 % Warum geht es nicht -> Emuliert
@@ -75,7 +84,7 @@ von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 
 
 
-% Harware erweiterung wenn die funktion parametrisierbar ist
+% Hardware erweiterung wenn die funktion parametrisierbar ist
 
 
 
