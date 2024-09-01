@@ -23,12 +23,22 @@
 %                                           VIRTUAL MEMORY
 % -------------------------------------------------------------------------------------------------
 
+This chapter introduces some essential concepts and mechanism that are required for the comprehension
+of following chapters. It first gives an overview of \textit{Virtual Memory}, its core requirements,
+tradeoffs and implementations.\\
+Then the hardware components and caches used to accelerate \textit[Virtual Memory] systems is
+presented.\\
+A overview of purely software-managed systems follows with a comparison of the general trade-offs
+between software-managed and hardware-managed \textit{Virtual Memory} systems.\\
+Finally, some specifics of the memory system of the chosen implementation platform, \textit{RISC-V},
+are shown.
+
 \section{Virtual Memory}
 \textit{Virtual Memory} was first introduced in the Atlas System \cite{fotheringham1961dynamic} to
 automate the task of swapping pages between main and secondary memory, when main memory was full.
-The idea was to make to programms completely unaware of of the real, physical memory by providing
-an abstraction layer called virtual memory.\\
-With virtual memory, programs appear to have whole memory space of the machine at their disposal (flexibility) and
+The idea was to make the programms completely unaware of of the real, physical memory by providing
+an abstraction layer called virtual memory \cite{denning1996virtual}.\\
+With virtual memory, programs appear to have the whole memory space of the machine at their disposal (flexibility) and
 nobody to share it with (isolation).\\
 The task of managing a programs memory, no matter where in its virtual address space it is, and putting it somewhere
 in physical memory now falls to the operating system \cite{denning1970virtual}.\\
@@ -36,23 +46,59 @@ This was not only a nice-to-have, but a necessity. The size of programs was incr
 memory did; while single programs
 still fit in memory, operating systems allowed running multiple programs at once, collectively exceeding
 the available physical memory \cite{tanenbaumOS}.
+% -------------------------------------------------------------------------------------------------
 
-\subsection{Memory System Requirements/Benefits?}
+\subsection{Virtual and physical addresses}
+The terms of \textit{Virtual} and \textit{Physical} addresses will be coming up a lot in the course of this paper.
+Virtual addresses refer to the addresses that are used by the program to reference memory object in its address
+space. They are only valid in the programs own address space and may thus be reused by different programs.
+Virtual addresses are translated to physical addresses, which are actual addresses to memory locations
+on main memory. The \textit{Virtual Memory System} is tasked with performing this translation.
+\\
+Some memory systems using an inverted page tables also use the notion of \textit{effective} addresses.
+These form an addition layer of indirection that allows the sharing of pages \cite{jacob1998virtualissues}.
+% -------------------------------------------------------------------------------------------------
+
+\subsection{Memory System Requirements}
 In modern systems, \textit{Virtual Memory} does a lot more than swapping pages between main memory and secondary
 storage. It is the foundation for a number of requirements to the memory system that are taken for granted
-\cite{jacobSoftwaremanagedAddressTranslation1997}.
-\\
-\textbf{}
-\begin{itemize}
-    \item Address Space Protection / Isolation / Security
-    \item Shared Memory
-    \item Large Address Spaces
-    \item Fine Grained Protection
-    \item Sparse Address Space
-    \item Superpages
-    \item Memory Mapped Files / IO \cite{tanenbaumOS}
-    \item Flexibilität für den Programmieren: Komplette Freiheit der Nutzung des Addressraumes
-\end{itemize}
+\cite{jacobSoftwaremanagedAddressTranslation1997}.\\
+These requirements are as follows:
+\paragraph{Address Space Protection / Isolation} It should not be possible for one process to access the data
+of another process, unless explicitly shared.
+\cite{jacobVirtualMemoryContemporary1998}
+
+\paragraph{Shared Memory} Sharing memory allows programms to work on the same physical data with potentially
+differing virtual addresses.
+\cite{jacobVirtualMemoryContemporary1998}
+
+\paragraph{Large Address Spaces} Programs tend to require more and more memory. Swapping pages can help
+to support programs bigger than the actual size of main memory \cite{tanenbaumOS}, but programs may
+also require more memory than the theoretical limit set by hardware and software. Modern architectures
+use bigger addresses to support programs that require a lot of memory \cite{jacobSoftwaremanagedAddressTranslation1997, jacobVirtualMemoryContemporary1998}.
+
+\todo{pages already definied?}
+\paragraph{Fine-grained Protection} From a security perspective, it is often not desirable to allow the code segment
+of a program to be writeable and the data section to be exectuable. \textit{Virtual Memory Systems} provide read-only,
+read-write and exectue-only protection on a page granularity\cite{jacobSoftwaremanagedAddressTranslation1997}.
+Illegal references may trigger exceptions, which allow the operating system to deal with the program \cite{jacobVirtualMemoryContemporary1998}.
+
+\todo{more on tlb reach in HW section}
+\paragraph{Superpages}
+Structures may be bigger than a single page and may thus occupy multiple entries of the translation caches while
+only refering to one object. To avoid displacing other caches entries, \textit{Virtual Memory Systems} use
+superpages to provide space for bigger objects to increase the reach of cache entries \cite{jacobSoftwaremanagedAddressTranslation1997}.
+
+\paragraph{Sparsity}
+
+\paragraph{Flexibility}
+\cite{jacob1998virtualissues} % Simplification of the programmes job
+
+\paragraph{Memory Mapped IO}
+\cite{tanenbaumOS}
+
+
+
 Diese Eigenschaften setzen die meisten Leute die auf Applikationsebene Programmieren mehr oder
 weniger als gegeben voraus und machen sich keine weiteren Gedanken darüber\todo{cite?}.
 Durch das immer weiter Auseinanderdriften der CPU und Memory geschwindigkeiten und vor allem
@@ -196,7 +242,7 @@ die nach wie vor 4KB pages benutzten um Kompatibilität zu bewaren.
 % -------------------------------------------------------------------------------------------------
 %                                            VM HARDWARE
 % -------------------------------------------------------------------------------------------------
-
+\cite{denning1970virtual} % Hardware support source
 \section{Memory Management Hardware}
 Um die Umwandlung der virtuellen in physische Addressen weiter zu beschleuningen nutzen die meisten
 modernen Rechner extra hardwarebausteine. Diese bestehen aus einem Hardware Page Table walker (MMU) und
@@ -242,10 +288,20 @@ werden kann \cite{drepper2007every}.
 \cite{barrTranslationCachingSkip}
 \cite{yaniv2016hash}
 
+% -------------------------------------------------------------------------------------------------
+\subsection{Address Space Identifies}
+% \cite{jacobSoftwaremanagedAddressTranslation1997}
+%TODO in the vm requirements , ASIDs are presented as HW-support for address space protection
+
+% -------------------------------------------------------------------------------------------------
+
 
 % Fazit -> Es gibt hardware strukturen die VM beschleunigen können, die machen es auch schneller
 %       ABER: Die machen die VM Software Systeme auch sehr viel rigider und unflexibler
 % Kurze Diskussion -> Machen Hardware strukture das wirklich schneller? [ A look at ...]
+
+
+
 % -------------------------------------------------------------------------------------------------
 
 % -------------------------------------------------------------------------------------------------

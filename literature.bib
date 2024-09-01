@@ -1,3 +1,11 @@
+@article{hatWhatEveryProgrammer,
+  title = {What {{Every Programmer Should Know About Memory}}},
+  author = {Hat, Ulrich Drepper Red},
+  abstract = {As CPU cores become both faster and more numerous, the limiting factor for most programs is now, and will be for some time, memory access. Hardware designers have come up with ever more sophisticated memory handling and acceleration techniques–such as CPU caches–but these cannot work optimally without some help from the programmer. Unfortunately, neither the structure nor the cost of using the memory subsystem of a computer or the caches on CPUs is well understood by most programmers. This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/BHLJSENP/Hat - What Every Programmer Should Know About Memory.pdf}
+}
+
 @article{heiserAnatomyHighPerformanceMicrokernel,
   title = {Anatomy of a {{High-Performance Microkernel}}},
   author = {Heiser, Gernot},
@@ -5,12 +13,11 @@
   file = {/home/max/Zotero/storage/G8KHSJ2M/Heiser - Anatomy of a High-Performance Microkernel.pdf}
 }
 
-@article{hatWhatEveryProgrammer,
-  title = {What {{Every Programmer Should Know About Memory}}},
-  author = {Hat, Ulrich Drepper Red},
-  abstract = {As CPU cores become both faster and more numerous, the limiting factor for most programs is now, and will be for some time, memory access. Hardware designers have come up with ever more sophisticated memory handling and acceleration techniques–such as CPU caches–but these cannot work optimally without some help from the programmer. Unfortunately, neither the structure nor the cost of using the memory subsystem of a computer or the caches on CPUs is well understood by most programmers. This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.},
+@article{jacobSOFTWAREORIENTEDMEMORYMANAGEMENTDESIGN,
+  title = {{{SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN}}},
+  author = {Jacob, Bruce Ledley},
   langid = {english},
-  file = {/home/max/Zotero/storage/BHLJSENP/Hat - What Every Programmer Should Know About Memory.pdf}
+  file = {/home/max/Zotero/storage/VBSEZWXQ/Jacob - SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN.pdf}
 }
 
 @inproceedings{skarlatosElasticCuckooPage2020,
@@ -219,13 +226,6 @@
   abstract = {Guarded Page Tables implement huge sparsely occupied address spaces efficiently and have the advantages of multi-level tables (tree structure, hierarchy, sharing). We present an implementation of guarded page tables on the R4600 processor. The paper describes both the architecture-dependent design process of the algorithms and the resulting tool box.},
   langid = {english},
   file = {/home/max/Zotero/storage/QHV4NERC/Liedtke and Elphinstone - 1996 - Guarded page tables on Mips R4600 or an exercise i.pdf}
-}
-
-@article{jacobSOFTWAREORIENTEDMEMORYMANAGEMENTDESIGN,
-  title = {{{SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN}}},
-  author = {Jacob, Bruce Ledley},
-  langid = {english},
-  file = {/home/max/Zotero/storage/VBSEZWXQ/Jacob - SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN.pdf}
 }
 
 @book{liedtkeRealizationHugeSparselyoccupied1996,
@@ -553,6 +553,23 @@
   file = {/home/max/Zotero/storage/ZQR8FPC9/Engler - The Exokernel Operating System Architecture.pdf}
 }
 
+@online{hajinazarVirtualBlockInterface2020,
+  title = {The {{Virtual Block Interface}}: {{A Flexible Alternative}} to the {{Conventional Virtual Memory Framework}}},
+  shorttitle = {The {{Virtual Block Interface}}},
+  author = {Hajinazar, Nastaran and Patel, Pratyush and Patel, Minesh and Kanellopoulos, Konstantinos and Ghose, Saugata and Ausavarungnirun, Rachata and family=Oliveira Jr., given=Geraldo Francisco, prefix=de, useprefix=false and Appavoo, Jonathan and Seshadri, Vivek and Mutlu, Onur},
+  date = {2020-05-19},
+  eprint = {2005.09748},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  url = {http://arxiv.org/abs/2005.09748},
+  urldate = {2024-07-25},
+  abstract = {Computers continue to diversify with respect to system designs, emerging memory technologies, and application memory demands. Unfortunately, continually adapting the conventional virtual memory framework to each possible system configuration is challenging, and often results in performance loss or requires non-trivial workarounds. To address these challenges, we propose a new virtual memory framework, the Virtual Block Interface (VBI). We design VBI based on the key idea that delegating memory management duties to hardware can reduce the overheads and software complexity associated with virtual memory. VBI introduces a set of variable-sized virtual blocks (VBs) to applications. Each VB is a contiguous region of the globally-visible VBI address space, and an application can allocate each semantically meaningful unit of information (e.g., a data structure) in a separate VB. VBI decouples access protection from memory allocation and address translation. While the OS controls which programs have access to which VBs, dedicated hardware in the memory controller manages the physical memory allocation and address translation of the VBs. This approach enables several architectural optimizations to (1) efficiently and flexibly cater to different and increasingly diverse system configurations, and (2) eliminate key inefficiencies of conventional virtual memory. We demonstrate the benefits of VBI with two important use cases: (1) reducing the overheads of address translation (for both native execution and virtual machine environments), as VBI reduces the number of translation requests and associated memory accesses; and (2) two heterogeneous main memory architectures, where VBI increases the effectiveness of managing fast memory regions. For both cases, VBI significanttly improves performance over conventional virtual memory.},
+  langid = {english},
+  pubstate = {prepublished},
+  keywords = {Computer Science - Hardware Architecture},
+  file = {/home/max/Zotero/storage/99A7JXWZ/Hajinazar et al. - 2020 - The Virtual Block Interface A Flexible Alternativ.pdf}
+}
+
 @article{maruyamaAnalysisDesignAlternatives1977,
   title = {Analysis of Design Alternatives for Virtual Memory Indexes},
   author = {Maruyama, K. and Smith, S. E.},
@@ -569,23 +586,6 @@
   abstract = {A class of index structures for use in a virtual memory environment is described. Design alternatives within this class of index structures are analyzed. These alternatives include a choice of search strategy, whether or not pages in the index are stuctured, and whether or not keys are compressed. The average cost of retrieving entries from these indexes is expressed as a weighted sum of the cost of a basis key comparison and the cost of crossing a page boundary in the index structure. Formulas for the retrieval costs possible combinations of design alternatives are given. These are used in numerical case studies which compare the retrieval costs of the alternatives. Qualitative comparisons of the maintenance costs (insertion, deletion, reorganization) of the design alternatives are also included.},
   langid = {english},
   file = {/home/max/Zotero/storage/DID6739D/Maruyama und Smith - 1977 - Analysis of design alternatives for virtual memory.pdf}
-}
-
-@online{hajinazarVirtualBlockInterface2020,
-  title = {The {{Virtual Block Interface}}: {{A Flexible Alternative}} to the {{Conventional Virtual Memory Framework}}},
-  shorttitle = {The {{Virtual Block Interface}}},
-  author = {Hajinazar, Nastaran and Patel, Pratyush and Patel, Minesh and Kanellopoulos, Konstantinos and Ghose, Saugata and Ausavarungnirun, Rachata and family=Oliveira Jr., given=Geraldo Francisco, prefix=de, useprefix=false and Appavoo, Jonathan and Seshadri, Vivek and Mutlu, Onur},
-  date = {2020-05-19},
-  eprint = {2005.09748},
-  eprinttype = {arXiv},
-  eprintclass = {cs},
-  url = {http://arxiv.org/abs/2005.09748},
-  urldate = {2024-07-25},
-  abstract = {Computers continue to diversify with respect to system designs, emerging memory technologies, and application memory demands. Unfortunately, continually adapting the conventional virtual memory framework to each possible system configuration is challenging, and often results in performance loss or requires non-trivial workarounds. To address these challenges, we propose a new virtual memory framework, the Virtual Block Interface (VBI). We design VBI based on the key idea that delegating memory management duties to hardware can reduce the overheads and software complexity associated with virtual memory. VBI introduces a set of variable-sized virtual blocks (VBs) to applications. Each VB is a contiguous region of the globally-visible VBI address space, and an application can allocate each semantically meaningful unit of information (e.g., a data structure) in a separate VB. VBI decouples access protection from memory allocation and address translation. While the OS controls which programs have access to which VBs, dedicated hardware in the memory controller manages the physical memory allocation and address translation of the VBs. This approach enables several architectural optimizations to (1) efficiently and flexibly cater to different and increasingly diverse system configurations, and (2) eliminate key inefficiencies of conventional virtual memory. We demonstrate the benefits of VBI with two important use cases: (1) reducing the overheads of address translation (for both native execution and virtual machine environments), as VBI reduces the number of translation requests and associated memory accesses; and (2) two heterogeneous main memory architectures, where VBI increases the effectiveness of managing fast memory regions. For both cases, VBI significanttly improves performance over conventional virtual memory.},
-  langid = {english},
-  pubstate = {prepublished},
-  keywords = {Computer Science - Hardware Architecture},
-  file = {/home/max/Zotero/storage/99A7JXWZ/Hajinazar et al. - 2020 - The Virtual Block Interface A Flexible Alternativ.pdf}
 }
 
 @inproceedings{guptaRebootingVirtualMemory2021,
@@ -605,23 +605,6 @@
   file = {/home/max/Zotero/storage/PTSX45UB/Gupta et al. - 2021 - Rebooting Virtual Memory with Midgard.pdf}
 }
 
-@article{hatfieldProgramRestructuringVirtual1971,
-  title = {Program Restructuring for Virtual Memory},
-  author = {Hatfield, D. J. and Gerald, J.},
-  date = {1971},
-  journaltitle = {IBM Systems Journal},
-  shortjournal = {IBM Syst. J.},
-  volume = {10},
-  number = {3},
-  pages = {168--192},
-  issn = {0018-8670},
-  doi = {10.1147/sj.103.0168},
-  url = {http://ieeexplore.ieee.org/document/5388264/},
-  urldate = {2024-07-25},
-  langid = {english},
-  file = {/home/max/Zotero/storage/4VZNKYMZ/Hatfield und Gerald - 1971 - Program restructuring for virtual memory.pdf}
-}
-
 @inproceedings{kruegerToolsDevelopmentApplicationspecific1993a,
   title = {Tools for the Development of Application-Specific Virtual Memory Management},
   booktitle = {Proceedings of the Eighth Annual Conference on {{Object-oriented}} Programming Systems, Languages, and Applications},
@@ -637,6 +620,23 @@
   isbn = {978-0-89791-587-8},
   langid = {english},
   file = {/home/max/Zotero/storage/HSR3P33Y/Krueger et al. - 1993 - Tools for the development of application-specific .pdf;C\:\\Users\\maxme\\Downloads\\165854.165867.pdf}
+}
+
+@article{hatfieldProgramRestructuringVirtual1971,
+  title = {Program Restructuring for Virtual Memory},
+  author = {Hatfield, D. J. and Gerald, J.},
+  date = {1971},
+  journaltitle = {IBM Systems Journal},
+  shortjournal = {IBM Syst. J.},
+  volume = {10},
+  number = {3},
+  pages = {168--192},
+  issn = {0018-8670},
+  doi = {10.1147/sj.103.0168},
+  url = {http://ieeexplore.ieee.org/document/5388264/},
+  urldate = {2024-07-25},
+  langid = {english},
+  file = {/home/max/Zotero/storage/4VZNKYMZ/Hatfield und Gerald - 1971 - Program restructuring for virtual memory.pdf}
 }
 
 @article{basuREVISITINGVIRTUALMEMORY,
@@ -681,6 +681,14 @@
   file = {/home/max/Zotero/storage/C3MQQE3J/Zagieboylo et al. - 2020 - The Cost of Software-Based Memory Management Witho.pdf}
 }
 
+@article{choudhuriSoftwareVirtualMemory,
+  title = {Software {{Virtual Memory Management}} for {{MMU-less Embedded Systems}}},
+  author = {Choudhuri, Siddharth and Givargis, Tony},
+  abstract = {For an embedded system designer, the rise in processing speeds of embedded processors and microcontroller evolution has lead to the possibility of running computation and data intensive applications on small embedded devices that earlier only ran on desktop-class systems. From a memory stand point, there is a similar need for running larger and more data intensive applications on embedded devices. However, support for large memory adadress spaces, specifically, virtual memory, for MMU-less embedded systems is lacking. In this paper, we present a software virtual memory scheme for MMU-less systems based on an application level virtual memory library and a virtual memory aware assembler. Our virtual memory support is transparent to the programmer, can be tuned for a specific application, correct by construction, and fully automated. Our experiements validate the feasibility of virtual memory for MMU-less embedded systems using benchmark programs.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/T6YC94PW/Choudhuri und Givargis - Software Virtual Memory Management for MMU-less Em.pdf}
+}
+
 @article{kimEfficientSoftwareShared2011,
   title = {An Efficient Software Shared Virtual Memory for the Single-Chip Cloud Computer},
   author = {Kim, Junghyun and Seo, Sangmin and Lee, Jaejin},
@@ -690,14 +698,6 @@
   doi = {10.1145/2103799.2103804},
   abstract = {The Single-chip Cloud Computer (SCC) is an experimental processor created by Intel Labs. The SCC is based on a message passing architecture and does not provide any hardware cache coherence mechanism. Software or programmers should take care of coherence and consistency of a shared region between different cores. In this paper, we propose an efficient software shared virtual memory (SVM) for the SCC as an alternative to the cache coherence mechanism and report some preliminary results. Our software SVM is based on the commit-reconcile and fence (CRF) memory model and does not require a complicated SVM protocol between cores. We evaluate the effectiveness of our approach by comparing the software SVM with a cache-coherent NUMA machine using three synthetic micro-benchmark applications and five applications from SPLASH-2. Evaluation result indicates that our approach is promising.},
   file = {/home/max/Zotero/storage/AMLP2FT9/Kim et al. - 2011 - An efficient software shared virtual memory for th.pdf}
-}
-
-@article{choudhuriSoftwareVirtualMemory,
-  title = {Software {{Virtual Memory Management}} for {{MMU-less Embedded Systems}}},
-  author = {Choudhuri, Siddharth and Givargis, Tony},
-  abstract = {For an embedded system designer, the rise in processing speeds of embedded processors and microcontroller evolution has lead to the possibility of running computation and data intensive applications on small embedded devices that earlier only ran on desktop-class systems. From a memory stand point, there is a similar need for running larger and more data intensive applications on embedded devices. However, support for large memory adadress spaces, specifically, virtual memory, for MMU-less embedded systems is lacking. In this paper, we present a software virtual memory scheme for MMU-less systems based on an application level virtual memory library and a virtual memory aware assembler. Our virtual memory support is transparent to the programmer, can be tuned for a specific application, correct by construction, and fully automated. Our experiements validate the feasibility of virtual memory for MMU-less embedded systems using benchmark programs.},
-  langid = {english},
-  file = {/home/max/Zotero/storage/T6YC94PW/Choudhuri und Givargis - Software Virtual Memory Management for MMU-less Em.pdf}
 }
 
 @inproceedings{jaleelInlineInterruptHandling2001,
@@ -978,4 +978,14 @@
   title = {{{QEMU Monitor}} — {{QEMU}} Documentation},
   url = {https://qemu-project.gitlab.io/qemu/system/monitor.html},
   urldate = {2024-08-10}
+}
+
+@software{MitpdosXv6riscv2024,
+  title = {Mit-Pdos/Xv6-Riscv},
+  date = {2024-08-24T13:39:54Z},
+  origdate = {2019-08-26T11:15:28Z},
+  url = {https://github.com/mit-pdos/xv6-riscv},
+  urldate = {2024-08-24},
+  abstract = {Xv6 for RISC-V},
+  organization = {MIT PDOS}
 }
