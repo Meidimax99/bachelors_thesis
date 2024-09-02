@@ -64,13 +64,20 @@ In modern systems, \textit{Virtual Memory} does a lot more than swapping pages b
 storage. It is the foundation for a number of requirements to the memory system that are taken for granted
 \cite{jacobSoftwaremanagedAddressTranslation1997}.\\
 These requirements are as follows:
+
+% -------------------------------------------------------------------------------------------------
+
 \paragraph{Address Space Protection / Isolation} It should not be possible for one process to access the data
 of another process, unless explicitly shared.
 \cite{jacobVirtualMemoryContemporary1998}
 
+% -------------------------------------------------------------------------------------------------
+
 \paragraph{Shared Memory} Sharing memory allows programms to work on the same physical data with potentially
 differing virtual addresses.
 \cite{jacobVirtualMemoryContemporary1998}
+
+% -------------------------------------------------------------------------------------------------
 
 \paragraph{Large Address Spaces} Programs tend to require more and more memory. Swapping pages can help
 to support programs bigger than the actual size of main memory \cite{tanenbaumOS}, but programs may
@@ -78,24 +85,52 @@ also require more memory than the theoretical limit set by hardware and software
 use bigger addresses to support programs that require a lot of memory \cite{jacobSoftwaremanagedAddressTranslation1997, jacobVirtualMemoryContemporary1998}.
 
 \todo{pages already definied?}
+% -------------------------------------------------------------------------------------------------
+
 \paragraph{Fine-grained Protection} From a security perspective, it is often not desirable to allow the code segment
 of a program to be writeable and the data section to be exectuable. \textit{Virtual Memory Systems} provide read-only,
 read-write and exectue-only protection on a page granularity\cite{jacobSoftwaremanagedAddressTranslation1997}.
 Illegal references may trigger exceptions, which allow the operating system to deal with the program \cite{jacobVirtualMemoryContemporary1998}.
 
 \todo{more on tlb reach in HW section}
+% -------------------------------------------------------------------------------------------------
+
 \paragraph{Superpages}
 Structures may be bigger than a single page and may thus occupy multiple entries of the translation caches while
 only refering to one object. To avoid displacing other caches entries, \textit{Virtual Memory Systems} use
 superpages to provide space for bigger objects to increase the reach of cache entries \cite{jacobSoftwaremanagedAddressTranslation1997}.
 
-\paragraph{Sparsity}
+% -------------------------------------------------------------------------------------------------
 
-\paragraph{Flexibility}
-\cite{jacob1998virtualissues} % Simplification of the programmes job
+\paragraph{Flexibility} Programmers should not have to think about the management
+of the resources it requires to do its job, that is the ooperating systems job
+\cite{tanenbaumOS}. As such, it should be possible to place the programs code
+and data anywhere in the programs virtual address space to make the programmers
+job as easy as possible
+\cite{jacob1998virtualissues}. % Simplification of the programmes job
 
-\paragraph{Memory Mapped IO}
-\cite{tanenbaumOS}
+\begin{marginfigure}
+    \includegraphics*[width=0.9\marginparwidth]{figures/fund_flexibility.pdf}
+    \caption{\textbf{Flexibility} Program segments can be dispersed anywhere
+        around the virtual address space; the Virtual Memory System has to place
+        the pages into actual physical memory.}
+\end{marginfigure}
+% -------------------------------------------------------------------------------------------------
+
+\paragraph{Sparsity} Big addresses and fine granularity result in a huge address
+space with a sparse population for programs that do not require a lot of pages
+\cite{tanenbaumOS}.
+
+\begin{marginfigure}
+    \includegraphics*[width=0.5\marginparwidth]{figures/fund_sparsity.pdf}
+    \caption{\textbf{Sparsity} Virtual Memory Systems need to efficiently
+        realize huge address spaces with only a few pages being used.}
+\end{marginfigure}
+
+% -------------------------------------------------------------------------------------------------
+
+% \paragraph{Memory Mapped IO}
+% \cite{tanenbaumOS}
 
 
 
