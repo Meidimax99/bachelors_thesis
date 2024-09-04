@@ -41,6 +41,32 @@
 % -------------------------------------------------------------------------------------------------
 % Section on the rationale for choosing this platform -> or just say that this was chosen and dont rationalize it
 
+% -------------------------------------------------------------------------------------------------
+% Introductory section
+This chapter summarizes the implementation of the softtlb page-table-less virtual memory system.
+The ordering of the sections in this chapter reflect the implementation process and will thus
+be comprised of following steps:
+\begin{itemize}
+    \item \textbf{TLB Miss Exception and Exception Handler} The first step is about
+          the implementation of the TLB Miss Exception in the QEMU RISC-V emulator. Additionally, the
+          implementation of a simple user program to trigger the exception and a rudimentary exception
+          handler for the \textit{TLB Miss Exception} is presented.
+    \item \textbf{Software page table walk} The second step implements a software page table walk
+          in the exception handler routine for the \textit{TLB Miss Exception}. This is mainly
+          to verify the correct behavior of the system when all addresses
+          are mapped using the exception handler.
+    \item \textbf{Segmented Memory Design} In this step, the xv6 virtual memory system is completely
+          replaced. The new design gets rid of the page table and only uses information present in
+          registers to create virtual-to-physical mappings and to fill the tlb. The page allocation
+          scheme is more similar to a segmented memory system than a virtual memory allocation scheme
+          and thus has some drawbacks that will be discussed in the evaluation chapter.
+\end{itemize}
+Each section elaborates on both the xv6 side and the QEMU side of the implementation.\\
+The final section describes debugging techniques that were used or can otherwise be useful for
+similar implementations.
+
+% -------------------------------------------------------------------------------------------------
+
 \todo{merge this with overview and provide this sort of explanation as a introduction to the implementation part}
 \section{Programming Platform}
 \subsection{QEMU}
@@ -478,7 +504,7 @@ QEMUs Redord/replay feature allows a deterministic replay of a machines executio
 all non-deterministic events that happend. This can be especially helpful to investigate bugs
 that occur as a result of an interrupt or require special preconditions or timings to occur.\\
 With the Record/replay feature, it is easy to recreate the situation in which a bug or unexpected
-behaviour occured.\\
+behavior occured.\\
 For this project, especially the mouse and keybord input and the hardware clock are interesting
 non-deterministic events that influence the execution of the system \cite[RecordReplayQEMU].
 
