@@ -1,84 +1,84 @@
-@article{hatWhatEveryProgrammer,
-  title = {What {{Every Programmer Should Know About Memory}}},
-  author = {Hat, Ulrich Drepper Red},
-  abstract = {As CPU cores become both faster and more numerous, the limiting factor for most programs is now, and will be for some time, memory access. Hardware designers have come up with ever more sophisticated memory handling and acceleration techniques–such as CPU caches–but these cannot work optimally without some help from the programmer. Unfortunately, neither the structure nor the cost of using the memory subsystem of a computer or the caches on CPUs is well understood by most programmers. This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.},
-  langid = {english},
-  file = {/home/max/Zotero/storage/BHLJSENP/Hat - What Every Programmer Should Know About Memory.pdf}
+@online{12MemoryManagement,
+  title = {12. {{Memory Management Unit}} ({{MMU}}) — {{Chromite Core Generator}} 1.0.0 Documentation},
+  url = {https://chromite.readthedocs.io/en/using-csrbox/mmu.html},
+  urldate = {2024-08-01},
+  file = {/home/max/Zotero/storage/2MW45F8Y/mmu.html}
 }
 
-@article{heiserAnatomyHighPerformanceMicrokernel,
-  title = {Anatomy of a {{High-Performance Microkernel}}},
-  author = {Heiser, Gernot},
-  langid = {english},
-  file = {/home/max/Zotero/storage/G8KHSJ2M/Heiser - Anatomy of a High-Performance Microkernel.pdf}
-}
-
-@article{jacobSOFTWAREORIENTEDMEMORYMANAGEMENTDESIGN,
-  title = {{{SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN}}},
-  author = {Jacob, Bruce Ledley},
-  langid = {english},
-  file = {/home/max/Zotero/storage/VBSEZWXQ/Jacob - SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN.pdf}
-}
-
-@inproceedings{skarlatosElasticCuckooPage2020,
-  title = {Elastic {{Cuckoo Page Tables}}: {{Rethinking Virtual Memory Translation}} for {{Parallelism}}},
-  shorttitle = {Elastic {{Cuckoo Page Tables}}},
-  booktitle = {Proceedings of the {{Twenty-Fifth International Conference}} on {{Architectural Support}} for {{Programming Languages}} and {{Operating Systems}}},
-  author = {Skarlatos, Dimitrios and Kokolis, Apostolos and Xu, Tianyin and Torrellas, Josep},
-  date = {2020-03-09},
-  pages = {1093--1108},
+@inproceedings{alamDoItYourselfVirtualMemory2017,
+  title = {Do-{{It-Yourself Virtual Memory Translation}}},
+  booktitle = {Proceedings of the 44th {{Annual International Symposium}} on {{Computer Architecture}}},
+  author = {Alam, Hanna and Zhang, Tianhao and Erez, Mattan and Etsion, Yoav},
+  date = {2017-06-24},
+  pages = {457--468},
   publisher = {ACM},
-  location = {Lausanne Switzerland},
-  doi = {10.1145/3373376.3378493},
-  url = {https://dl.acm.org/doi/10.1145/3373376.3378493},
-  urldate = {2024-04-06},
-  abstract = {The unprecedented growth in the memory needs of emerging memory-intensive workloads has made virtual memory translation a major performance bottleneck. To address this problem, this paper introduces Elastic Cuckoo Page Tables, a novel page table design that transforms the sequential pointer-chasing operation used by conventional multi-level radix page tables into fully-parallel look-ups. The resulting design harvests, for the first time, the benefits of memorylevel parallelism for address translation. Elastic cuckoo page tables use Elastic Cuckoo Hashing, a novel extension of cuckoo hashing that supports efficient page table resizing. Elastic cuckoo page tables efficiently resolve hash collisions, provide process-private page tables, support multiple page sizes and page sharing among processes, and dynamically adapt page table sizes to meet application requirements.},
-  eventtitle = {{{ASPLOS}} '20: {{Architectural Support}} for {{Programming Languages}} and {{Operating Systems}}},
-  isbn = {978-1-4503-7102-5},
+  location = {Toronto ON Canada},
+  doi = {10.1145/3079856.3080209},
+  url = {https://dl.acm.org/doi/10.1145/3079856.3080209},
+  urldate = {2024-07-25},
+  abstract = {In this paper, we introduce the Do-It-Yourself virtual memory translation (DVMT) architecture as a flexible complement for current hardware-fixed translation flows. DVMT decouples the virtual-tophysical mapping process from the access permissions, giving applications freedom in choosing mapping schemes, while maintaining security within the operating system. Furthermore, DVMT is designed to support virtualized environments, as a means to collapse the costly, hardware-assisted two-dimensional translations. We describe the architecture in detail and demonstrate its effectiveness by evaluating several different DVMT schemes on a range of virtualized applications with a model based on measurements from a commercial system. We show that different DVMT configurations preserve the native performance, while achieving speedups of 1.2× to 2.0× in virtualized environments.},
+  eventtitle = {{{ISCA}} '17: {{The}} 44th {{Annual International Symposium}} on {{Computer Architecture}}},
+  isbn = {978-1-4503-4892-8},
   langid = {english},
-  file = {/home/max/Zotero/storage/36GE97H5/Skarlatos et al. - 2020 - Elastic Cuckoo Page Tables Rethinking Virtual Mem.pdf}
+  file = {/home/max/Zotero/storage/U3ECVKW3/Alam et al. - 2017 - Do-It-Yourself Virtual Memory Translation.pdf}
 }
 
-@article{jacobVirtualMemoryIssues1998,
-  title = {Virtual Memory: Issues of Implementation},
-  shorttitle = {Virtual Memory},
-  author = {Jacob, B. and Mudge, T.},
-  date = {1998-06},
-  journaltitle = {Computer},
-  shortjournal = {Computer},
-  volume = {31},
-  number = {6},
-  pages = {33--43},
-  issn = {00189162},
-  doi = {10.1109/2.683005},
-  url = {http://ieeexplore.ieee.org/document/683005/},
-  urldate = {2024-04-06},
+@inproceedings{barrTranslationCachingSkip2010,
+  title = {Translation {{Caching}}: {{Skip}}, {{Don}}’t {{Walk}} (the {{Page Table}})},
+  booktitle = {Proceedings of the 37th {{Annual International Symposium}} on {{Computer Architecture}}},
+  author = {Barr, Thomas W and Cox, Alan L and Rixner, Scott},
+  date = {2010},
+  pages = {48--59},
+  publisher = {Association for Computing Machinery},
+  location = {Saint-Malo, France},
+  doi = {10.1145/1815961.1815970},
+  abstract = {This paper explores the design space of MMU caches that accelerate virtual-to-physical address translation in processor architectures, such as x86-64, that use a radix tree page table. In particular, these caches accelerate the page table walk that occurs after a miss in the Translation Lookaside Buffer. This paper shows that the most effective MMU caches are translation caches, which store partial translations and allow the page walk hardware to skip one or more levels of the page table.},
+  eventtitle = {International {{Symposium}} on {{Computer Architecture}}},
+  isbn = {978-1-4503-0053-7},
   langid = {english},
-  file = {/home/max/Zotero/storage/47B9CC2X/Jacob and Mudge - 1998 - Virtual memory issues of implementation.pdf}
+  file = {/home/max/Zotero/storage/6HYFXCGL/Barr et al. - Translation caching.pdf}
 }
 
-@article{naughtonUsingSharedVirtual,
-  title = {Using {{Shared Virtual Memory}} for {{Parallel Join Processing}}},
-  author = {Naughton, F},
-  abstract = {In this paper, we show that shared virtual memory, in a shared-nothing multiprocessor, facilitates the design and implementation of parallel join processing algorithms that perform significantly better in the presence of skew than previously proposed parallel join processing algorithms. Repropose twovariants ofan algorithm for parallel join processing using shared virtual memory, and perform a detailed simulation to investigate their performance. The algorithmic unique in that it employs both the shared virtual memory paradigm and the message-passing paradigm used by current sharednothing parallel database systems. The implementation of the algorithm requires few modifications to existing shared-nothing parallel database systems.},
+@article{basuREVISITINGVIRTUALMEMORY,
+  title = {{{REVISITING VIRTUAL MEMORY}}},
+  author = {Basu, Arkaprava},
+  abstract = {Page-based virtual memory (paging) is a crucial piece of memory management in today’s computing systems. However, I find that need, purpose and design constraints of virtual memory have changed dramatically since translation lookaside buffers (TLBs) were introduced to cache recently-used address translations: (a) physical memory sizes have grown more than a millionfold, (b) workloads are often sized to avoid swapping information to and from secondary storage, and (c) energy is now a first-order design constraint. Nevertheless, level-one TLBs have remained the same size and are still accessed on every memory reference. As a result, large workloads waste considerable execution time on TLB misses and all workloads spend energy on frequent TLB accesses.},
   langid = {english},
-  file = {/home/max/Zotero/storage/PTZ4KF4R/Naughton - Using Shared Virtual Memory for Parallel Join Proc.pdf}
+  file = {/home/max/Zotero/storage/FFL8I5NB/Basu - REVISITING VIRTUAL MEMORY.pdf}
 }
 
-@article{jacobVirtualMemoryContemporary1998,
-  title = {Virtual Memory in Contemporary Microprocessors},
-  author = {Jacob, B. and Mudge, T.},
-  year = {July-Aug./1998},
-  journaltitle = {IEEE Micro},
-  shortjournal = {IEEE Micro},
-  volume = {18},
-  number = {4},
-  pages = {60--75},
-  issn = {02721732},
-  doi = {10.1109/40.710872},
-  url = {http://ieeexplore.ieee.org/document/710872/},
-  urldate = {2024-04-06},
-  file = {/home/max/Zotero/storage/VRX9LFYS/document.pdf}
+@article{bellardQEMUFastPortable2005,
+  title = {{{QEMU}}, a {{Fast}} and {{Portable Dynamic Translator}}},
+  author = {Bellard, Fabrice},
+  date = {2005},
+  abstract = {We present the internals of QEMU, a fast machine emulator using an original portable dynamic translator. It emulates several CPUs (x86, PowerPC, ARM and Sparc) on several hosts (x86, PowerPC, ARM, Sparc, Alpha and MIPS). QEMU supports full system emulation in which a complete and unmodified operating system is run in a virtual machine and Linux user mode emulation where a Linux process compiled for one target CPU can be run on another CPU.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/RV5AF9PU/Bellard - 2005 - QEMU, a Fast and Portable Dynamic Translator.pdf}
+}
+
+@book{bhattacharjeeArchitecturalOperatingSystem2018,
+  title = {Architectural and Operating System Support for Virtual Memory},
+  author = {Bhattacharjee, Abhishek and Lustig, Daniel},
+  date = {2018},
+  series = {Synthesis Lectures on Computer Architecture},
+  number = {42},
+  publisher = {Morgan \& Claypool Publishers},
+  location = {San Rafael, California},
+  doi = {10.2200/S00795ED1V01Y201708CAC042},
+  isbn = {978-1-62705-602-1},
+  langid = {english},
+  pagetotal = {157},
+  file = {/home/max/Zotero/storage/CX6CWUPR/Bhattacharjee and Lustig - 2018 - Architectural and operating system support for vir.pdf}
+}
+
+@online{bhushanAnswerDumpContents2012,
+  title = {Answer to "{{Dump}} the Contents of {{TLB}} Buffer of X86 {{CPU}}"},
+  author = {Bhushan},
+  date = {2012-10-07},
+  url = {https://stackoverflow.com/a/12766195},
+  urldate = {2024-07-16},
+  organization = {Stack Overflow},
+  file = {/home/max/Zotero/storage/9WX66ZYJ/dump-the-contents-of-tlb-buffer-of-x86-cpu.html}
 }
 
 @article{chiHashingTechniquesSurvey2018,
@@ -100,188 +100,12 @@
   file = {/home/max/Zotero/storage/CFR3S7RQ/Chi and Zhu - 2018 - Hashing Techniques A Survey and Taxonomy.pdf}
 }
 
-@article{nivatPerfectHashing,
-  title = {Perfect {{Hashing}}},
-  author = {Nivat, M},
+@article{choudhuriSoftwareVirtualMemory,
+  title = {Software {{Virtual Memory Management}} for {{MMU-less Embedded Systems}}},
+  author = {Choudhuri, Siddharth and Givargis, Tony},
+  abstract = {For an embedded system designer, the rise in processing speeds of embedded processors and microcontroller evolution has lead to the possibility of running computation and data intensive applications on small embedded devices that earlier only ran on desktop-class systems. From a memory stand point, there is a similar need for running larger and more data intensive applications on embedded devices. However, support for large memory adadress spaces, specifically, virtual memory, for MMU-less embedded systems is lacking. In this paper, we present a software virtual memory scheme for MMU-less systems based on an application level virtual memory library and a virtual memory aware assembler. Our virtual memory support is transparent to the programmer, can be tuned for a specific application, correct by construction, and fully automated. Our experiements validate the feasibility of virtual memory for MMU-less embedded systems using benchmark programs.},
   langid = {english},
-  file = {/home/max/Zotero/storage/QZGP7R8E/Nivat - Zbigniew J. Czech a,, George Havasb, Bohdan S. Ma.pdf}
-}
-
-@article{paghCuckooHashing2004,
-  title = {Cuckoo Hashing},
-  author = {Pagh, Rasmus and Rodler, Flemming Friche},
-  date = {2004-05},
-  journaltitle = {Journal of Algorithms},
-  shortjournal = {Journal of Algorithms},
-  volume = {51},
-  number = {2},
-  pages = {122--144},
-  issn = {01966774},
-  doi = {10.1016/j.jalgor.2003.12.002},
-  url = {https://linkinghub.elsevier.com/retrieve/pii/S0196677403001925},
-  urldate = {2024-04-29},
-  abstract = {We present a simple dictionary with worst case constant lookup time, equaling the theoretical performance of the classic dynamic perfect hashing scheme of Dietzfelbinger et al. [SIAM J. Comput. 23 (4) (1994) 738–761]. The space usage is similar to that of binary search trees. Besides being conceptually much simpler than previous dynamic dictionaries with worst case constant lookup time, our data structure is interesting in that it does not use perfect hashing, but rather a variant of open addressing where keys can be moved back in their probe sequences. An implementation inspired by our algorithm, but using weaker hash functions, is found to be quite practical. It is competitive with the best known dictionaries having an average case (but no nontrivial worst case) guarantee on lookup time.},
-  langid = {english},
-  file = {/home/max/Zotero/storage/DVK2LE7E/Pagh and Rodler - 2004 - Cuckoo hashing.pdf}
-}
-
-@article{weissSpectralHashing,
-  title = {Spectral {{Hashing}}},
-  author = {Weiss, Yair and Torralba, Antonio and Fergus, Rob},
-  abstract = {Semantic hashing[1] seeks compact binary codes of data-points so that the Hamming distance between codewords correlates with semantic similarity. In this paper, we show that the problem of finding a best code for a given dataset is closely related to the problem of graph partitioning and can be shown to be NP hard. By relaxing the original problem, we obtain a spectral method whose solutions are simply a subset of thresholded eigenvectors of the graph Laplacian. By utilizing recent results on convergence of graph Laplacian eigenvectors to the Laplace-Beltrami eigenfunctions of manifolds, we show how to efficiently calculate the code of a novel datapoint. Taken together, both learning the code and applying it to a novel point are extremely simple. Our experiments show that our codes outperform the state-of-the art.},
-  langid = {english},
-  file = {/home/max/Zotero/storage/W94SK9FY/Weiss et al. - Spectral Hashing.pdf}
-}
-
-@article{knottHashingFunctions1975,
-  title = {Hashing Functions},
-  author = {Knott, G. D.},
-  date = {1975-03-01},
-  journaltitle = {The Computer Journal},
-  shortjournal = {The Computer Journal},
-  volume = {18},
-  number = {3},
-  pages = {265--278},
-  issn = {0010-4620, 1460-2067},
-  doi = {10.1093/comjnl/18.3.265},
-  url = {https://academic.oup.com/comjnl/article-lookup/doi/10.1093/comjnl/18.3.265},
-  urldate = {2024-04-29},
-  langid = {english},
-  file = {/home/max/Zotero/storage/NVE2CCKW/180265.pdf}
-}
-
-@misc{L4X2Whitepaper,
-  title = {L4 {{X2 Whitepaper}} - {{Pistachio}}},
-  file = {/home/max/Zotero/storage/CI73A3DI/whitepaper.pdf}
-}
-
-@online{L4ReferenceManual,
-  title = {L4 {{Reference Manual}}},
-  url = {https://cgi.cse.unsw.edu.au/~reports/papers/9709.pdf},
-  urldate = {2024-05-07},
-  file = {/home/max/Zotero/storage/E79CG3I5/9709.pdf}
-}
-
-@online{L4UserManual,
-  title = {L4 {{User Manual}}},
-  url = {https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=564516e3f63dce6c7506a1777dbd6f2e8192fb69},
-  urldate = {2024-05-07},
-  file = {/home/max/Zotero/storage/TXI2ZF7V/document.pdf}
-}
-
-@online{ProspectingHashFunctions,
-  title = {Prospecting for {{Hash Functions}}},
-  url = {https://nullprogram.com/blog/2018/07/31/},
-  urldate = {2024-05-08},
-  keywords = {todo},
-  file = {/home/max/Zotero/storage/8AA5MXDG/31.html}
-}
-
-@book{mittelbachTheoryHashFunctions2021,
-  title = {The {{Theory}} of {{Hash Functions}} and {{Random Oracles}}: {{An Approach}} to {{Modern Cryptography}}},
-  shorttitle = {The {{Theory}} of {{Hash Functions}} and {{Random Oracles}}},
-  author = {Mittelbach, Arno and Fischlin, Marc},
-  date = {2021},
-  series = {Information {{Security}} and {{Cryptography}}},
-  publisher = {Springer International Publishing},
-  location = {Cham},
-  doi = {10.1007/978-3-030-63287-8},
-  url = {http://link.springer.com/10.1007/978-3-030-63287-8},
-  urldate = {2024-05-09},
-  isbn = {978-3-030-63286-1 978-3-030-63287-8},
-  langid = {english},
-  file = {/home/max/Zotero/storage/73QJLSPL/Mittelbach and Fischlin - 2021 - The Theory of Hash Functions and Random Oracles A.pdf}
-}
-
-@article{liedtkeHighResolutionMMU,
-  title = {A {{High Resolution MMU}} for the {{Realization}} of {{Huge Fine-grained Address Spaces}} and {{User Level Mapping}}},
-  author = {Liedtke, Jochen},
-  abstract = {This paper describes a Memory Management Unit (MMU) which can be used for implementing huge ne-grained address spaces. Granularities down to 16-byte pages seem to be possible. Furthermore, a mechanism is described whichs permits fast and secure mapping operations on user level.},
-  langid = {english},
-  keywords = {todo},
-  file = {/home/max/Zotero/storage/FBL9LEMQ/Liedtke - A High Resolution MMU for the Realization of Huge .pdf}
-}
-
-@article{engelChallengesImplementingSoftwareDefined,
-  title = {Challenges {{Implementing Software-Defined Virtual Memory}}},
-  author = {Engel, Michael},
-  langid = {english},
-  keywords = {todo},
-  file = {/home/max/Zotero/storage/R42473AH/Engel - Challenges Implementing Software-Defined Virtual M.pdf}
-}
-
-@article{liedtkeGuardedPageTables1996,
-  title = {Guarded Page Tables on {{Mips R4600}} or an Exercise in Architecture-Dependent Micro Optimization},
-  author = {Liedtke, Jochen and Elphinstone, Kevin},
-  date = {1996-01},
-  journaltitle = {ACM SIGOPS Operating Systems Review},
-  shortjournal = {SIGOPS Oper. Syst. Rev.},
-  volume = {30},
-  number = {1},
-  pages = {4--15},
-  issn = {0163-5980},
-  doi = {10.1145/218646.218647},
-  url = {https://dl.acm.org/doi/10.1145/218646.218647},
-  urldate = {2024-05-09},
-  abstract = {Guarded Page Tables implement huge sparsely occupied address spaces efficiently and have the advantages of multi-level tables (tree structure, hierarchy, sharing). We present an implementation of guarded page tables on the R4600 processor. The paper describes both the architecture-dependent design process of the algorithms and the resulting tool box.},
-  langid = {english},
-  file = {/home/max/Zotero/storage/QHV4NERC/Liedtke and Elphinstone - 1996 - Guarded page tables on Mips R4600 or an exercise i.pdf}
-}
-
-@book{liedtkeRealizationHugeSparselyoccupied1996,
-  title = {On the Realization of Huge Sparsely-Occupied and Fine-Grained Address Spaces},
-  author = {Liedtke, Jochen},
-  date = {1996},
-  series = {{{GMD-Berichte}}},
-  number = {276},
-  publisher = {Oldenbourg},
-  location = {München Wien},
-  isbn = {978-3-486-24185-3},
-  langid = {english},
-  pagetotal = {190},
-  file = {/home/max/Zotero/storage/RPXNV2HF/Liedtke - 1996 - On the realization of huge sparsely-occupied and f.pdf}
-}
-
-@book{bhattacharjeeArchitecturalOperatingSystem2018,
-  title = {Architectural and Operating System Support for Virtual Memory},
-  author = {Bhattacharjee, Abhishek and Lustig, Daniel},
-  date = {2018},
-  series = {Synthesis Lectures on Computer Architecture},
-  number = {42},
-  publisher = {Morgan \& Claypool Publishers},
-  location = {San Rafael, California},
-  doi = {10.2200/S00795ED1V01Y201708CAC042},
-  isbn = {978-1-62705-602-1},
-  langid = {english},
-  pagetotal = {157},
-  file = {/home/max/Zotero/storage/CX6CWUPR/Bhattacharjee and Lustig - 2018 - Architectural and operating system support for vir.pdf}
-}
-
-@inproceedings{halbuerMorselsExplicitVirtual2023,
-  title = {Morsels: {{Explicit Virtual Memory Objects}}},
-  shorttitle = {Morsels},
-  booktitle = {Proceedings of the 1st {{Workshop}} on {{Disruptive Memory Systems}}},
-  author = {Halbuer, Alexander and Dietrich, Christian and Rommel, Florian and Lohmann, Daniel},
-  date = {2023-10-23},
-  pages = {52--59},
-  publisher = {ACM},
-  location = {Koblenz Germany},
-  doi = {10.1145/3609308.3625267},
-  url = {https://dl.acm.org/doi/10.1145/3609308.3625267},
-  urldate = {2024-05-11},
-  abstract = {The tremendous growth of RAM capacity – now exceeding multiple terabytes – necessitates a reevaluation of traditional memory-management methods, which were developed when resources were scarce. Current virtual-memory subsystems handle address-space regions as sets of individual 4-KiB pages with demand paging and copy-on-write, resulting in significant management overhead. Although huge pages reduce the number of managed entities, they induce internal fragmentation and have a coarse copy granularity. To address these problems, we introduce Morsels, a novel virtual-memory–management paradigm that is purely based on hardware data structures and enables the efficient sharing of virtual-memory objects between processes and devices while being well suited for non-volatile memory. Our benchmarks show that Morsels reduce the mapping time for a 6.82-GiB machine-learning model by up to 99.8 percent compared to conventional memory mapping in Linux.},
-  eventtitle = {{{DIMES}} '23: 1st {{Workshop}} on {{Disruptive Memory Systems}}},
-  isbn = {9798400703003},
-  langid = {english},
-  file = {/home/max/Zotero/storage/SQCMLJR6/Halbuer et al. - 2023 - Morsels Explicit Virtual Memory Objects.pdf}
-}
-
-@article{jacobLookSeveralMemory,
-  title = {A {{Look}} at {{Several Memory Management Units}}, {{TLB-Refill Mechanisms}}, and {{Page Table Organizations}}},
-  author = {Jacob, Bruce L and Mudge, Trevor N},
-  abstract = {Virtual memory is a staple in modem systems, though there is little agreement on how its functionality is to be implemented on either the hardware or software side of the interface. The myriad of design choices and incompatible hardware mechanisms suggests potential performance problems, especially since increasing numbers of systems (even embedded systems) are using memory management. A comparative study of the implementation choices in virtual memory should therefore aid system-level designers. This paper compares several virtual memory designs, including combinations of hierarchical and inverted page tables on hardwaremanaged and software-managed translation lookaside buffers (TLBs). The simulations show that systems are fairly sensitive to TLB size; that interrupts already account for a large portion of memory-management overhead and can become a significant factor as processors execute more concurrent instructions; and that if one includes the cache misses inflicted on applications by the VM system, the total VM overhead is roughly twice what was thought (10-200/orather than 5-10\%).},
-  langid = {english},
-  file = {/home/max/Zotero/storage/MEFE26I7/Jacob and Mudge - A Look at Several Memory Management Units, TLB-Ref.pdf}
+  file = {/home/max/Zotero/storage/T6YC94PW/Choudhuri und Givargis - Software Virtual Memory Management for MMU-less Em.pdf}
 }
 
 @article{coxXv6SimpleUnixlike,
@@ -290,119 +114,11 @@
   file = {/home/max/Zotero/storage/E76CAS2X/Cox et al. - xv6 a simple, Unix-like teaching operating system.pdf}
 }
 
-@article{denningMEMORYWASVIRTUAL,
-  title = {{{BEFORE MEMORY WAS VIRTUAL}}},
-  author = {Denning, Peter J},
-  journaltitle = {Virtual Memory},
-  langid = {english},
-  file = {/home/max/Zotero/storage/T5ZK9U9X/Denning - BEFORE MEMORY WAS VIRTUAL.pdf}
-}
-
-@inproceedings{sang-kwonleeAdaptivePrefetchingTechnique2001,
-  title = {Adaptive Prefetching Technique for Shared Virtual Memory},
-  booktitle = {Proceedings {{First IEEE}}/{{ACM International Symposium}} on {{Cluster Computing}} and the {{Grid}}},
-  author = {{Sang-Kwon Lee} and {Hee-Chul Yun} and {Joonwon Lee} and {Seungyoul Maeng}},
-  date = {2001},
-  pages = {521--526},
-  publisher = {IEEE Comput. Soc},
-  location = {Brisbane, Qld., Australia},
-  doi = {10.1109/CCGRID.2001.923237},
-  url = {http://ieeexplore.ieee.org/document/923237/},
-  urldate = {2024-07-01},
-  abstract = {Though shared virtual memory (SVM) systems promise low cost solutions for high performance computing, they suffer from long memory latencies. These latencies are usually caused by repetitive invalidations on shared data. Since shared data are accessed through synchronizations and the patterns by which threads synchronizes are repetitive, a prefetching scheme based on such repetitiveness would reduce memory latencies. Based on this observation, we propose a prefetching technique which predicts future access behavior by analyzing access history per synchronization variable. Our technique was evaluated on an 8-node SVM system using the SPLASH-2 benchmark. The results show that our technique could achieve 34\% – 45\% reduction in memory access latencies.},
-  eventtitle = {First {{IEEE}}/{{ACM International Symposium}} on {{Cluster Computing}} and the {{Grid}}},
-  isbn = {978-0-7695-1010-1},
-  langid = {english},
-  file = {/home/max/Zotero/storage/RPZ3BBQK/Sang-Kwon Lee et al. - 2001 - Adaptive prefetching technique for shared virtual .pdf}
-}
-
-@article{RISCVInstructionSet,
-  title = {The {{RISC-V Instruction Set Manual}}: {{Volume II}}: {{Privileged Architecture}}},
-  langid = {english},
-  file = {/home/max/Zotero/storage/KQXGSPC5/The RISC-V Instruction Set Manual Volume II Priv.pdf}
-}
-
-@article{RISCVInstructionSeta,
-  title = {The {{RISC-V Instruction Set Manual Volume I}}: {{Unprivileged Architecture}}},
-  langid = {english},
-  file = {/home/max/Zotero/storage/7I78NIPJ/The RISC-V Instruction Set Manual Volume I Unpriv.pdf}
-}
-
-@book{tanenbaumModernOperatingSystems2015,
-  title = {Modern Operating Systems},
-  author = {Tanenbaum, Andrew S. and Bos, Herbert},
-  date = {2015},
-  edition = {4. ed},
-  publisher = {Prentice Hall},
-  location = {Boston},
-  isbn = {978-0-13-359162-0 978-1-292-06142-9},
-  langid = {english},
-  pagetotal = {1101},
-  file = {/home/max/Zotero/storage/N99882GG/Tanenbaum and Bos - 2015 - Modern operating systems.pdf}
-}
-
-@article{meidingerQemuriscvDigestVol,
-  title = {Qemu-Riscv {{Digest}}, {{Vol}} 70, {{Issue}} 16},
-  author = {Meidinger, Max},
-  volume = {70},
-  number = {16},
-  langid = {english},
-  file = {/home/max/Zotero/storage/TUVK8UND/Meidinger - Qemu-riscv Digest, Vol 70, Issue 16.pdf}
-}
-
-@online{RISCVActuallyCalls,
-  title = {{{RISC-V}} Actually Calls out the Posibility of a Software Filled {{TLB}} in It's Spec. ... | {{Hacker News}}},
-  url = {https://news.ycombinator.com/item?id=30475735},
-  urldate = {2024-07-04},
-  file = {/home/max/Zotero/storage/2BSVT8US/item.html}
-}
-
-@article{engelReproducingSystemSoftware,
-  title = {Reproducing {{System Software Research A Case Study}}},
-  author = {Engel, Michael},
-  langid = {english},
-  file = {/home/max/Zotero/storage/AP3YNSC6/Engel - Reproducing System Software Research A Case Study.pdf}
-}
-
-@article{elphinstoneVirtualMemory64Bit,
-  title = {Virtual {{Memory}} in a 64-{{Bit Microkernel}}},
-  author = {Elphinstone, Kevin John},
-  langid = {english},
-  file = {/home/max/Zotero/storage/28LXRS8X/Elphinstone - A DISSERTATION SUBMITTED TO THE SCHOOL OF COMPUTER.pdf}
-}
-
-@online{MIPSOverviewOSDev,
-  title = {{{MIPS Overview}} - {{OSDev Wiki}}},
-  url = {https://wiki.osdev.org/MIPS_Overview#Coprocessor_0_Registers},
-  urldate = {2024-07-04},
-  file = {/home/max/Zotero/storage/MIQIX665/MIPS_Overview.html}
-}
-
-@online{MIPSArchitectureProgrammers,
-  title = {{{MIPS}}® {{Architecture For Programmers}}  {{Volume III}}: {{The MIPS64}}® and  {{microMIPS64TM Privileged Resource}}  {{Architecture}}},
-  url = {https://s3-eu-west-1.amazonaws.com/downloads-mips/documents/MD00091-2B-MIPS64PRA-AFP-05.04.pdf},
-  urldate = {2024-07-04},
-  file = {/home/max/Zotero/storage/H7W4XCHE/httpss3-eu-west-1.amazonaws.comdownloads-mipsdocumentsMD00091-2B-MIPS64PRA-AFP-05.04.pdf.pdf}
-}
-
-@online{V3ImplementingVictim,
-  title = {[V3] Implementing Victim {{TLB}} for {{QEMU}} System Emulated {{TLB}} - {{Patchwork}}},
-  url = {https://patchwork.ozlabs.org/project/qemu-devel/patch/1390930309-21210-1-git-send-email-trent.tong@gmail.com/#701962},
-  urldate = {2024-07-10},
-  file = {/home/max/Zotero/storage/F98NGJEI/1390930309-21210-1-git-send-email-trent.tong@gmail.com.html}
-}
-
 @online{CSCI03001310,
   title = {{{CSCI}} 0300/1310: {{Fundamentals}} of {{Computer Systems}}},
   url = {https://cs.brown.edu/courses/csci0300/2021/notes/l13.html},
   urldate = {2024-07-13},
   file = {/home/max/Zotero/storage/6993RGG8/l13.html}
-}
-
-@article{SiFiveInterruptCookbook,
-  title = {{{SiFive Interrupt Cookbook}}},
-  langid = {english},
-  file = {/home/max/Zotero/storage/B63IWLU8/SiFive Interrupt Cookbook.pdf}
 }
 
 @online{DeepDiveQEMU,
@@ -416,64 +132,12 @@
   file = {/home/max/Zotero/storage/RTCMGWS9/tcg_p3.html}
 }
 
-@online{IncompleteListQEMU,
-  title = {An Incomplete List of {{QEMU APIs}}},
-  url = {https://habkost.net/posts/2016/11/incomplete-list-of-qemu-apis.html},
-  urldate = {2024-07-16},
-  file = {/home/max/Zotero/storage/L2BU55VW/incomplete-list-of-qemu-apis.html}
-}
-
-@online{QEMUMonitorQEMU,
-  title = {{{QEMU Monitor}} — {{QEMU}} Documentation},
-  url = {https://qemu-project.gitlab.io/qemu/system/monitor.html},
-  urldate = {2024-07-16},
-  file = {/home/max/Zotero/storage/5QJKFLNR/monitor.html}
-}
-
-@online{QEMUMonitorWikibooks,
-  title = {{{QEMU}}/{{Monitor}} - {{Wikibooks}}, Open Books for an Open World},
-  url = {https://en.wikibooks.org/wiki/QEMU/Monitor},
-  urldate = {2024-07-16},
+@article{denningMEMORYWASVIRTUAL,
+  title = {{{BEFORE MEMORY WAS VIRTUAL}}},
+  author = {Denning, Peter J},
+  journaltitle = {Virtual Memory},
   langid = {english},
-  file = {/home/max/Zotero/storage/JP8UANBZ/Monitor.html}
-}
-
-@online{MultithreadedTCGQEMU,
-  title = {Multi-Threaded {{TCG}} — {{QEMU}} Documentation},
-  url = {https://qemu-project.gitlab.io/qemu/devel/multi-thread-tcg.html},
-  urldate = {2024-07-16},
-  file = {/home/max/Zotero/storage/P6ID9LYY/multi-thread-tcg.html}
-}
-
-@online{osgxDumpContentsTLB2011,
-  type = {Forum post},
-  title = {Dump the Contents of {{TLB}} Buffer of X86 {{CPU}}},
-  author = {{osgx}},
-  date = {2011-07-23},
-  url = {https://stackoverflow.com/q/6803762},
-  urldate = {2024-07-16},
-  organization = {Stack Overflow},
-  file = {/home/max/Zotero/storage/KXV4TJFI/dump-the-contents-of-tlb-buffer-of-x86-cpu.html}
-}
-
-@online{osgxAnswerDumpContents2011,
-  title = {Answer to "{{Dump}} the Contents of {{TLB}} Buffer of X86 {{CPU}}"},
-  author = {{osgx}},
-  date = {2011-08-28},
-  url = {https://stackoverflow.com/a/7218208},
-  urldate = {2024-07-16},
-  organization = {Stack Overflow},
-  file = {/home/max/Zotero/storage/JAJ6FVLX/dump-the-contents-of-tlb-buffer-of-x86-cpu.html}
-}
-
-@online{bhushanAnswerDumpContents2012,
-  title = {Answer to "{{Dump}} the Contents of {{TLB}} Buffer of X86 {{CPU}}"},
-  author = {Bhushan},
-  date = {2012-10-07},
-  url = {https://stackoverflow.com/a/12766195},
-  urldate = {2024-07-16},
-  organization = {Stack Overflow},
-  file = {/home/max/Zotero/storage/9WX66ZYJ/dump-the-contents-of-tlb-buffer-of-x86-cpu.html}
+  file = {/home/max/Zotero/storage/T5ZK9U9X/Denning - BEFORE MEMORY WAS VIRTUAL.pdf}
 }
 
 @article{denningVirtualMemoryDenning1970,
@@ -510,39 +174,26 @@
   file = {/home/max/Zotero/storage/KMNWXXPG/Denning - 1996 - Virtual memory.pdf}
 }
 
-@inproceedings{nagleDesignTradeoffsSoftwaremanaged1993,
-  title = {Design Tradeoffs for Software-Managed {{TLBs}}},
-  booktitle = {Proceedings of the 20th Annual International Symposium on {{Computer}} Architecture  - {{ISCA}} '93},
-  author = {Nagle, David and Uhlig, Richard and Stanley, Tim and Sechrest, Stuart and Mudge, Trevor and Brown, Richard},
-  date = {1993},
-  pages = {27--38},
-  publisher = {ACM Press},
-  location = {San Diego, California, United States},
-  doi = {10.1145/165123.165127},
-  url = {http://portal.acm.org/citation.cfm?doid=165123.165127},
-  urldate = {2024-07-25},
-  eventtitle = {The 20th Annual International Symposium},
-  isbn = {978-0-8186-3810-7},
+@article{elphinstoneVirtualMemory64Bit,
+  title = {Virtual {{Memory}} in a 64-{{Bit Microkernel}}},
+  author = {Elphinstone, Kevin John},
   langid = {english},
-  file = {/home/max/Zotero/storage/MB3JDEA4/Nagle et al. - 1993 - Design tradeoffs for software-managed TLBs.pdf}
+  file = {/home/max/Zotero/storage/28LXRS8X/Elphinstone - A DISSERTATION SUBMITTED TO THE SCHOOL OF COMPUTER.pdf}
 }
 
-@inproceedings{alamDoItYourselfVirtualMemory2017,
-  title = {Do-{{It-Yourself Virtual Memory Translation}}},
-  booktitle = {Proceedings of the 44th {{Annual International Symposium}} on {{Computer Architecture}}},
-  author = {Alam, Hanna and Zhang, Tianhao and Erez, Mattan and Etsion, Yoav},
-  date = {2017-06-24},
-  pages = {457--468},
-  publisher = {ACM},
-  location = {Toronto ON Canada},
-  doi = {10.1145/3079856.3080209},
-  url = {https://dl.acm.org/doi/10.1145/3079856.3080209},
-  urldate = {2024-07-25},
-  abstract = {In this paper, we introduce the Do-It-Yourself virtual memory translation (DVMT) architecture as a flexible complement for current hardware-fixed translation flows. DVMT decouples the virtual-tophysical mapping process from the access permissions, giving applications freedom in choosing mapping schemes, while maintaining security within the operating system. Furthermore, DVMT is designed to support virtualized environments, as a means to collapse the costly, hardware-assisted two-dimensional translations. We describe the architecture in detail and demonstrate its effectiveness by evaluating several different DVMT schemes on a range of virtualized applications with a model based on measurements from a commercial system. We show that different DVMT configurations preserve the native performance, while achieving speedups of 1.2× to 2.0× in virtualized environments.},
-  eventtitle = {{{ISCA}} '17: {{The}} 44th {{Annual International Symposium}} on {{Computer Architecture}}},
-  isbn = {978-1-4503-4892-8},
+@article{engelChallengesImplementingSoftwareDefined,
+  title = {Challenges {{Implementing Software-Defined Virtual Memory}}},
+  author = {Engel, Michael},
   langid = {english},
-  file = {/home/max/Zotero/storage/U3ECVKW3/Alam et al. - 2017 - Do-It-Yourself Virtual Memory Translation.pdf}
+  keywords = {todo},
+  file = {/home/max/Zotero/storage/R42473AH/Engel - Challenges Implementing Software-Defined Virtual M.pdf}
+}
+
+@article{engelReproducingSystemSoftware,
+  title = {Reproducing {{System Software Research A Case Study}}},
+  author = {Engel, Michael},
+  langid = {english},
+  file = {/home/max/Zotero/storage/AP3YNSC6/Engel - Reproducing System Software Research A Case Study.pdf}
 }
 
 @article{englerExokernelOperatingSystem,
@@ -553,39 +204,31 @@
   file = {/home/max/Zotero/storage/ZQR8FPC9/Engler - The Exokernel Operating System Architecture.pdf}
 }
 
-@online{hajinazarVirtualBlockInterface2020,
-  title = {The {{Virtual Block Interface}}: {{A Flexible Alternative}} to the {{Conventional Virtual Memory Framework}}},
-  shorttitle = {The {{Virtual Block Interface}}},
-  author = {Hajinazar, Nastaran and Patel, Pratyush and Patel, Minesh and Kanellopoulos, Konstantinos and Ghose, Saugata and Ausavarungnirun, Rachata and family=Oliveira Jr., given=Geraldo Francisco, prefix=de, useprefix=false and Appavoo, Jonathan and Seshadri, Vivek and Mutlu, Onur},
-  date = {2020-05-19},
-  eprint = {2005.09748},
-  eprinttype = {arXiv},
-  eprintclass = {cs},
-  url = {http://arxiv.org/abs/2005.09748},
-  urldate = {2024-07-25},
-  abstract = {Computers continue to diversify with respect to system designs, emerging memory technologies, and application memory demands. Unfortunately, continually adapting the conventional virtual memory framework to each possible system configuration is challenging, and often results in performance loss or requires non-trivial workarounds. To address these challenges, we propose a new virtual memory framework, the Virtual Block Interface (VBI). We design VBI based on the key idea that delegating memory management duties to hardware can reduce the overheads and software complexity associated with virtual memory. VBI introduces a set of variable-sized virtual blocks (VBs) to applications. Each VB is a contiguous region of the globally-visible VBI address space, and an application can allocate each semantically meaningful unit of information (e.g., a data structure) in a separate VB. VBI decouples access protection from memory allocation and address translation. While the OS controls which programs have access to which VBs, dedicated hardware in the memory controller manages the physical memory allocation and address translation of the VBs. This approach enables several architectural optimizations to (1) efficiently and flexibly cater to different and increasingly diverse system configurations, and (2) eliminate key inefficiencies of conventional virtual memory. We demonstrate the benefits of VBI with two important use cases: (1) reducing the overheads of address translation (for both native execution and virtual machine environments), as VBI reduces the number of translation requests and associated memory accesses; and (2) two heterogeneous main memory architectures, where VBI increases the effectiveness of managing fast memory regions. For both cases, VBI significanttly improves performance over conventional virtual memory.},
-  langid = {english},
-  pubstate = {prepublished},
-  keywords = {Computer Science - Hardware Architecture},
-  file = {/home/max/Zotero/storage/99A7JXWZ/Hajinazar et al. - 2020 - The Virtual Block Interface A Flexible Alternativ.pdf}
+@online{ExokernelOperatingSystem,
+  title = {Exokernel {{Operating System Architecture}}},
+  url = {https://dspace.mit.edu/bitstream/handle/1721.1/16713/42430053-MIT.pdf},
+  urldate = {2024-07-26}
 }
 
-@article{maruyamaAnalysisDesignAlternatives1977,
-  title = {Analysis of Design Alternatives for Virtual Memory Indexes},
-  author = {Maruyama, K. and Smith, S. E.},
-  date = {1977-04},
-  journaltitle = {Communications of the ACM},
-  shortjournal = {Commun. ACM},
-  volume = {20},
-  number = {4},
-  pages = {245--254},
-  issn = {0001-0782, 1557-7317},
-  doi = {10.1145/359461.359471},
-  url = {https://dl.acm.org/doi/10.1145/359461.359471},
-  urldate = {2024-07-25},
-  abstract = {A class of index structures for use in a virtual memory environment is described. Design alternatives within this class of index structures are analyzed. These alternatives include a choice of search strategy, whether or not pages in the index are stuctured, and whether or not keys are compressed. The average cost of retrieving entries from these indexes is expressed as a weighted sum of the cost of a basis key comparison and the cost of crossing a page boundary in the index structure. Formulas for the retrieval costs possible combinations of design alternatives are given. These are used in numerical case studies which compare the retrieval costs of the alternatives. Qualitative comparisons of the maintenance costs (insertion, deletion, reorganization) of the design alternatives are also included.},
-  langid = {english},
-  file = {/home/max/Zotero/storage/DID6739D/Maruyama und Smith - 1977 - Analysis of design alternatives for virtual memory.pdf}
+@online{ForkExecUniversity,
+  title = {Fork() and Exec() | {{University}} of {{Waterloo}}},
+  url = {https://ece.uwaterloo.ca/~dwharder/icsrts/Tutorials/fork_exec/},
+  urldate = {2024-08-01},
+  file = {/home/max/Zotero/storage/EXQ5CTGQ/fork_exec.html}
+}
+
+@online{ForkRoad,
+  title = {A Fork() in the Road},
+  url = {https://www.microsoft.com/en-us/research/uploads/prod/2019/04/fork-hotos19.pdf},
+  urldate = {2024-07-31},
+  file = {/home/max/Zotero/storage/FZWPAW8B/fork-hotos19.pdf}
+}
+
+@online{GMDReport,
+  title = {{{GMD Report}}},
+  url = {https://publica-rest.fraunhofer.de/server/api/core/bitstreams/84d6361f-cdfe-43a3-9e76-e0fd5eaccb8a/content},
+  urldate = {2024-05-09},
+  file = {/home/max/Zotero/storage/PNY9CVT8/content.pdf}
 }
 
 @inproceedings{guptaRebootingVirtualMemory2021,
@@ -605,21 +248,40 @@
   file = {/home/max/Zotero/storage/PTSX45UB/Gupta et al. - 2021 - Rebooting Virtual Memory with Midgard.pdf}
 }
 
-@inproceedings{kruegerToolsDevelopmentApplicationspecific1993a,
-  title = {Tools for the Development of Application-Specific Virtual Memory Management},
-  booktitle = {Proceedings of the Eighth Annual Conference on {{Object-oriented}} Programming Systems, Languages, and Applications},
-  author = {Krueger, Keith and Loftesness, David and Vahdat, Amin and Anderson, Thomas},
-  date = {1993-10},
-  pages = {48--64},
-  publisher = {ACM},
-  location = {Washington D.C. USA},
-  doi = {10.1145/165854.165867},
-  url = {https://dl.acm.org/doi/10.1145/165854.165867},
+@online{hajinazarVirtualBlockInterface2020,
+  title = {The {{Virtual Block Interface}}: {{A Flexible Alternative}} to the {{Conventional Virtual Memory Framework}}},
+  shorttitle = {The {{Virtual Block Interface}}},
+  author = {Hajinazar, Nastaran and Patel, Pratyush and Patel, Minesh and Kanellopoulos, Konstantinos and Ghose, Saugata and Ausavarungnirun, Rachata and family=Oliveira Jr., given=Geraldo Francisco, prefix=de, useprefix=false and Appavoo, Jonathan and Seshadri, Vivek and Mutlu, Onur},
+  date = {2020-05-19},
+  eprint = {2005.09748},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  url = {http://arxiv.org/abs/2005.09748},
   urldate = {2024-07-25},
-  eventtitle = {{{OOPSLA93}}: {{Conference}} on {{Object Oriented Programming Systems Languages}} and {{Applications}}},
-  isbn = {978-0-89791-587-8},
+  abstract = {Computers continue to diversify with respect to system designs, emerging memory technologies, and application memory demands. Unfortunately, continually adapting the conventional virtual memory framework to each possible system configuration is challenging, and often results in performance loss or requires non-trivial workarounds. To address these challenges, we propose a new virtual memory framework, the Virtual Block Interface (VBI). We design VBI based on the key idea that delegating memory management duties to hardware can reduce the overheads and software complexity associated with virtual memory. VBI introduces a set of variable-sized virtual blocks (VBs) to applications. Each VB is a contiguous region of the globally-visible VBI address space, and an application can allocate each semantically meaningful unit of information (e.g., a data structure) in a separate VB. VBI decouples access protection from memory allocation and address translation. While the OS controls which programs have access to which VBs, dedicated hardware in the memory controller manages the physical memory allocation and address translation of the VBs. This approach enables several architectural optimizations to (1) efficiently and flexibly cater to different and increasingly diverse system configurations, and (2) eliminate key inefficiencies of conventional virtual memory. We demonstrate the benefits of VBI with two important use cases: (1) reducing the overheads of address translation (for both native execution and virtual machine environments), as VBI reduces the number of translation requests and associated memory accesses; and (2) two heterogeneous main memory architectures, where VBI increases the effectiveness of managing fast memory regions. For both cases, VBI significanttly improves performance over conventional virtual memory.},
   langid = {english},
-  file = {/home/max/Zotero/storage/HSR3P33Y/Krueger et al. - 1993 - Tools for the development of application-specific .pdf;C\:\\Users\\maxme\\Downloads\\165854.165867.pdf}
+  pubstate = {prepublished},
+  keywords = {Computer Science - Hardware Architecture},
+  file = {/home/max/Zotero/storage/99A7JXWZ/Hajinazar et al. - 2020 - The Virtual Block Interface A Flexible Alternativ.pdf}
+}
+
+@inproceedings{halbuerMorselsExplicitVirtual2023,
+  title = {Morsels: {{Explicit Virtual Memory Objects}}},
+  shorttitle = {Morsels},
+  booktitle = {Proceedings of the 1st {{Workshop}} on {{Disruptive Memory Systems}}},
+  author = {Halbuer, Alexander and Dietrich, Christian and Rommel, Florian and Lohmann, Daniel},
+  date = {2023-10-23},
+  pages = {52--59},
+  publisher = {ACM},
+  location = {Koblenz Germany},
+  doi = {10.1145/3609308.3625267},
+  url = {https://dl.acm.org/doi/10.1145/3609308.3625267},
+  urldate = {2024-05-11},
+  abstract = {The tremendous growth of RAM capacity – now exceeding multiple terabytes – necessitates a reevaluation of traditional memory-management methods, which were developed when resources were scarce. Current virtual-memory subsystems handle address-space regions as sets of individual 4-KiB pages with demand paging and copy-on-write, resulting in significant management overhead. Although huge pages reduce the number of managed entities, they induce internal fragmentation and have a coarse copy granularity. To address these problems, we introduce Morsels, a novel virtual-memory–management paradigm that is purely based on hardware data structures and enables the efficient sharing of virtual-memory objects between processes and devices while being well suited for non-volatile memory. Our benchmarks show that Morsels reduce the mapping time for a 6.82-GiB machine-learning model by up to 99.8 percent compared to conventional memory mapping in Linux.},
+  eventtitle = {{{DIMES}} '23: 1st {{Workshop}} on {{Disruptive Memory Systems}}},
+  isbn = {9798400703003},
+  langid = {english},
+  file = {/home/max/Zotero/storage/SQCMLJR6/Halbuer et al. - 2023 - Morsels Explicit Virtual Memory Objects.pdf}
 }
 
 @article{hatfieldProgramRestructuringVirtual1971,
@@ -639,12 +301,27 @@
   file = {/home/max/Zotero/storage/4VZNKYMZ/Hatfield und Gerald - 1971 - Program restructuring for virtual memory.pdf}
 }
 
-@article{basuREVISITINGVIRTUALMEMORY,
-  title = {{{REVISITING VIRTUAL MEMORY}}},
-  author = {Basu, Arkaprava},
-  abstract = {Page-based virtual memory (paging) is a crucial piece of memory management in today’s computing systems. However, I find that need, purpose and design constraints of virtual memory have changed dramatically since translation lookaside buffers (TLBs) were introduced to cache recently-used address translations: (a) physical memory sizes have grown more than a millionfold, (b) workloads are often sized to avoid swapping information to and from secondary storage, and (c) energy is now a first-order design constraint. Nevertheless, level-one TLBs have remained the same size and are still accessed on every memory reference. As a result, large workloads waste considerable execution time on TLB misses and all workloads spend energy on frequent TLB accesses.},
+@article{hatWhatEveryProgrammer,
+  title = {What {{Every Programmer Should Know About Memory}}},
+  author = {Hat, Ulrich Drepper Red},
+  abstract = {As CPU cores become both faster and more numerous, the limiting factor for most programs is now, and will be for some time, memory access. Hardware designers have come up with ever more sophisticated memory handling and acceleration techniques–such as CPU caches–but these cannot work optimally without some help from the programmer. Unfortunately, neither the structure nor the cost of using the memory subsystem of a computer or the caches on CPUs is well understood by most programmers. This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.},
   langid = {english},
-  file = {/home/max/Zotero/storage/FFL8I5NB/Basu - REVISITING VIRTUAL MEMORY.pdf}
+  file = {/home/max/Zotero/storage/BHLJSENP/Hat - What Every Programmer Should Know About Memory.pdf}
+}
+
+@article{heiserAnatomyHighPerformanceMicrokernel,
+  title = {Anatomy of a {{High-Performance Microkernel}}},
+  author = {Heiser, Gernot},
+  langid = {english},
+  file = {/home/max/Zotero/storage/G8KHSJ2M/Heiser - Anatomy of a High-Performance Microkernel.pdf}
+}
+
+@article{hoffmannAutomaticSynthesisSpecialized,
+  title = {Automatic {{Synthesis}} of {{Specialized Hash Functions}}},
+  author = {Hoffmann, Renato B and Faé, Leonardo G and Grieber, Dalvan and Li, Xinliang David and Quintão, Fernando Magno},
+  abstract = {This paper introduces a technique for synthesizing hash functions specialized to particular byte formats. This code generation method leverages three prevalent patterns: (i) fixed-length keys, (ii) keys with common subsequences, and (iii) keys ranging on predetermined sequences of bytes. Code generation involves two algorithms: one identifies relevant regular expressions within key examples, and the other generates specialized hash functions based on these expressions. Comparative analysis demonstrates that the synthetic functions outperform the general-purpose hashes in the C++ Standard Template Library and the Google Abseil Library when keys are given in ascending, normal or uniform distribution. In applications where low-mixing hashes are acceptable, the synthetic functions achieve speedups ranging from 2\% to 11\% on full benchmarks, and speedups of almost 50x once only hashing speed is considered.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/5KCJ9G4S/Hoffmann et al. - Automatic Synthesis of Specialized Hash Functions.pdf}
 }
 
 @article{iftodeSharedVirtualMemory1999,
@@ -665,63 +342,50 @@
   file = {/home/max/Zotero/storage/2DK6A5Q8/Iftode und Singh - 1999 - Shared virtual memory progress and challenges.pdf}
 }
 
-@online{zagieboyloCostSoftwareBasedMemory2020,
-  title = {The {{Cost}} of {{Software-Based Memory Management Without Virtual Memory}}},
-  author = {Zagieboylo, Drew and Suh, G. Edward and Myers, Andrew C.},
-  date = {2020-09-14},
-  eprint = {2009.06789},
-  eprinttype = {arXiv},
-  eprintclass = {cs},
-  url = {http://arxiv.org/abs/2009.06789},
-  urldate = {2024-07-25},
-  abstract = {Virtual memory has been a standard hardware feature for more than three decades. At the price of increased hardware complexity, it has simplified software and promised strong isolation among colocated processes. In modern computing systems, however, the costs of virtual memory have increased significantly. With large memory workloads, virtualized environments, data center computing, and chips with multiple DMA devices, virtual memory can degrade performance and increase power usage. We therefore explore the implications of building applications and operating systems without relying on hardware support for address translation. Primarily, we investigate the implications of removing the abstraction of large contiguous memory segments. Our experiments show that the overhead to remove this reliance is surprisingly small for real programs. We expect this small overhead to be worth the benefit of reducing the complexity and energy usage of address translation. In fact, in some cases, performance can even improve when address translation is avoided.},
+@online{imfoobar42WhatDifferenceVirtually2018,
+  type = {Forum post},
+  title = {What's the Difference between {{Virtually Indexed Physically}} Tagged and {{Virtually Indexed}} and {{Virtually Tagged Paging}}?},
+  author = {{imfoobar42}},
+  date = {2018-07-04},
+  url = {https://stackoverflow.com/q/51175887},
+  urldate = {2024-08-05},
+  organization = {Stack Overflow},
+  file = {/home/max/Zotero/storage/VFYK9ZZ9/whats-the-difference-between-virtually-indexed-physically-tagged-and-virtually.html}
+}
+
+@online{IncompleteListQEMU,
+  title = {An Incomplete List of {{QEMU APIs}}},
+  url = {https://habkost.net/posts/2016/11/incomplete-list-of-qemu-apis.html},
+  urldate = {2024-07-16},
+  file = {/home/max/Zotero/storage/L2BU55VW/incomplete-list-of-qemu-apis.html}
+}
+
+@online{intel5LevelPaging5Level2017,
+  title = {5-{{Level Paging}} and 5-{{Level EPT White Paper}}},
+  author = {Intel},
+  date = {2017},
+  url = {https://www.intel.com/content/www/us/en/content-details/671442/5-level-paging-and-5-level-ept-white-paper.html},
+  urldate = {2024-08-07},
+  abstract = {This document describes planned extensions to the Intel® 64 architecture to expand the size of addresses that can be translated through a processor’s memory-translation hardware. NOTE: Intel® Memory Protection Extensions (Intel® MPX) have been deprecated and are not available on all future processors.},
+  organization = {Intel},
+  file = {/home/max/Zotero/storage/9FUHB86Y/5-Level Paging and 5-Level EPT White Paper.pdf;/home/max/Zotero/storage/7JEMELSE/5-level-paging-and-5-level-ept-white-paper.html}
+}
+
+@online{intelTLBsPagingStructureCaches2008,
+  title = {{{TLBs}}, {{Paging-Structure Caches}}, and {{Their Invalidation}}},
+  author = {Intel},
+  date = {2008},
+  url = {https://kib.kiev.ua/x86docs/Intel/WhitePapers/317080-002.pdf},
+  urldate = {2024-08-07},
+  file = {/home/max/Zotero/storage/9Z33FMHH/317080-002.pdf}
+}
+
+@article{jacobLookSeveralMemory,
+  title = {A {{Look}} at {{Several Memory Management Units}}, {{TLB-Refill Mechanisms}}, and {{Page Table Organizations}}},
+  author = {Jacob, Bruce L and Mudge, Trevor N},
+  abstract = {Virtual memory is a staple in modem systems, though there is little agreement on how its functionality is to be implemented on either the hardware or software side of the interface. The myriad of design choices and incompatible hardware mechanisms suggests potential performance problems, especially since increasing numbers of systems (even embedded systems) are using memory management. A comparative study of the implementation choices in virtual memory should therefore aid system-level designers. This paper compares several virtual memory designs, including combinations of hierarchical and inverted page tables on hardwaremanaged and software-managed translation lookaside buffers (TLBs). The simulations show that systems are fairly sensitive to TLB size; that interrupts already account for a large portion of memory-management overhead and can become a significant factor as processors execute more concurrent instructions; and that if one includes the cache misses inflicted on applications by the VM system, the total VM overhead is roughly twice what was thought (10-200/orather than 5-10\%).},
   langid = {english},
-  pubstate = {prepublished},
-  keywords = {Computer Science - Hardware Architecture,Computer Science - Programming Languages},
-  file = {/home/max/Zotero/storage/C3MQQE3J/Zagieboylo et al. - 2020 - The Cost of Software-Based Memory Management Witho.pdf}
-}
-
-@article{choudhuriSoftwareVirtualMemory,
-  title = {Software {{Virtual Memory Management}} for {{MMU-less Embedded Systems}}},
-  author = {Choudhuri, Siddharth and Givargis, Tony},
-  abstract = {For an embedded system designer, the rise in processing speeds of embedded processors and microcontroller evolution has lead to the possibility of running computation and data intensive applications on small embedded devices that earlier only ran on desktop-class systems. From a memory stand point, there is a similar need for running larger and more data intensive applications on embedded devices. However, support for large memory adadress spaces, specifically, virtual memory, for MMU-less embedded systems is lacking. In this paper, we present a software virtual memory scheme for MMU-less systems based on an application level virtual memory library and a virtual memory aware assembler. Our virtual memory support is transparent to the programmer, can be tuned for a specific application, correct by construction, and fully automated. Our experiements validate the feasibility of virtual memory for MMU-less embedded systems using benchmark programs.},
-  langid = {english},
-  file = {/home/max/Zotero/storage/T6YC94PW/Choudhuri und Givargis - Software Virtual Memory Management for MMU-less Em.pdf}
-}
-
-@article{kimEfficientSoftwareShared2011,
-  title = {An Efficient Software Shared Virtual Memory for the Single-Chip Cloud Computer},
-  author = {Kim, Junghyun and Seo, Sangmin and Lee, Jaejin},
-  date = {2011-07-11},
-  journaltitle = {Proceedings of the 2nd Asia-Pacific Workshop on Systems, APSys'11},
-  shortjournal = {Proceedings of the 2nd Asia-Pacific Workshop on Systems, APSys'11},
-  doi = {10.1145/2103799.2103804},
-  abstract = {The Single-chip Cloud Computer (SCC) is an experimental processor created by Intel Labs. The SCC is based on a message passing architecture and does not provide any hardware cache coherence mechanism. Software or programmers should take care of coherence and consistency of a shared region between different cores. In this paper, we propose an efficient software shared virtual memory (SVM) for the SCC as an alternative to the cache coherence mechanism and report some preliminary results. Our software SVM is based on the commit-reconcile and fence (CRF) memory model and does not require a complicated SVM protocol between cores. We evaluate the effectiveness of our approach by comparing the software SVM with a cache-coherent NUMA machine using three synthetic micro-benchmark applications and five applications from SPLASH-2. Evaluation result indicates that our approach is promising.},
-  file = {/home/max/Zotero/storage/AMLP2FT9/Kim et al. - 2011 - An efficient software shared virtual memory for th.pdf}
-}
-
-@inproceedings{jaleelInlineInterruptHandling2001,
-  title = {In-Line Interrupt Handling for Software-Managed {{TLBs}}},
-  booktitle = {Proceedings 2001 {{IEEE International Conference}} on {{Computer Design}}: {{VLSI}} in {{Computers}} and {{Processors}}. {{ICCD}} 2001},
-  author = {Jaleel, A. and Jacob, B.},
-  date = {2001},
-  pages = {62--67},
-  publisher = {IEEE Comput. Soc},
-  location = {Austin, TX, USA},
-  doi = {10.1109/ICCD.2001.955004},
-  url = {http://ieeexplore.ieee.org/document/955004/},
-  urldate = {2024-07-26},
-  abstract = {The general-purpose precise interrupt mechanism, which has long been used to handle exceptional conditions that occur infrequently, is now being used increasingly often to handle conditions that are neither exceptional nor infrequent. One example is the use of interrupts to perform memory management—e.g., to handle translation lookaside buffer (TLB) misses in today’s microprocessors. Because the frequency of TLB misses tends to increase with memory footprint, there is pressure on the precise interrupt mechanism to become more lightweight. When modern out-of-order processors handle interrupts precisely, they typically begin by flushing the pipeline. Doing so makes the CPU available to execute handler instructions, but it wastes potentially hundreds of cycles of execution time. However, if the handler code is small, it could potentially fit in the reorder buffer along with the user-level code already there. This essentially in-lines the interrupt-handler code. One good example of where this would be both possible and useful is in the TLB-miss handler in a software-managed TLB implementation. The benefits of doing so are two-fold: (1) the instructions that would otherwise be flushed from the pipe need not be re-fetched and re-executed; and (2) any instructions that are independent of the exceptional instruction can continue to execute in parallel with the handler code. In effect, doing so provides us with lockup-free TLBs. We simulate a lockup-free data-TLB facility on a processor model with a 4-way out-of-order core reminiscent of the Alpha 21264. We find that, by using lockup-free TLBs, one can get the performance of a fully associative TLB with a lockup-free TLB of one-fourth the size.},
-  eventtitle = {2001 {{International Conference}} on {{Computer Design}}. {{ICCD}} 2001},
-  isbn = {978-0-7695-1200-6},
-  langid = {english},
-  file = {/home/max/Zotero/storage/NMBTEG6G/Jaleel and Jacob - 2001 - In-line interrupt handling for software-managed TL.pdf}
-}
-
-@online{ExokernelOperatingSystem,
-  title = {Exokernel {{Operating System Architecture}}},
-  url = {https://dspace.mit.edu/bitstream/handle/1721.1/16713/42430053-MIT.pdf},
-  urldate = {2024-07-26}
+  file = {/home/max/Zotero/storage/MEFE26I7/Jacob and Mudge - A Look at Several Memory Management Units, TLB-Ref.pdf}
 }
 
 @inproceedings{jacobSoftwaremanagedAddressTranslation1997,
@@ -759,124 +423,63 @@
   file = {/home/max/Zotero/storage/UJIUZWAT/Jacob and Mudge - 1997 - Software-managed address translation.pdf}
 }
 
-@online{ForkExecUniversity,
-  title = {Fork() and Exec() | {{University}} of {{Waterloo}}},
-  url = {https://ece.uwaterloo.ca/~dwharder/icsrts/Tutorials/fork_exec/},
-  urldate = {2024-08-01},
-  file = {/home/max/Zotero/storage/EXQ5CTGQ/fork_exec.html}
-}
-
-@online{12MemoryManagement,
-  title = {12. {{Memory Management Unit}} ({{MMU}}) — {{Chromite Core Generator}} 1.0.0 Documentation},
-  url = {https://chromite.readthedocs.io/en/using-csrbox/mmu.html},
-  urldate = {2024-08-01},
-  file = {/home/max/Zotero/storage/2MW45F8Y/mmu.html}
-}
-
-@online{imfoobar42WhatDifferenceVirtually2018,
-  type = {Forum post},
-  title = {What's the Difference between {{Virtually Indexed Physically}} Tagged and {{Virtually Indexed}} and {{Virtually Tagged Paging}}?},
-  author = {{imfoobar42}},
-  date = {2018-07-04},
-  url = {https://stackoverflow.com/q/51175887},
-  urldate = {2024-08-05},
-  organization = {Stack Overflow},
-  file = {/home/max/Zotero/storage/VFYK9ZZ9/whats-the-difference-between-virtually-indexed-physically-tagged-and-virtually.html}
-}
-
-@online{smesoAnswerWhatDifference2018,
-  title = {Answer to "{{What}}'s the Difference between {{Virtually Indexed Physically}} Tagged and {{Virtually Indexed}} and {{Virtually Tagged Paging}}?"},
-  shorttitle = {Answer to "{{What}}'s the Difference between {{Virtually Indexed Physically}} Tagged and {{Virtually Indexed}} and {{Virtually Tagged Paging}}?},
-  author = {{smeso}},
-  date = {2018-07-07},
-  url = {https://stackoverflow.com/a/51227226},
-  urldate = {2024-08-05},
-  organization = {Stack Overflow},
-  file = {/home/max/Zotero/storage/GDEPWHQK/whats-the-difference-between-virtually-indexed-physically-tagged-and-virtually.html}
-}
-
-@book{mayPowerPCArchitectureSpecification1994,
-  title = {The {{PowerPC}} Architecture: A Specification for a New Family of {{RISC}} Processors},
-  shorttitle = {The {{PowerPC}} Architecture},
-  editor = {May, Cathy},
-  date = {1994},
-  edition = {2nd ed},
-  publisher = {Morgan Kaufman Publishers},
-  location = {San Francisco},
-  isbn = {978-1-55860-316-5},
+@article{jacobSOFTWAREORIENTEDMEMORYMANAGEMENTDESIGN,
+  title = {{{SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN}}},
+  author = {Jacob, Bruce Ledley},
   langid = {english},
-  pagetotal = {518},
-  keywords = {PowerPC microprocessors},
-  file = {/home/max/Zotero/storage/QZBNNR5Y/May - 1994 - The PowerPC architecture a specification for a new family of RISC processors.pdf}
+  file = {/home/max/Zotero/storage/VBSEZWXQ/Jacob - SOFTWARE-ORIENTED MEMORY-MANAGEMENT DESIGN.pdf}
 }
 
-@online{MITVMLecture,
-  title = {{{MIT VM Lecture Slides}}},
-  url = {https://pdos.csail.mit.edu/6.S081/2021/slides/6s081-lec-vm.pdf},
-  urldate = {2024-06-01},
-  file = {/home/max/Zotero/storage/LGQH55BF/6s081-lec-vm.pdf}
+@article{jacobVirtualMemoryContemporary1998,
+  title = {Virtual Memory in Contemporary Microprocessors},
+  author = {Jacob, B. and Mudge, T.},
+  year = {July-Aug./1998},
+  journaltitle = {IEEE Micro},
+  shortjournal = {IEEE Micro},
+  volume = {18},
+  number = {4},
+  pages = {60--75},
+  issn = {02721732},
+  doi = {10.1109/40.710872},
+  url = {http://ieeexplore.ieee.org/document/710872/},
+  urldate = {2024-04-06},
+  file = {/home/max/Zotero/storage/VRX9LFYS/document.pdf}
 }
 
-@online{R4600ProductSpecification,
-  title = {R4600 {{Product Specification}}},
-  url = {http://www.sgistuff.net/hardware/other/documents/R4600_Prod_OV.pdf},
-  urldate = {2024-07-04},
-  file = {/home/max/Zotero/storage/CLZACIPE/R4600 Product Specification.pdf}
-}
-
-@online{ForkRoad,
-  title = {A Fork() in the Road},
-  url = {https://www.microsoft.com/en-us/research/uploads/prod/2019/04/fork-hotos19.pdf},
-  urldate = {2024-07-31},
-  file = {/home/max/Zotero/storage/FZWPAW8B/fork-hotos19.pdf}
-}
-
-@online{GMDReport,
-  title = {{{GMD Report}}},
-  url = {https://publica-rest.fraunhofer.de/server/api/core/bitstreams/84d6361f-cdfe-43a3-9e76-e0fd5eaccb8a/content},
-  urldate = {2024-05-09},
-  file = {/home/max/Zotero/storage/PNY9CVT8/content.pdf}
-}
-
-@online{SimulationAddressTranslation,
-  title = {Simulation of Address Translation Techniques},
-  url = {https://oaktrust.library.tamu.edu/bitstream/handle/1969.1/195140/COMAN-THESIS-2021.pdf?sequence=1&isAllowed=y},
-  urldate = {2024-05-11},
-  file = {/home/max/Zotero/storage/FKHZMEFK/COMAN-THESIS-2021.pdf}
-}
-
-@inproceedings{yanivHashDonCache2016,
-  title = {Hash, {{Don}}'t {{Cache}} (the {{Page Table}})},
-  booktitle = {Proceedings of the 2016 {{ACM SIGMETRICS International Conference}} on {{Measurement}} and {{Modeling}} of {{Computer Science}}},
-  author = {Yaniv, Idan and Tsafrir, Dan},
-  date = {2016-06-14},
-  pages = {337--350},
-  publisher = {ACM},
-  location = {Antibes Juan-les-Pins France},
-  doi = {10.1145/2896377.2901456},
-  url = {https://dl.acm.org/doi/10.1145/2896377.2901456},
-  urldate = {2024-08-07},
-  abstract = {Radix page tables as implemented in the x86-64 architecture incur a penalty of four memory references for address translation upon each TLB miss. These 4 references become 24 in virtualized setups, accounting for 5\%–90\% of the runtime and thus motivating chip vendors to incorporate page walk caches (PWCs). Counterintuitively, an ISCA 2010 paper found that radix page tables with PWCs are superior to hashed page tables, yielding up to 5x fewer DRAM accesses per page walk. We challenge this finding and show that it is the result of comparing against a suboptimal hashed implementation—that of the Itanium architecture. We show that, when carefully optimized, hashed page tables in fact outperform existing PWC-aided x86-64 hardware, shortening benchmark runtimes by 1\%–27\% and 6\%–32\% in bare-metal and virtualized setups, without resorting to PWCs. We further show that hashed page tables are inherently more scalable than radix designs and are better suited to accommodate the ever increasing memory size; their downside is that they make it more challenging to support such features as superpages.},
-  eventtitle = {{{SIGMETRICS}} '16: {{SIGMETRICS}}/{{PERFORMANCE Joint International Conference}} on {{Measurement}} and {{Modeling}} of {{Computer Systems}}},
-  isbn = {978-1-4503-4266-7},
+@article{jacobVirtualMemoryIssues1998,
+  title = {Virtual Memory: Issues of Implementation},
+  shorttitle = {Virtual Memory},
+  author = {Jacob, B. and Mudge, T.},
+  date = {1998-06},
+  journaltitle = {Computer},
+  shortjournal = {Computer},
+  volume = {31},
+  number = {6},
+  pages = {33--43},
+  issn = {00189162},
+  doi = {10.1109/2.683005},
+  url = {http://ieeexplore.ieee.org/document/683005/},
+  urldate = {2024-04-06},
   langid = {english},
-  file = {/home/max/Zotero/storage/7CLBWNCD/Yaniv and Tsafrir - 2016 - Hash, Don't Cache (the Page Table).pdf}
+  file = {/home/max/Zotero/storage/47B9CC2X/Jacob and Mudge - 1998 - Virtual memory issues of implementation.pdf}
 }
 
-@inproceedings{barrTranslationCachingSkip2010,
-  title = {Translation {{Caching}}: {{Skip}}, {{Don}}’t {{Walk}} (the {{Page Table}})},
-  booktitle = {Proceedings of the 37th {{Annual International Symposium}} on {{Computer Architecture}}},
-  author = {Barr, Thomas W and Cox, Alan L and Rixner, Scott},
-  date = {2010},
-  pages = {48--59},
-  publisher = {Association for Computing Machinery},
-  location = {Saint-Malo, France},
-  doi = {10.1145/1815961.1815970},
-  abstract = {This paper explores the design space of MMU caches that accelerate virtual-to-physical address translation in processor architectures, such as x86-64, that use a radix tree page table. In particular, these caches accelerate the page table walk that occurs after a miss in the Translation Lookaside Buffer. This paper shows that the most effective MMU caches are translation caches, which store partial translations and allow the page walk hardware to skip one or more levels of the page table.},
-  eventtitle = {International {{Symposium}} on {{Computer Architecture}}},
-  isbn = {978-1-4503-0053-7},
+@inproceedings{jaleelInlineInterruptHandling2001,
+  title = {In-Line Interrupt Handling for Software-Managed {{TLBs}}},
+  booktitle = {Proceedings 2001 {{IEEE International Conference}} on {{Computer Design}}: {{VLSI}} in {{Computers}} and {{Processors}}. {{ICCD}} 2001},
+  author = {Jaleel, A. and Jacob, B.},
+  date = {2001},
+  pages = {62--67},
+  publisher = {IEEE Comput. Soc},
+  location = {Austin, TX, USA},
+  doi = {10.1109/ICCD.2001.955004},
+  url = {http://ieeexplore.ieee.org/document/955004/},
+  urldate = {2024-07-26},
+  abstract = {The general-purpose precise interrupt mechanism, which has long been used to handle exceptional conditions that occur infrequently, is now being used increasingly often to handle conditions that are neither exceptional nor infrequent. One example is the use of interrupts to perform memory management—e.g., to handle translation lookaside buffer (TLB) misses in today’s microprocessors. Because the frequency of TLB misses tends to increase with memory footprint, there is pressure on the precise interrupt mechanism to become more lightweight. When modern out-of-order processors handle interrupts precisely, they typically begin by flushing the pipeline. Doing so makes the CPU available to execute handler instructions, but it wastes potentially hundreds of cycles of execution time. However, if the handler code is small, it could potentially fit in the reorder buffer along with the user-level code already there. This essentially in-lines the interrupt-handler code. One good example of where this would be both possible and useful is in the TLB-miss handler in a software-managed TLB implementation. The benefits of doing so are two-fold: (1) the instructions that would otherwise be flushed from the pipe need not be re-fetched and re-executed; and (2) any instructions that are independent of the exceptional instruction can continue to execute in parallel with the handler code. In effect, doing so provides us with lockup-free TLBs. We simulate a lockup-free data-TLB facility on a processor model with a 4-way out-of-order core reminiscent of the Alpha 21264. We find that, by using lockup-free TLBs, one can get the performance of a fully associative TLB with a lockup-free TLB of one-fourth the size.},
+  eventtitle = {2001 {{International Conference}} on {{Computer Design}}. {{ICCD}} 2001},
+  isbn = {978-0-7695-1200-6},
   langid = {english},
-  file = {/home/max/Zotero/storage/6HYFXCGL/Barr et al. - Translation caching.pdf}
+  file = {/home/max/Zotero/storage/NMBTEG6G/Jaleel and Jacob - 2001 - In-line interrupt handling for software-managed TL.pdf}
 }
 
 @article{jaleelInlineInterruptHandling2006,
@@ -895,6 +498,307 @@
   abstract = {The effects of the general-purpose precise interrupt mechanisms in use for the past few decades have received very little attention. When modern out-of-order processors handle interrupts precisely, they typically begin by flushing the pipeline to make the CPU available to execute handler instructions. In doing so, the CPU ends up flushing many instructions that have been brought in to the reorder buffer. In particular, these instructions may have reached a very deep stage in the pipeline—representing significant work that is wasted. In addition, an overhead of several cycles and wastage of energy (per exception detected) can be expected in refetching and reexecuting the instructions flushed. This paper concentrates on improving the performance of precisely handling software managed translation look-aside buffer (TLB) interrupts, one of the most frequently occurring interrupts. The paper presents a novel method of in-lining the interrupt handler within the reorder buffer. Since the first level interrupt-handlers of TLBs are usually small, they could potentially fit in the reorder buffer along with the user-level code already there. In doing so, the instructions that would otherwise be flushed from the pipe need not be refetched and reexecuted. Additionally, it allows for instructions independent of the exceptional instruction to continue to execute in parallel with the handler code. By in-lining the TLB interrupt handler, this provides lock-up free TLBs. This paper proposes the prepend and append schemes of in-lining the interrupt handler into the available reorder buffer space. The two schemes are implemented on a performance model of the Alpha 21264 processor built by Alpha designers at the Palo Alto Design Center (PADC), California. We compare the overhead and performance impact of handling TLB interrupts by the traditional scheme, the append in-lined scheme, and the prepend in-lined scheme. For small, medium, and large memory footprints, the overhead is quantified by comparing the number and pipeline state of instructions flushed, the energy savings, and the performance improvements. We find that lock-up free TLBs reduce the overhead of refetching and reexecuting the instructions flushed by 30-95 percent, reduce the execution time by 5-25 percent, and also reduce the energy wasted by 30-90 percent.},
   langid = {english},
   file = {/home/max/Zotero/storage/P5KGUSLX/Jaleel and Jacob - 2006 - In-line interrupt handling and lock-up free translation lookaside buffers (TLBs).pdf}
+}
+
+@article{kimEfficientSoftwareShared2011,
+  title = {An Efficient Software Shared Virtual Memory for the Single-Chip Cloud Computer},
+  author = {Kim, Junghyun and Seo, Sangmin and Lee, Jaejin},
+  date = {2011-07-11},
+  journaltitle = {Proceedings of the 2nd Asia-Pacific Workshop on Systems, APSys'11},
+  shortjournal = {Proceedings of the 2nd Asia-Pacific Workshop on Systems, APSys'11},
+  doi = {10.1145/2103799.2103804},
+  abstract = {The Single-chip Cloud Computer (SCC) is an experimental processor created by Intel Labs. The SCC is based on a message passing architecture and does not provide any hardware cache coherence mechanism. Software or programmers should take care of coherence and consistency of a shared region between different cores. In this paper, we propose an efficient software shared virtual memory (SVM) for the SCC as an alternative to the cache coherence mechanism and report some preliminary results. Our software SVM is based on the commit-reconcile and fence (CRF) memory model and does not require a complicated SVM protocol between cores. We evaluate the effectiveness of our approach by comparing the software SVM with a cache-coherent NUMA machine using three synthetic micro-benchmark applications and five applications from SPLASH-2. Evaluation result indicates that our approach is promising.},
+  file = {/home/max/Zotero/storage/AMLP2FT9/Kim et al. - 2011 - An efficient software shared virtual memory for th.pdf}
+}
+
+@article{knottHashingFunctions1975,
+  title = {Hashing Functions},
+  author = {Knott, G. D.},
+  date = {1975-03-01},
+  journaltitle = {The Computer Journal},
+  shortjournal = {The Computer Journal},
+  volume = {18},
+  number = {3},
+  pages = {265--278},
+  issn = {0010-4620, 1460-2067},
+  doi = {10.1093/comjnl/18.3.265},
+  url = {https://academic.oup.com/comjnl/article-lookup/doi/10.1093/comjnl/18.3.265},
+  urldate = {2024-04-29},
+  langid = {english},
+  file = {/home/max/Zotero/storage/NVE2CCKW/180265.pdf}
+}
+
+@inproceedings{kruegerToolsDevelopmentApplicationspecific1993a,
+  title = {Tools for the Development of Application-Specific Virtual Memory Management},
+  booktitle = {Proceedings of the Eighth Annual Conference on {{Object-oriented}} Programming Systems, Languages, and Applications},
+  author = {Krueger, Keith and Loftesness, David and Vahdat, Amin and Anderson, Thomas},
+  date = {1993-10},
+  pages = {48--64},
+  publisher = {ACM},
+  location = {Washington D.C. USA},
+  doi = {10.1145/165854.165867},
+  url = {https://dl.acm.org/doi/10.1145/165854.165867},
+  urldate = {2024-07-25},
+  eventtitle = {{{OOPSLA93}}: {{Conference}} on {{Object Oriented Programming Systems Languages}} and {{Applications}}},
+  isbn = {978-0-89791-587-8},
+  langid = {english},
+  file = {/home/max/Zotero/storage/HSR3P33Y/Krueger et al. - 1993 - Tools for the development of application-specific .pdf;C\:\\Users\\maxme\\Downloads\\165854.165867.pdf}
+}
+
+@online{L4ReferenceManual,
+  title = {L4 {{Reference Manual}}},
+  url = {https://cgi.cse.unsw.edu.au/~reports/papers/9709.pdf},
+  urldate = {2024-05-07},
+  file = {/home/max/Zotero/storage/E79CG3I5/9709.pdf}
+}
+
+@online{L4UserManual,
+  title = {L4 {{User Manual}}},
+  url = {https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=564516e3f63dce6c7506a1777dbd6f2e8192fb69},
+  urldate = {2024-05-07},
+  file = {/home/max/Zotero/storage/TXI2ZF7V/document.pdf}
+}
+
+@misc{L4X2Whitepaper,
+  title = {L4 {{X2 Whitepaper}} - {{Pistachio}}},
+  file = {/home/max/Zotero/storage/CI73A3DI/whitepaper.pdf}
+}
+
+@article{liedtkeGuardedPageTables1996,
+  title = {Guarded Page Tables on {{Mips R4600}} or an Exercise in Architecture-Dependent Micro Optimization},
+  author = {Liedtke, Jochen and Elphinstone, Kevin},
+  date = {1996-01},
+  journaltitle = {ACM SIGOPS Operating Systems Review},
+  shortjournal = {SIGOPS Oper. Syst. Rev.},
+  volume = {30},
+  number = {1},
+  pages = {4--15},
+  issn = {0163-5980},
+  doi = {10.1145/218646.218647},
+  url = {https://dl.acm.org/doi/10.1145/218646.218647},
+  urldate = {2024-05-09},
+  abstract = {Guarded Page Tables implement huge sparsely occupied address spaces efficiently and have the advantages of multi-level tables (tree structure, hierarchy, sharing). We present an implementation of guarded page tables on the R4600 processor. The paper describes both the architecture-dependent design process of the algorithms and the resulting tool box.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/QHV4NERC/Liedtke and Elphinstone - 1996 - Guarded page tables on Mips R4600 or an exercise i.pdf}
+}
+
+@article{liedtkeHighResolutionMMU,
+  title = {A {{High Resolution MMU}} for the {{Realization}} of {{Huge Fine-grained Address Spaces}} and {{User Level Mapping}}},
+  author = {Liedtke, Jochen},
+  abstract = {This paper describes a Memory Management Unit (MMU) which can be used for implementing huge ne-grained address spaces. Granularities down to 16-byte pages seem to be possible. Furthermore, a mechanism is described whichs permits fast and secure mapping operations on user level.},
+  langid = {english},
+  keywords = {todo},
+  file = {/home/max/Zotero/storage/FBL9LEMQ/Liedtke - A High Resolution MMU for the Realization of Huge .pdf}
+}
+
+@book{liedtkeRealizationHugeSparselyoccupied1996,
+  title = {On the Realization of Huge Sparsely-Occupied and Fine-Grained Address Spaces},
+  author = {Liedtke, Jochen},
+  date = {1996},
+  series = {{{GMD-Berichte}}},
+  number = {276},
+  publisher = {Oldenbourg},
+  location = {München Wien},
+  isbn = {978-3-486-24185-3},
+  langid = {english},
+  pagetotal = {190},
+  file = {/home/max/Zotero/storage/RPXNV2HF/Liedtke - 1996 - On the realization of huge sparsely-occupied and f.pdf}
+}
+
+@article{maruyamaAnalysisDesignAlternatives1977,
+  title = {Analysis of Design Alternatives for Virtual Memory Indexes},
+  author = {Maruyama, K. and Smith, S. E.},
+  date = {1977-04},
+  journaltitle = {Communications of the ACM},
+  shortjournal = {Commun. ACM},
+  volume = {20},
+  number = {4},
+  pages = {245--254},
+  issn = {0001-0782, 1557-7317},
+  doi = {10.1145/359461.359471},
+  url = {https://dl.acm.org/doi/10.1145/359461.359471},
+  urldate = {2024-07-25},
+  abstract = {A class of index structures for use in a virtual memory environment is described. Design alternatives within this class of index structures are analyzed. These alternatives include a choice of search strategy, whether or not pages in the index are stuctured, and whether or not keys are compressed. The average cost of retrieving entries from these indexes is expressed as a weighted sum of the cost of a basis key comparison and the cost of crossing a page boundary in the index structure. Formulas for the retrieval costs possible combinations of design alternatives are given. These are used in numerical case studies which compare the retrieval costs of the alternatives. Qualitative comparisons of the maintenance costs (insertion, deletion, reorganization) of the design alternatives are also included.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/DID6739D/Maruyama und Smith - 1977 - Analysis of design alternatives for virtual memory.pdf}
+}
+
+@book{mayPowerPCArchitectureSpecification1994,
+  title = {The {{PowerPC}} Architecture: A Specification for a New Family of {{RISC}} Processors},
+  shorttitle = {The {{PowerPC}} Architecture},
+  editor = {May, Cathy},
+  date = {1994},
+  edition = {2nd ed},
+  publisher = {Morgan Kaufman Publishers},
+  location = {San Francisco},
+  isbn = {978-1-55860-316-5},
+  langid = {english},
+  pagetotal = {518},
+  keywords = {PowerPC microprocessors},
+  file = {/home/max/Zotero/storage/QZBNNR5Y/May - 1994 - The PowerPC architecture a specification for a new family of RISC processors.pdf}
+}
+
+@article{meidingerQemuriscvDigestVol,
+  title = {Qemu-Riscv {{Digest}}, {{Vol}} 70, {{Issue}} 16},
+  author = {Meidinger, Max},
+  volume = {70},
+  number = {16},
+  langid = {english},
+  file = {/home/max/Zotero/storage/TUVK8UND/Meidinger - Qemu-riscv Digest, Vol 70, Issue 16.pdf}
+}
+
+@online{MemHierarchyRvdPas,
+  title = {{{MemHierarchyRvdPas}}},
+  url = {http://wwwx.cs.unc.edu/~prins/Classes/633/Readings/MemHierarchyRvdPas.pdf},
+  urldate = {2024-08-10},
+  file = {/home/max/Zotero/storage/2WGRD2G2/MemHierarchyRvdPas.pdf}
+}
+
+@online{MIPS32ArchitectureProgrammers,
+  title = {{{MIPS32 Architecture For Programmers}}  {{Volume I}}: {{Introduction}} to the {{MIPS32}}  {{Architecture}}},
+  url = {http://www.cs.cornell.edu/courses/cs3410/2014sp/MIPS_Vol1.pdf},
+  urldate = {2024-08-08},
+  file = {/home/max/Zotero/storage/NR8NEQNM/MIPS32 Architecture For Programmers  Volume I Introduction to the MIPS32  Architecture.pdf}
+}
+
+@online{MIPS64ArchitectureProgrammers,
+  title = {{{MIPS64 Architecture For Programmers}}  {{Volume I}}: {{Introduction}} to the {{MIPS64}}  {{Architecture}}},
+  url = {https://www.ece.lsu.edu/ee4720/mips64v1.pdf},
+  urldate = {2024-08-08},
+  file = {/home/max/Zotero/storage/SEPYIFIR/mips64v1.pdf}
+}
+
+@online{MIPSArchitectureProgrammers,
+  title = {{{MIPS}}® {{Architecture For Programmers}}  {{Volume III}}: {{The MIPS64}}® and  {{microMIPS64TM Privileged Resource}}  {{Architecture}}},
+  url = {https://s3-eu-west-1.amazonaws.com/downloads-mips/documents/MD00091-2B-MIPS64PRA-AFP-05.04.pdf},
+  urldate = {2024-07-04},
+  file = {/home/max/Zotero/storage/H7W4XCHE/httpss3-eu-west-1.amazonaws.comdownloads-mipsdocumentsMD00091-2B-MIPS64PRA-AFP-05.04.pdf.pdf}
+}
+
+@standard{MIPSArchitectureProgrammers2016,
+  title = {{{MIPS}}® {{Architecture For Programmers}}  {{Volume II-A}}: {{The MIPS64}}® {{Instruction}}  {{Set Reference Manual}}},
+  date = {2016},
+  url = {https://s3-eu-west-1.amazonaws.com/downloads-mips/documents/MIPS_Architecture_MIPS64_InstructionSet_%20AFP_P_MD00087_06.05.pdf},
+  urldate = {2024-08-08},
+  file = {/home/max/Zotero/storage/EAYP4WRI/MIPS_Architecture_MIPS64_InstructionSet_ AFP_P_MD00087_06.05.pdf}
+}
+
+@online{MIPSOverviewOSDev,
+  title = {{{MIPS Overview}} - {{OSDev Wiki}}},
+  url = {https://wiki.osdev.org/MIPS_Overview#Coprocessor_0_Registers},
+  urldate = {2024-07-04},
+  file = {/home/max/Zotero/storage/MIQIX665/MIPS_Overview.html}
+}
+
+@software{MitpdosXv6riscv2024,
+  title = {Mit-Pdos/Xv6-Riscv},
+  date = {2024-08-24T13:39:54Z},
+  origdate = {2019-08-26T11:15:28Z},
+  url = {https://github.com/mit-pdos/xv6-riscv},
+  urldate = {2024-08-24},
+  abstract = {Xv6 for RISC-V},
+  organization = {MIT PDOS}
+}
+
+@book{mittelbachTheoryHashFunctions2021,
+  title = {The {{Theory}} of {{Hash Functions}} and {{Random Oracles}}: {{An Approach}} to {{Modern Cryptography}}},
+  shorttitle = {The {{Theory}} of {{Hash Functions}} and {{Random Oracles}}},
+  author = {Mittelbach, Arno and Fischlin, Marc},
+  date = {2021},
+  series = {Information {{Security}} and {{Cryptography}}},
+  publisher = {Springer International Publishing},
+  location = {Cham},
+  doi = {10.1007/978-3-030-63287-8},
+  url = {http://link.springer.com/10.1007/978-3-030-63287-8},
+  urldate = {2024-05-09},
+  isbn = {978-3-030-63286-1 978-3-030-63287-8},
+  langid = {english},
+  file = {/home/max/Zotero/storage/73QJLSPL/Mittelbach and Fischlin - 2021 - The Theory of Hash Functions and Random Oracles A.pdf}
+}
+
+@online{MITVMLecture,
+  title = {{{MIT VM Lecture Slides}}},
+  url = {https://pdos.csail.mit.edu/6.S081/2021/slides/6s081-lec-vm.pdf},
+  urldate = {2024-06-01},
+  file = {/home/max/Zotero/storage/LGQH55BF/6s081-lec-vm.pdf}
+}
+
+@online{MultithreadedTCGQEMU,
+  title = {Multi-Threaded {{TCG}} — {{QEMU}} Documentation},
+  url = {https://qemu-project.gitlab.io/qemu/devel/multi-thread-tcg.html},
+  urldate = {2024-07-16},
+  file = {/home/max/Zotero/storage/P6ID9LYY/multi-thread-tcg.html}
+}
+
+@inproceedings{nagleDesignTradeoffsSoftwaremanaged1993,
+  title = {Design Tradeoffs for Software-Managed {{TLBs}}},
+  booktitle = {Proceedings of the 20th Annual International Symposium on {{Computer}} Architecture  - {{ISCA}} '93},
+  author = {Nagle, David and Uhlig, Richard and Stanley, Tim and Sechrest, Stuart and Mudge, Trevor and Brown, Richard},
+  date = {1993},
+  pages = {27--38},
+  publisher = {ACM Press},
+  location = {San Diego, California, United States},
+  doi = {10.1145/165123.165127},
+  url = {http://portal.acm.org/citation.cfm?doid=165123.165127},
+  urldate = {2024-07-25},
+  eventtitle = {The 20th Annual International Symposium},
+  isbn = {978-0-8186-3810-7},
+  langid = {english},
+  file = {/home/max/Zotero/storage/MB3JDEA4/Nagle et al. - 1993 - Design tradeoffs for software-managed TLBs.pdf}
+}
+
+@article{naughtonUsingSharedVirtual,
+  title = {Using {{Shared Virtual Memory}} for {{Parallel Join Processing}}},
+  author = {Naughton, F},
+  abstract = {In this paper, we show that shared virtual memory, in a shared-nothing multiprocessor, facilitates the design and implementation of parallel join processing algorithms that perform significantly better in the presence of skew than previously proposed parallel join processing algorithms. Repropose twovariants ofan algorithm for parallel join processing using shared virtual memory, and perform a detailed simulation to investigate their performance. The algorithmic unique in that it employs both the shared virtual memory paradigm and the message-passing paradigm used by current sharednothing parallel database systems. The implementation of the algorithm requires few modifications to existing shared-nothing parallel database systems.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/PTZ4KF4R/Naughton - Using Shared Virtual Memory for Parallel Join Proc.pdf}
+}
+
+@article{nivatPerfectHashing,
+  title = {Perfect {{Hashing}}},
+  author = {Nivat, M},
+  langid = {english},
+  file = {/home/max/Zotero/storage/QZGP7R8E/Nivat - Zbigniew J. Czech a,, George Havasb, Bohdan S. Ma.pdf}
+}
+
+@online{osgxAnswerDumpContents2011,
+  title = {Answer to "{{Dump}} the Contents of {{TLB}} Buffer of X86 {{CPU}}"},
+  author = {{osgx}},
+  date = {2011-08-28},
+  url = {https://stackoverflow.com/a/7218208},
+  urldate = {2024-07-16},
+  organization = {Stack Overflow},
+  file = {/home/max/Zotero/storage/JAJ6FVLX/dump-the-contents-of-tlb-buffer-of-x86-cpu.html}
+}
+
+@online{osgxDumpContentsTLB2011,
+  type = {Forum post},
+  title = {Dump the Contents of {{TLB}} Buffer of X86 {{CPU}}},
+  author = {{osgx}},
+  date = {2011-07-23},
+  url = {https://stackoverflow.com/q/6803762},
+  urldate = {2024-07-16},
+  organization = {Stack Overflow},
+  file = {/home/max/Zotero/storage/KXV4TJFI/dump-the-contents-of-tlb-buffer-of-x86-cpu.html}
+}
+
+@article{paghCuckooHashing2004,
+  title = {Cuckoo Hashing},
+  author = {Pagh, Rasmus and Rodler, Flemming Friche},
+  date = {2004-05},
+  journaltitle = {Journal of Algorithms},
+  shortjournal = {Journal of Algorithms},
+  volume = {51},
+  number = {2},
+  pages = {122--144},
+  issn = {01966774},
+  doi = {10.1016/j.jalgor.2003.12.002},
+  url = {https://linkinghub.elsevier.com/retrieve/pii/S0196677403001925},
+  urldate = {2024-04-29},
+  abstract = {We present a simple dictionary with worst case constant lookup time, equaling the theoretical performance of the classic dynamic perfect hashing scheme of Dietzfelbinger et al. [SIAM J. Comput. 23 (4) (1994) 738–761]. The space usage is similar to that of binary search trees. Besides being conceptually much simpler than previous dynamic dictionaries with worst case constant lookup time, our data structure is interesting in that it does not use perfect hashing, but rather a variant of open addressing where keys can be moved back in their probe sequences. An implementation inspired by our algorithm, but using weaker hash functions, is found to be quite practical. It is competitive with the best known dictionaries having an average case (but no nontrivial worst case) guarantee on lookup time.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/DVK2LE7E/Pagh and Rodler - 2004 - Cuckoo hashing.pdf}
 }
 
 @inproceedings{parkEveryWalkHit2022,
@@ -916,62 +820,19 @@
   file = {/home/max/Zotero/storage/2ZU43F5Z/Park et al. - 2022 - Every walk’s a hit making page walks single-access cache hits.pdf}
 }
 
-@online{intel5LevelPaging5Level2017,
-  title = {5-{{Level Paging}} and 5-{{Level EPT White Paper}}},
-  author = {Intel},
-  date = {2017},
-  url = {https://www.intel.com/content/www/us/en/content-details/671442/5-level-paging-and-5-level-ept-white-paper.html},
-  urldate = {2024-08-07},
-  abstract = {This document describes planned extensions to the Intel® 64 architecture to expand the size of addresses that can be translated through a processor’s memory-translation hardware. NOTE: Intel® Memory Protection Extensions (Intel® MPX) have been deprecated and are not available on all future processors.},
-  organization = {Intel},
-  file = {/home/max/Zotero/storage/9FUHB86Y/5-Level Paging and 5-Level EPT White Paper.pdf;/home/max/Zotero/storage/7JEMELSE/5-level-paging-and-5-level-ept-white-paper.html}
+@online{ProspectingHashFunctions,
+  title = {Prospecting for {{Hash Functions}}},
+  url = {https://nullprogram.com/blog/2018/07/31/},
+  urldate = {2024-05-08},
+  keywords = {todo},
+  file = {/home/max/Zotero/storage/8AA5MXDG/31.html}
 }
 
-@online{intelTLBsPagingStructureCaches2008,
-  title = {{{TLBs}}, {{Paging-Structure Caches}}, and {{Their Invalidation}}},
-  author = {Intel},
-  date = {2008},
-  url = {https://kib.kiev.ua/x86docs/Intel/WhitePapers/317080-002.pdf},
-  urldate = {2024-08-07},
-  file = {/home/max/Zotero/storage/9Z33FMHH/317080-002.pdf}
-}
-
-@standard{MIPSArchitectureProgrammers2016,
-  title = {{{MIPS}}® {{Architecture For Programmers}}  {{Volume II-A}}: {{The MIPS64}}® {{Instruction}}  {{Set Reference Manual}}},
-  date = {2016},
-  url = {https://s3-eu-west-1.amazonaws.com/downloads-mips/documents/MIPS_Architecture_MIPS64_InstructionSet_%20AFP_P_MD00087_06.05.pdf},
-  urldate = {2024-08-08},
-  file = {/home/max/Zotero/storage/EAYP4WRI/MIPS_Architecture_MIPS64_InstructionSet_ AFP_P_MD00087_06.05.pdf}
-}
-
-@online{MIPS64ArchitectureProgrammers,
-  title = {{{MIPS64 Architecture For Programmers}}  {{Volume I}}: {{Introduction}} to the {{MIPS64}}  {{Architecture}}},
-  url = {https://www.ece.lsu.edu/ee4720/mips64v1.pdf},
-  urldate = {2024-08-08},
-  file = {/home/max/Zotero/storage/SEPYIFIR/mips64v1.pdf}
-}
-
-@online{MIPS32ArchitectureProgrammers,
-  title = {{{MIPS32 Architecture For Programmers}}  {{Volume I}}: {{Introduction}} to the {{MIPS32}}  {{Architecture}}},
-  url = {http://www.cs.cornell.edu/courses/cs3410/2014sp/MIPS_Vol1.pdf},
-  urldate = {2024-08-08},
-  file = {/home/max/Zotero/storage/NR8NEQNM/MIPS32 Architecture For Programmers  Volume I Introduction to the MIPS32  Architecture.pdf}
-}
-
-@online{MemHierarchyRvdPas,
-  title = {{{MemHierarchyRvdPas}}},
-  url = {http://wwwx.cs.unc.edu/~prins/Classes/633/Readings/MemHierarchyRvdPas.pdf},
-  urldate = {2024-08-10},
-  file = {/home/max/Zotero/storage/2WGRD2G2/MemHierarchyRvdPas.pdf}
-}
-
-@article{bellardQEMUFastPortable2005,
-  title = {{{QEMU}}, a {{Fast}} and {{Portable Dynamic Translator}}},
-  author = {Bellard, Fabrice},
-  date = {2005},
-  abstract = {We present the internals of QEMU, a fast machine emulator using an original portable dynamic translator. It emulates several CPUs (x86, PowerPC, ARM and Sparc) on several hosts (x86, PowerPC, ARM, Sparc, Alpha and MIPS). QEMU supports full system emulation in which a complete and unmodified operating system is run in a virtual machine and Linux user mode emulation where a Linux process compiled for one target CPU can be run on another CPU.},
-  langid = {english},
-  file = {/home/max/Zotero/storage/RV5AF9PU/Bellard - 2005 - QEMU, a Fast and Portable Dynamic Translator.pdf}
+@online{QEMUMonitorQEMU,
+  title = {{{QEMU Monitor}} — {{QEMU}} Documentation},
+  url = {https://qemu-project.gitlab.io/qemu/system/monitor.html},
+  urldate = {2024-07-16},
+  file = {/home/max/Zotero/storage/5QJKFLNR/monitor.html}
 }
 
 @online{QEMUMonitorQEMUa,
@@ -980,12 +841,166 @@
   urldate = {2024-08-10}
 }
 
-@software{MitpdosXv6riscv2024,
-  title = {Mit-Pdos/Xv6-Riscv},
-  date = {2024-08-24T13:39:54Z},
-  origdate = {2019-08-26T11:15:28Z},
-  url = {https://github.com/mit-pdos/xv6-riscv},
-  urldate = {2024-08-24},
-  abstract = {Xv6 for RISC-V},
-  organization = {MIT PDOS}
+@online{QEMUMonitorWikibooks,
+  title = {{{QEMU}}/{{Monitor}} - {{Wikibooks}}, Open Books for an Open World},
+  url = {https://en.wikibooks.org/wiki/QEMU/Monitor},
+  urldate = {2024-07-16},
+  langid = {english},
+  file = {/home/max/Zotero/storage/JP8UANBZ/Monitor.html}
+}
+
+@online{R4600ProductSpecification,
+  title = {R4600 {{Product Specification}}},
+  url = {http://www.sgistuff.net/hardware/other/documents/R4600_Prod_OV.pdf},
+  urldate = {2024-07-04},
+  file = {/home/max/Zotero/storage/CLZACIPE/R4600 Product Specification.pdf}
+}
+
+@online{RecordReplayQEMU,
+  title = {Record/Replay — {{QEMU}} Documentation},
+  url = {https://www.qemu.org/docs/master/system/replay.html},
+  urldate = {2024-09-04},
+  file = {/home/max/Zotero/storage/AVZ88E5K/replay.html}
+}
+
+@online{RISCVActuallyCalls,
+  title = {{{RISC-V}} Actually Calls out the Posibility of a Software Filled {{TLB}} in It's Spec. ... | {{Hacker News}}},
+  url = {https://news.ycombinator.com/item?id=30475735},
+  urldate = {2024-07-04},
+  file = {/home/max/Zotero/storage/2BSVT8US/item.html}
+}
+
+@article{RISCVInstructionSet,
+  title = {The {{RISC-V Instruction Set Manual}}: {{Volume II}}: {{Privileged Architecture}}},
+  langid = {english},
+  file = {/home/max/Zotero/storage/KQXGSPC5/The RISC-V Instruction Set Manual Volume II Priv.pdf}
+}
+
+@article{RISCVInstructionSeta,
+  title = {The {{RISC-V Instruction Set Manual Volume I}}: {{Unprivileged Architecture}}},
+  langid = {english},
+  file = {/home/max/Zotero/storage/7I78NIPJ/The RISC-V Instruction Set Manual Volume I Unpriv.pdf}
+}
+
+@inproceedings{sang-kwonleeAdaptivePrefetchingTechnique2001,
+  title = {Adaptive Prefetching Technique for Shared Virtual Memory},
+  booktitle = {Proceedings {{First IEEE}}/{{ACM International Symposium}} on {{Cluster Computing}} and the {{Grid}}},
+  author = {{Sang-Kwon Lee} and {Hee-Chul Yun} and {Joonwon Lee} and {Seungyoul Maeng}},
+  date = {2001},
+  pages = {521--526},
+  publisher = {IEEE Comput. Soc},
+  location = {Brisbane, Qld., Australia},
+  doi = {10.1109/CCGRID.2001.923237},
+  url = {http://ieeexplore.ieee.org/document/923237/},
+  urldate = {2024-07-01},
+  abstract = {Though shared virtual memory (SVM) systems promise low cost solutions for high performance computing, they suffer from long memory latencies. These latencies are usually caused by repetitive invalidations on shared data. Since shared data are accessed through synchronizations and the patterns by which threads synchronizes are repetitive, a prefetching scheme based on such repetitiveness would reduce memory latencies. Based on this observation, we propose a prefetching technique which predicts future access behavior by analyzing access history per synchronization variable. Our technique was evaluated on an 8-node SVM system using the SPLASH-2 benchmark. The results show that our technique could achieve 34\% – 45\% reduction in memory access latencies.},
+  eventtitle = {First {{IEEE}}/{{ACM International Symposium}} on {{Cluster Computing}} and the {{Grid}}},
+  isbn = {978-0-7695-1010-1},
+  langid = {english},
+  file = {/home/max/Zotero/storage/RPZ3BBQK/Sang-Kwon Lee et al. - 2001 - Adaptive prefetching technique for shared virtual .pdf}
+}
+
+@article{SiFiveInterruptCookbook,
+  title = {{{SiFive Interrupt Cookbook}}},
+  langid = {english},
+  file = {/home/max/Zotero/storage/B63IWLU8/SiFive Interrupt Cookbook.pdf}
+}
+
+@online{SimulationAddressTranslation,
+  title = {Simulation of Address Translation Techniques},
+  url = {https://oaktrust.library.tamu.edu/bitstream/handle/1969.1/195140/COMAN-THESIS-2021.pdf?sequence=1&isAllowed=y},
+  urldate = {2024-05-11},
+  file = {/home/max/Zotero/storage/FKHZMEFK/COMAN-THESIS-2021.pdf}
+}
+
+@inproceedings{skarlatosElasticCuckooPage2020,
+  title = {Elastic {{Cuckoo Page Tables}}: {{Rethinking Virtual Memory Translation}} for {{Parallelism}}},
+  shorttitle = {Elastic {{Cuckoo Page Tables}}},
+  booktitle = {Proceedings of the {{Twenty-Fifth International Conference}} on {{Architectural Support}} for {{Programming Languages}} and {{Operating Systems}}},
+  author = {Skarlatos, Dimitrios and Kokolis, Apostolos and Xu, Tianyin and Torrellas, Josep},
+  date = {2020-03-09},
+  pages = {1093--1108},
+  publisher = {ACM},
+  location = {Lausanne Switzerland},
+  doi = {10.1145/3373376.3378493},
+  url = {https://dl.acm.org/doi/10.1145/3373376.3378493},
+  urldate = {2024-04-06},
+  abstract = {The unprecedented growth in the memory needs of emerging memory-intensive workloads has made virtual memory translation a major performance bottleneck. To address this problem, this paper introduces Elastic Cuckoo Page Tables, a novel page table design that transforms the sequential pointer-chasing operation used by conventional multi-level radix page tables into fully-parallel look-ups. The resulting design harvests, for the first time, the benefits of memorylevel parallelism for address translation. Elastic cuckoo page tables use Elastic Cuckoo Hashing, a novel extension of cuckoo hashing that supports efficient page table resizing. Elastic cuckoo page tables efficiently resolve hash collisions, provide process-private page tables, support multiple page sizes and page sharing among processes, and dynamically adapt page table sizes to meet application requirements.},
+  eventtitle = {{{ASPLOS}} '20: {{Architectural Support}} for {{Programming Languages}} and {{Operating Systems}}},
+  isbn = {978-1-4503-7102-5},
+  langid = {english},
+  file = {/home/max/Zotero/storage/36GE97H5/Skarlatos et al. - 2020 - Elastic Cuckoo Page Tables Rethinking Virtual Mem.pdf}
+}
+
+@online{smesoAnswerWhatDifference2018,
+  title = {Answer to "{{What}}'s the Difference between {{Virtually Indexed Physically}} Tagged and {{Virtually Indexed}} and {{Virtually Tagged Paging}}?"},
+  shorttitle = {Answer to "{{What}}'s the Difference between {{Virtually Indexed Physically}} Tagged and {{Virtually Indexed}} and {{Virtually Tagged Paging}}?},
+  author = {{smeso}},
+  date = {2018-07-07},
+  url = {https://stackoverflow.com/a/51227226},
+  urldate = {2024-08-05},
+  organization = {Stack Overflow},
+  file = {/home/max/Zotero/storage/GDEPWHQK/whats-the-difference-between-virtually-indexed-physically-tagged-and-virtually.html}
+}
+
+@book{tanenbaumModernOperatingSystems2015,
+  title = {Modern Operating Systems},
+  author = {Tanenbaum, Andrew S. and Bos, Herbert},
+  date = {2015},
+  edition = {4. ed},
+  publisher = {Prentice Hall},
+  location = {Boston},
+  isbn = {978-0-13-359162-0 978-1-292-06142-9},
+  langid = {english},
+  pagetotal = {1101},
+  file = {/home/max/Zotero/storage/N99882GG/Tanenbaum and Bos - 2015 - Modern operating systems.pdf}
+}
+
+@online{V3ImplementingVictim,
+  title = {[V3] Implementing Victim {{TLB}} for {{QEMU}} System Emulated {{TLB}} - {{Patchwork}}},
+  url = {https://patchwork.ozlabs.org/project/qemu-devel/patch/1390930309-21210-1-git-send-email-trent.tong@gmail.com/#701962},
+  urldate = {2024-07-10},
+  file = {/home/max/Zotero/storage/F98NGJEI/1390930309-21210-1-git-send-email-trent.tong@gmail.com.html}
+}
+
+@article{weissSpectralHashing,
+  title = {Spectral {{Hashing}}},
+  author = {Weiss, Yair and Torralba, Antonio and Fergus, Rob},
+  abstract = {Semantic hashing[1] seeks compact binary codes of data-points so that the Hamming distance between codewords correlates with semantic similarity. In this paper, we show that the problem of finding a best code for a given dataset is closely related to the problem of graph partitioning and can be shown to be NP hard. By relaxing the original problem, we obtain a spectral method whose solutions are simply a subset of thresholded eigenvectors of the graph Laplacian. By utilizing recent results on convergence of graph Laplacian eigenvectors to the Laplace-Beltrami eigenfunctions of manifolds, we show how to efficiently calculate the code of a novel datapoint. Taken together, both learning the code and applying it to a novel point are extremely simple. Our experiments show that our codes outperform the state-of-the art.},
+  langid = {english},
+  file = {/home/max/Zotero/storage/W94SK9FY/Weiss et al. - Spectral Hashing.pdf}
+}
+
+@inproceedings{yanivHashDonCache2016,
+  title = {Hash, {{Don}}'t {{Cache}} (the {{Page Table}})},
+  booktitle = {Proceedings of the 2016 {{ACM SIGMETRICS International Conference}} on {{Measurement}} and {{Modeling}} of {{Computer Science}}},
+  author = {Yaniv, Idan and Tsafrir, Dan},
+  date = {2016-06-14},
+  pages = {337--350},
+  publisher = {ACM},
+  location = {Antibes Juan-les-Pins France},
+  doi = {10.1145/2896377.2901456},
+  url = {https://dl.acm.org/doi/10.1145/2896377.2901456},
+  urldate = {2024-08-07},
+  abstract = {Radix page tables as implemented in the x86-64 architecture incur a penalty of four memory references for address translation upon each TLB miss. These 4 references become 24 in virtualized setups, accounting for 5\%–90\% of the runtime and thus motivating chip vendors to incorporate page walk caches (PWCs). Counterintuitively, an ISCA 2010 paper found that radix page tables with PWCs are superior to hashed page tables, yielding up to 5x fewer DRAM accesses per page walk. We challenge this finding and show that it is the result of comparing against a suboptimal hashed implementation—that of the Itanium architecture. We show that, when carefully optimized, hashed page tables in fact outperform existing PWC-aided x86-64 hardware, shortening benchmark runtimes by 1\%–27\% and 6\%–32\% in bare-metal and virtualized setups, without resorting to PWCs. We further show that hashed page tables are inherently more scalable than radix designs and are better suited to accommodate the ever increasing memory size; their downside is that they make it more challenging to support such features as superpages.},
+  eventtitle = {{{SIGMETRICS}} '16: {{SIGMETRICS}}/{{PERFORMANCE Joint International Conference}} on {{Measurement}} and {{Modeling}} of {{Computer Systems}}},
+  isbn = {978-1-4503-4266-7},
+  langid = {english},
+  file = {/home/max/Zotero/storage/7CLBWNCD/Yaniv and Tsafrir - 2016 - Hash, Don't Cache (the Page Table).pdf}
+}
+
+@online{zagieboyloCostSoftwareBasedMemory2020,
+  title = {The {{Cost}} of {{Software-Based Memory Management Without Virtual Memory}}},
+  author = {Zagieboylo, Drew and Suh, G. Edward and Myers, Andrew C.},
+  date = {2020-09-14},
+  eprint = {2009.06789},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  url = {http://arxiv.org/abs/2009.06789},
+  urldate = {2024-07-25},
+  abstract = {Virtual memory has been a standard hardware feature for more than three decades. At the price of increased hardware complexity, it has simplified software and promised strong isolation among colocated processes. In modern computing systems, however, the costs of virtual memory have increased significantly. With large memory workloads, virtualized environments, data center computing, and chips with multiple DMA devices, virtual memory can degrade performance and increase power usage. We therefore explore the implications of building applications and operating systems without relying on hardware support for address translation. Primarily, we investigate the implications of removing the abstraction of large contiguous memory segments. Our experiments show that the overhead to remove this reliance is surprisingly small for real programs. We expect this small overhead to be worth the benefit of reducing the complexity and energy usage of address translation. In fact, in some cases, performance can even improve when address translation is avoided.},
+  langid = {english},
+  pubstate = {prepublished},
+  keywords = {Computer Science - Hardware Architecture,Computer Science - Programming Languages},
+  file = {/home/max/Zotero/storage/C3MQQE3J/Zagieboylo et al. - 2020 - The Cost of Software-Based Memory Management Witho.pdf}
 }

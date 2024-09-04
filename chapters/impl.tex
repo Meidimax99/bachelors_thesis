@@ -473,6 +473,15 @@ RISC-V war dieser allerdings nicht verfügbar.
 \todo{Beschreibung der TLB strukturen früher im kapitel}
 
 
+\subsection{QEMU Record/replay}
+QEMUs Redord/replay feature allows a deterministic replay of a machines execution by recording
+all non-deterministic events that happend. This can be especially helpful to investigate bugs
+that occur as a result of an interrupt or require special preconditions or timings to occur.\\
+With the Record/replay feature, it is easy to recreate the situation in which a bug or unexpected
+behaviour occured.\\
+For this project, especially the mouse and keybord input and the hardware clock are interesting
+non-deterministic events that influence the execution of the system \cite[RecordReplayQEMU].
+
 
 % -------------------------------------------------------------------------------------------------
 %                                    END OF SECTION - Debugging

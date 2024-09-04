@@ -77,6 +77,11 @@ of another process, unless explicitly shared.
 differing virtual addresses.
 \cite{jacobVirtualMemoryContemporary1998}
 
+\begin{marginfigure}
+    \includegraphics*[width=1\marginparwidth]{figures/fund_share.pdf}
+    \caption{\textbf{Page Sharing}}
+\end{marginfigure}
+
 % -------------------------------------------------------------------------------------------------
 
 \paragraph{Large Address Spaces} Programs tend to require more and more memory. Swapping pages can help
@@ -122,8 +127,9 @@ space with a sparse population for programs that do not require a lot of pages
 \cite{tanenbaumOS}.
 
 \begin{marginfigure}
+    \centering
     \includegraphics*[width=0.5\marginparwidth]{figures/fund_sparsity.pdf}
-    \caption{\textbf{Sparsity} Virtual Memory Systems need to efficiently
+    \caption{\textbf{Sparsity / Large Address Spaces} Virtual Memory Systems need to efficiently
         realize huge address spaces with only a few pages being used.}
 \end{marginfigure}
 
