@@ -23,11 +23,14 @@
 %   Stage1 - Single Fixed address
 %     Qemu - exception
 %     xv6 - tlb triggerer
-%   Stage2 - VM PTW with TLB miss handler
-%     Qemu -> Extension to all addresses, csr
-%     xv6 -> tlb miss handler
+%   Stage2
+%     Qemu - TLB CSRs
+%     xv6 - single address tlb fill
+%   Stage3 - VM PTW with TLB miss handler
+%     Qemu -> Extension to all addresses
+%     xv6 -> tlb miss handler with ptw
 %       Exception vector entry -> state save, kernel stack
-%   Stage3 - Dynamic Segmentation allocation scheme (btw -> link to MIPS?)
+%   Stage4 - Dynamic Segmentation allocation scheme (btw -> link to MIPS?)
 %     Qemu -> No more changes needed
 %     xv6 -> A lot of changes here
 %   Debugging
@@ -47,14 +50,10 @@ This chapter summarizes the implementation of the softtlb page-table-less virtua
 The ordering of the sections in this chapter reflect the implementation process and will thus
 be comprised of following steps:
 \begin{itemize}
-    \item \textbf{TLB Miss Exception and Exception Handler} The first step is about
-          the implementation of the TLB Miss Exception in the QEMU RISC-V emulator. Additionally, the
-          implementation of a simple user program to trigger the exception and a rudimentary exception
-          handler for the \textit{TLB Miss Exception} is presented.
-    \item \textbf{Software page table walk} The second step implements a software page table walk
-          in the exception handler routine for the \textit{TLB Miss Exception}. This is mainly
-          to verify the correct behavior of the system when all addresses
-          are mapped using the exception handler.
+    \item \textbf{TLB Miss Exception and Exception Triggerer} The first step is about
+          the implementation of the TLB Miss Exception in the QEMU RISC-V emulator. On the xv6-side,
+          a user-mode program is added to trigger a TLB Miss exception from the shell.
+    \item \textbf{Software page table walk and Exception Handling} The second step implements a  T
     \item \textbf{Segmented Memory Design} In this step, the xv6 virtual memory system is completely
           replaced. The new design gets rid of the page table and only uses information present in
           registers to create virtual-to-physical mappings and to fill the tlb.\\The page allocation
@@ -83,8 +82,25 @@ as soon as exceptions are activated and a memory access happens, because QEMU al
 \texttt{fill\_tlb} routine to fill the TLB with direct
 virtual-to-physical mappings when no virtual memory is used. This speeds up the execution of
 the dynamically-translated code, as it can directly
-lookup addresses in the TLB using a fast path.\\ \todo{add: dynamically-generated tcg code can
-    directly use the TLB structures}
+lookup addresses in the TLB using a fast path \cite{DeepDiveQEMU}.\\ \todo{add: dynamically-generated tcg code can
+    directly use the TLB structures}\\
+For this step of the implementation, the QEMU memory system emulation must be changed to throw a
+TLB Miss Exception when a TLB lookup misses. To keep the system running as normal, this will
+be done for only one hardcoded address, that is usually not used by xv6.\\
+On the xv6 side, we need a user-level program, that accesses the specific address and thus prompts
+the emulated hardware to throw a TLB Miss exception.
+
+
+% -------------------------------------------------------------------------------------------------
+\subsection{Address Selection}
+\subsection{TLB Miss Exception}
+%TODO Explain what the riscv_cpu_tlb_fill function does originally - in detail
+% TODO discussion and reference to READER/SPECIFICATION on what exception numbers and other constants can be used and are free
+
+% Qemu RISCV  exception adding "tutorial"
+%TODO Description of the TLB Exception implementation and how to generally add exceptions to the QEMU plattform
+% TODO List of code locations where changes need to be added -> should be usable as back reference for implementing more exceptions
+
 To properly test the implementation, the \texttt{tlb\_fill} function was replaced to throw the
 TLB\_MISS exception for
 one specified, page-aligned address and to continue on normally for every other address.
@@ -126,19 +142,9 @@ bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
 
 % -------------------------------------------------------------------------------------------------
 
-\subsection{QEMU}
-%TODO Explain what the riscv_cpu_tlb_fill function does originally - in detail
-% TODO discussion and reference to READER/SPECIFICATION on what exception numbers and other constants can be used and are free
-
-% Qemu RISCV  exception adding "tutorial"
-%TODO Description of the TLB Exception implementation and how to generally add exceptions to the QEMU plattform
-% TODO List of code locations where changes need to be added -> should be usable as back reference for implementing more exceptions
-
-% -------------------------------------------------------------------------------------------------
 
 % This section describes the necesarry steps for adding the tlb miss exception to the qemu source
 %in comparison with Page fault exceptions
-\subsection{Adding the TLB MISS exception}
 The required behavior for the TLB Miss exception is similar to the behavior of a page fault exception.
 The RISC-V Instruction Set Manual: Volume II \cite{RISCVInstructionSet} describes when page faults
 are triggered in the virtual address translation process. Page faults are thrown when:
@@ -184,10 +190,6 @@ this implementation only looked at the RISC-V target.
 
 % -------------------------------------------------------------------------------------------------
 
-
-% \subsection{CSR Modifications}
-% \subsubsection{TLB Modification via CSR}
-% \subsubsection{Switching between HW and SW TLB miss handling}
 
 \subsection{xv6}
 % TODO TLB exception trigger
@@ -239,6 +241,10 @@ memory accesses.
 
 \subsection{xv6}
 % TODO TLB fill manager
+
+% \subsection{CSR Modifications}
+% \subsubsection{TLB Modification via CSR}
+
 
 % Previous state of xv6 machine mode trap handler
 %   -> Only for Timer Interrupt
