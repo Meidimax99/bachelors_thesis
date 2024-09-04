@@ -57,99 +57,13 @@ be comprised of following steps:
           are mapped using the exception handler.
     \item \textbf{Segmented Memory Design} In this step, the xv6 virtual memory system is completely
           replaced. The new design gets rid of the page table and only uses information present in
-          registers to create virtual-to-physical mappings and to fill the tlb. The page allocation
+          registers to create virtual-to-physical mappings and to fill the tlb.\\The page allocation
           scheme is more similar to a segmented memory system than a virtual memory allocation scheme
           and thus has some drawbacks that will be discussed in the evaluation chapter.
 \end{itemize}
 Each section elaborates on both the xv6 side and the QEMU side of the implementation.\\
 The final section describes debugging techniques that were used or can otherwise be useful for
 similar implementations.
-
-% -------------------------------------------------------------------------------------------------
-
-\todo{merge this with overview and provide this sort of explanation as a introduction to the implementation part}
-\section{Programming Platform}
-\subsection{QEMU}
-The \texttt{softtlb} design approach requires the CPU to throw an exception when the TLB misses. There is
-currently neither a RISC-V platform that supports nor a extension to the RISC-V that specifies that behavior.\\
-The logical consequence is to use an emulator and implement the required functionality.\\
-This paper uses the QEMU emulator as a foundation for the implementation. QEMU supports a big range of
-different platforms and is thus not the simplest source to modify. Additionally, detailed documentation
-on internal structures is sparse.\\
-However, QEMU does support a lot of features and extensions of the RISC-V target and is quite performant
-\cite{bellard2005QEMU}.
-
-% -------------------------------------------------------------------------------------------------
-
-%This section is important for the rationale on choosing a format of the CSRs
-%Vielleicht sollte dieser Teil einfach erst im hinblick auf replacement policies Dikutiert werden
-% In meinem Programmiermodell ist ja der TLB nichts weiter als ein Indiziertes array von daten, 
-% Weitere Aspekte sind ja hier erst mal out of scope
-\subsubsection{TLB}
-% What type of cache modeled? - direct mapped, associative?
-
-\todo{description of QEMU TLB structure in fundamentals, theory or implementation?}
-% Does the QEMU tlb implementation impact the theory? -> It should not
-%   It only has impact once we have to decide on a specific format for the tlbh and tlbl csrs
-%   But I can put all the theoretical parts into theory, so ASID etc
-%   and the modification of the theory based on concrete hardware can come into the impl chapter
-%       -> mmuidx and stuff
-
-
-% -------------------------------------------------------------------------------------------------
-
-
-\subsection{xv6-riscv}
-xv6 is a simple teaching operating system loosely following the design of Unix Version 6 \cite{cox2011xv6}.
-It is used to teach an operating systems course and does not contain the complexities of real-life
-operating systems.
-
-% -------------------------------------------------------------------------------------------------
-%                                    SECTION Source Description
-% -------------------------------------------------------------------------------------------------
-\section{Source Overview}
-The implementation consists of two fundamental parts:
-The extension of RISC-V ISA emulated by QEMU and the implementation of a
-TLB Miss Handler.
-
-% -------------------------------------------------------------------------------------------------
-
-\subsection{QEMU}
-\texttt{cputlb.c} found in \texttt{accel/tcg} contains the TLB-handling logic for all
-emulation targets; from there, target-specific functions for TLB management are called.
-The target-specific functions are implemented in \texttt{target/riscv}.\\
-Every target needs to implement the functions in the \texttt{TCGCPUOps} struct in
-\texttt{include/hw/core/tcg-cpu-ops.h}. This struct is part of the glue that connects the target-independent
-Tiny Code Generator (TCG) backend with the target-specific functions and structures.
-
-% -------------------------------------------------------------------------------------------------
-
-\todo{sequence diagram for function calls accross the QEMU repository}
-
-% -------------------------------------------------------------------------------------------------
-
-% TCGCPUOps struct
-% TODO Ausgangspunkt sollte die mmu_lookup1 funktion sein!
-The \texttt{TCGCPUOps} struct includes a function pointer named \texttt{tlb\_fill}. The function is called
-when MMU lookups to the TLB and QEMU's victim TLB fail.
-For the riscv target, the function \texttt{riscv\_cpu\_tlb\_fill} is assigned to the \texttt{tlb\_fill}
-function pointer in \texttt{target/riscv/tcg/tcg-cpu.c}.\\
-The implementation for \texttt{riscv\_cpu\_tlb\_fill} is in \texttt{target/riscv/cpu\_helper.c}. This is a common
-file to be found in a target-specifc directory and contains general functionality to implement the \texttt{TCGCPUOps} struct.\\
-
-
-\todo{explain PTE}
-
-% -------------------------------------------------------------------------------------------------
-
-\subsection{xv6}
-
-
-
-% -------------------------------------------------------------------------------------------------
-%                                END OF SECTION - Source Description
-% -------------------------------------------------------------------------------------------------
-
 
 
 
@@ -160,9 +74,9 @@ file to be found in a target-specifc directory and contains general functionalit
 \section{TLB miss handling for a single fixed address}
 
 % Why only start with one fixed address?
-Changing the whole system to start throwing a TLB\_MISS Exception on every virtual address would
+Changing the whole system to start throwing a TLB Miss Exception on every virtual address would
 make it very hard to debug both first tries at implementing a handler for the exception and the
-exception throwing code in QEMU itself.
+exception throwing code in QEMU itself.\\
 And not only would the exception be thrown as soon as virtual memory is activated in
 \texttt{xv6-riscv:kernel/main.c}, the exception would be thrown
 as soon as exceptions are activated and a memory access happens, because QEMU also uses the
@@ -176,6 +90,39 @@ TLB\_MISS exception for
 one specified, page-aligned address and to continue on normally for every other address.
 The implementation is outlined
 in Listing \ref{lst:specialCaseTLBfill}.
+
+
+
+% riscv_cpu_tlb_switch function 
+%TODO is this listing really interesting?
+\begin{lstlisting}[language=c,float=h!,
+    caption={Alternative Implementation for the RISC-V tlb\_fill function with a special case to
+    start testing TLB Miss Handler implementations.\\
+    In line 11, a conditional branch is used to only trigger the exception when neither the
+    Virtual Memory (as set in the \texttt{satp} \texttt{MODE} field) is bare nor the priviledge
+    mode is the machine mode.\\
+    If the virtual address is the hardcoded one, a TLB Miss exception is thrown, otherwise the
+    original functions is called, which will perform a page table walk to find the mapping.},
+    label={lst:specialCaseTLBfill}]
+bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
+    MMUAccessType access_type, int mmu_idx,
+    bool probe, uintptr_t retaddr)
+{
+    RISCVCPU *cpu = RISCV_CPU(cs);
+    CPURISCVState *env = &cpu->env;
+    int mode = mmuidx_priv(mmu_idx);
+    int vm = get_field(env->satp, SATP64_MODE);
+    bool ret = false;
+
+    if(!(vm == VM_1_10_MBARE || mode == PRV_M) &&
+            address == (uint64_t)0x84fff000) {
+        ret = riscv_cpu_tlb_miss_exception(cs,address,size,access_type, mmu_idx, probe, retaddr);
+    } else {
+        ret =  riscv_cpu_tlb_fill(cs,address,size,access_type, mmu_idx, probe, retaddr);
+    }
+    return ret;
+}
+\end{lstlisting}
 
 % -------------------------------------------------------------------------------------------------
 
@@ -529,33 +476,7 @@ non-deterministic events that influence the execution of the system \cite[Record
 
 
 
-% riscv_cpu_tlb_switch function 
-%TODO is this listing really interesting?
-\begin{lstlisting}[language=c,float=h!,
-    caption={Alternative Implementation for the RISC-V tlb\_fill function with a special case to start testing TLB Miss Handler implementations},
-    label={lst:specialCaseTLBfill}]
-bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
-    MMUAccessType access_type, int mmu_idx,
-    bool probe, uintptr_t retaddr)
-{
-    RISCVCPU *cpu = RISCV_CPU(cs);
-    CPURISCVState *env = &cpu->env;
-    int mode = mmuidx_priv(mmu_idx);
-    int vm = get_field(env->satp, SATP64_MODE);
-    bool ret = false;
-
-    if(!(vm == VM_1_10_MBARE || mode == PRV_M) &&
-            address == (uint64_t)0x84fff000) {
-        ret = riscv_cpu_tlb_miss_exception(cs,address,size,access_type, mmu_idx, probe, retaddr);
-    } else {
-        ret =  riscv_cpu_tlb_fill(cs,address,size,access_type, mmu_idx, probe, retaddr);
-    }
-    return ret;
-}
-\end{lstlisting}
-
-.
-% -------------------------------------------------------------------------------------------------
+.% -------------------------------------------------------------------------------------------------
 
 
 \begin{figure*}[ht!]
@@ -621,4 +542,92 @@ bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
 \end{figure*}
 
 
+
+% Source Description Stuff - maybe extra chapter, or in way less detail
+
+
+% -------------------------------------------------------------------------------------------------
+
+\todo{merge this with overview and provide this sort of explanation as a introduction to the implementation part}
+\section{Programming Platform}
+\subsection{QEMU}
+The \texttt{softtlb} design approach requires the CPU to throw an exception when the TLB misses. There is
+currently neither a RISC-V platform that supports nor a extension to the RISC-V that specifies that behavior.\\
+The logical consequence is to use an emulator and implement the required functionality.\\
+This paper uses the QEMU emulator as a foundation for the implementation. QEMU supports a big range of
+different platforms and is thus not the simplest source to modify. Additionally, detailed documentation
+on internal structures is sparse.\\
+However, QEMU does support a lot of features and extensions of the RISC-V target and is quite performant
+\cite{bellard2005QEMU}.
+
+% -------------------------------------------------------------------------------------------------
+
+%This section is important for the rationale on choosing a format of the CSRs
+%Vielleicht sollte dieser Teil einfach erst im hinblick auf replacement policies Dikutiert werden
+% In meinem Programmiermodell ist ja der TLB nichts weiter als ein Indiziertes array von daten, 
+% Weitere Aspekte sind ja hier erst mal out of scope
+\subsubsection{TLB}
+% What type of cache modeled? - direct mapped, associative?
+
+\todo{description of QEMU TLB structure in fundamentals, theory or implementation?}
+% Does the QEMU tlb implementation impact the theory? -> It should not
+%   It only has impact once we have to decide on a specific format for the tlbh and tlbl csrs
+%   But I can put all the theoretical parts into theory, so ASID etc
+%   and the modification of the theory based on concrete hardware can come into the impl chapter
+%       -> mmuidx and stuff
+
+
+% -------------------------------------------------------------------------------------------------
+
+
+\subsection{xv6-riscv}
+xv6 is a simple teaching operating system loosely following the design of Unix Version 6 \cite{cox2011xv6}.
+It is used to teach an operating systems course and does not contain the complexities of real-life
+operating systems.
+
+% -------------------------------------------------------------------------------------------------
+%                                    SECTION Source Description
+% -------------------------------------------------------------------------------------------------
+\section{Source Overview}
+The implementation consists of two fundamental parts:
+The extension of RISC-V ISA emulated by QEMU and the implementation of a
+TLB Miss Handler.
+
+% -------------------------------------------------------------------------------------------------
+
+\subsection{QEMU}
+\texttt{cputlb.c} found in \texttt{accel/tcg} contains the TLB-handling logic for all
+emulation targets; from there, target-specific functions for TLB management are called.
+The target-specific functions are implemented in \texttt{target/riscv}.\\
+Every target needs to implement the functions in the \texttt{TCGCPUOps} struct in
+\texttt{include/hw/core/tcg-cpu-ops.h}. This struct is part of the glue that connects the target-independent
+Tiny Code Generator (TCG) backend with the target-specific functions and structures.
+
+% -------------------------------------------------------------------------------------------------
+
+\todo{sequence diagram for function calls accross the QEMU repository}
+
+% -------------------------------------------------------------------------------------------------
+
+% TCGCPUOps struct
+% TODO Ausgangspunkt sollte die mmu_lookup1 funktion sein!
+The \texttt{TCGCPUOps} struct includes a function pointer named \texttt{tlb\_fill}. The function is called
+when MMU lookups to the TLB and QEMU's victim TLB fail.
+For the riscv target, the function \texttt{riscv\_cpu\_tlb\_fill} is assigned to the \texttt{tlb\_fill}
+function pointer in \texttt{target/riscv/tcg/tcg-cpu.c}.\\
+The implementation for \texttt{riscv\_cpu\_tlb\_fill} is in \texttt{target/riscv/cpu\_helper.c}. This is a common
+file to be found in a target-specifc directory and contains general functionality to implement the \texttt{TCGCPUOps} struct.\\
+
+
+\todo{explain PTE}
+
+% -------------------------------------------------------------------------------------------------
+
+\subsection{xv6}
+
+
+
+% -------------------------------------------------------------------------------------------------
+%                                END OF SECTION - Source Description
+% -------------------------------------------------------------------------------------------------
 
