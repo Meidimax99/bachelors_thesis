@@ -49,17 +49,21 @@
 This chapter summarizes the implementation of the softtlb page-table-less virtual memory system.
 The ordering of the sections in this chapter reflect the implementation process and will thus
 be comprised of following steps:
-\begin{itemize}
+\begin{enumerate}
     \item \textbf{TLB Miss Exception and Exception Triggerer} The first step is about
           the implementation of the TLB Miss Exception in the QEMU RISC-V emulator. On the xv6-side,
           a user-mode program is added to trigger a TLB Miss exception from the shell.
-    \item \textbf{Software page table walk and Exception Handling} The second step implements a  T
-    \item \textbf{Segmented Memory Design} In this step, the xv6 virtual memory system is completely
+    \item \textbf{Exception Handling and TLB Writing} The second step implements the
+          handling of the TLB Miss Exception, by implementing a machine mode exception handler.
+          The RISC-V emulation is extended by two new CSRs that facilitate writing TLB from the
+          software-side of things.
+    \item \textbf{Software Page Table Walk for all Addresses} This step removes the restriction
+          in the QEMU emulator to only throw exeptions for a specific address. In the exception handler,
+          a page table walk is implemented to now create virtual to physical mappings for all addresses.
+    \item \textbf{Segmented Memory Design using software-defined TLB Filling} In this step, the xv6 virtual memory system is completely
           replaced. The new design gets rid of the page table and only uses information present in
-          registers to create virtual-to-physical mappings and to fill the tlb.\\The page allocation
-          scheme is more similar to a segmented memory system than a virtual memory allocation scheme
-          and thus has some drawbacks that will be discussed in the evaluation chapter.
-\end{itemize}
+          registers to create virtual-to-physical mappings and to fill the tlb.\\
+\end{enumerate}
 Each section elaborates on both the xv6 side and the QEMU side of the implementation.\\
 The final section describes debugging techniques that were used or can otherwise be useful for
 similar implementations.
@@ -70,8 +74,12 @@ similar implementations.
 % -------------------------------------------------------------------------------------------------
 %                                          SECTION STEP 1
 % -------------------------------------------------------------------------------------------------
-\section{TLB miss handling for a single fixed address}
-
+\section{TLB Miss Exception and Exception Triggerer }
+There are two requisites the hardware needs to fulfill in order to do a software-managed TLB fill:
+There needs a way to signal the operating system that a TLB miss occured and there needs to be some
+sort of instruction that can be used to write TLB entries.\\
+This step is about the former: Changing the QEMU RISC-V emulator to throw a newly defined \textit{
+    TLB MISS Exception} whenever the TLB misses.\\
 % Why only start with one fixed address?
 Changing the whole system to start throwing a TLB Miss Exception on every virtual address would
 make it very hard to debug both first tries at implementing a handler for the exception and the
@@ -205,7 +213,7 @@ this implementation only looked at the RISC-V target.
 % -------------------------------------------------------------------------------------------------
 %                                         SECTION - STEP 2
 % -------------------------------------------------------------------------------------------------
-\section{Software page table walk and TLB filling}
+\section{Exception Handling and TLB Writing}
 
 
 \subsection{QEMU}
@@ -261,7 +269,7 @@ memory accesses.
 % -------------------------------------------------------------------------------------------------
 %                                       STEP 3 - New VM
 % -------------------------------------------------------------------------------------------------
-\section{Software-controlled virtual memory without a page table}
+\section{Software Page Table Walk for all Addresses}
 \subsection{QEMU}
 
 % -------------------------------------------------------------------------------------------------
@@ -298,7 +306,7 @@ changed to use the new allocation scheme.
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
 
-\section{Simplest Case: Fixed memory area for each process}
+\section{Segmented Memory Design using software-defined TLB Filling}
 \subsection{Address Spaces}
 The available physical memory is split into evenly sized portions, from now called address space.
 When a new process is started it tries to acquire an address space by checking whether
