@@ -101,7 +101,24 @@ the emulated hardware to throw a TLB Miss exception.
 
 % -------------------------------------------------------------------------------------------------
 \subsection{Address Selection}
-\subsection{TLB Miss Exception}
+The choice for an address to be used for testing the TLB Miss exception throwing is easy:
+As shown in Figure \ref{impl:xv6layout} \cite{cox2011xv6}, the physical memory map of xv6 has a
+area of ''Free memory'' that is managed by the physical memory allocator. The memory allocator
+always gives out the next page starting from low to high addresses when a new page is requested
+by kernel routines. So for the testing address, a high, page-aligned address in that memory area
+was chosen.
+% does not need to be a accessible address now, but later we want to write and read from it
+
+\begin{figure*}[t!]
+    \centering
+    \includegraphics[scale=.5]{figures/xv6_layout.pdf}
+    \caption[xv6 memory layout]{The xv6 memory layout and how the kernel virtual address space is mapped on
+        the physical address space. Taken from the xv6 book \cite{cox2011xv6}.}
+    \label{impl:xv6layout}
+\end{figure*}
+
+
+\subsection{TLB Miss Exception in QEMU}
 %TODO Explain what the riscv_cpu_tlb_fill function does originally - in detail
 % TODO discussion and reference to READER/SPECIFICATION on what exception numbers and other constants can be used and are free
 
@@ -153,23 +170,13 @@ bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
 
 % This section describes the necesarry steps for adding the tlb miss exception to the qemu source
 %in comparison with Page fault exceptions
-The required behavior for the TLB Miss exception is similar to the behavior of a page fault exception.
-The RISC-V Instruction Set Manual: Volume II \cite{RISCVInstructionSet} describes when page faults
-are triggered in the virtual address translation process. Page faults are thrown when:
-\begin{itemize}
-    \item the valid bit of a PTE is 0; the read bit is 0 and the write bit is 1; any of the reserved
-          bits is set
-    \item the PTE at the last level of the page table tree does not the read or execute bits set.
-    \item the requested memory access type is not allowed by the read, write, execute and user bits.
-    \item the PTE describes a missaligned superpage.
-\end{itemize}
-Depending on active extensions, there are possibly more scenarios where page faults are triggered.\\
-The page fault will then make the operating system jump to a specific location in the kernel code
-specified by the (physical) address found in the \texttt{mtvec} register.\\
-The TLB Miss exception does not have to trigger in the same situations as the page fault exception,
-but rather before the page table is traversed by the emulated hardware pagetable-walker.
-However, the code for the page fault exceptions gives hints for where changes need to be made in the QEMU
-source to add a custom exception.\\ % Now: Which places need to be changed?
+To draw inspiration on how to implement a TLB Miss exception in QEMU, you can take a look at how
+page fault exceptions are thrown.\\
+Whenever a page fault exception is triggered, the TLB is checked first to see if there is a mapping
+for the input virtual address \cite{QEMUSource2024}. Additionally, RISC-V cores provide the faulting
+address of the page fault exception in the \texttt{mtval} register \cite{RISCVInstructionSet}.\\
+The faulting address will also be necessary for handling the TLB Miss exception.
+
 
 % -------------------------------------------------------------------------------------------------
 
@@ -177,7 +184,7 @@ source to add a custom exception.\\ % Now: Which places need to be changed?
 
 % Adding new Exception to Qemu RV target
 \paragraph{Adding a new exception}to the QEMU emulator requires changes at a number of places. In the following,
-the relevant code locations in the QEMU source are shown.\\
+the relevant code locations in the QEMU source \cite{QEMUSource2024} are shown.\\
 This may be completely different for other targets, as the exception code is mostly target specific and
 this implementation only looked at the RISC-V target.
 \begin{itemize}
@@ -195,6 +202,33 @@ this implementation only looked at the RISC-V target.
           This enables the kernel to delegate the exception to another priviledge level by setting the appropiate
           bit in the \texttt{medeleg} and \texttt{sedeleg} CSRs.
 \end{itemize}
+
+The code shown in Listing \ref{lst:specialCaseTLBfill} will finally trigger the function shown in
+Listing \ref{exceptionThrow}. After executing this function, QEMU will trigger a TLB Miss exception as soon
+as it gets back to the main execution loop \cite{QEMUSource2024}.
+
+\begin{lstlisting}[language=c,float=h!,
+    caption={Setup-Code for raising a TLB Exception. The \texttt{cs->exception_index} variable needs
+    to be set to the custom \texttt{TLB Exception} enum value. The \texttt{env->badaddr} variable
+    will end up in the \texttt{mtval} register. The address will be page-aligned first, by zeroing out the
+    lowest 12 bits. This is used to encode the \texttt{mmu_idx} into the faulting address. Why this is
+    necessary is explained in Section \ref{sect:tlbwrite}},
+    label={lst:exceptionThrow}]
+
+    static void raise_tlb_exception(CPURISCVState *env, target_ulong address,
+                                MMUAccessType access_type,
+                                /*unnecessary?*/ bool pmp_violation,
+                                bool first_stage, bool two_stage,
+                                bool two_stage_indirect, uint8_t mmu_idx) {
+        CPUState *cs = env_cpu(env);
+
+        cs->exception_index = RISCV_EXCP_TLB_MISS;
+        env->badaddr = ( address & ~( (1 << 12) - 1)) | mmu_idx;
+        env->two_stage_lookup = two_stage;
+        env->two_stage_indirect_lookup = two_stage_indirect;
+    }
+}
+\end{lstlisting}
 
 % -------------------------------------------------------------------------------------------------
 
@@ -214,6 +248,9 @@ this implementation only looked at the RISC-V target.
 %                                         SECTION - STEP 2
 % -------------------------------------------------------------------------------------------------
 \section{Exception Handling and TLB Writing}
+\label{sect:tlbwrite}
+
+% TODO Why does the mmuidx need to be encoded into the faulting address -> Explain
 
 
 \subsection{QEMU}
