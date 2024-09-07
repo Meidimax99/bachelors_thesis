@@ -204,14 +204,14 @@ this implementation only looked at the RISC-V target.
 \end{itemize}
 
 The code shown in Listing \ref{lst:specialCaseTLBfill} will finally trigger the function shown in
-Listing \ref{exceptionThrow}. After executing this function, QEMU will trigger a TLB Miss exception as soon
+Listing \ref{lst:exceptionThrow}.\\ After executing this function, QEMU will trigger a TLB Miss exception as soon
 as it gets back to the main execution loop \cite{QEMUSource2024}.
 
 \begin{lstlisting}[language=c,float=h!,
-    caption={Setup-Code for raising a TLB Exception. The \texttt{cs->exception_index} variable needs
-    to be set to the custom \texttt{TLB Exception} enum value. The \texttt{env->badaddr} variable
+    caption={Setup-Code for raising a TLB Exception. The \texttt{cs-\textgreater exception\_index} variable needs
+    to be set to the custom \texttt{TLB Exception} enum value. The \texttt{env-\textgreater badaddr} variable
     will end up in the \texttt{mtval} register. The address will be page-aligned first, by zeroing out the
-    lowest 12 bits. This is used to encode the \texttt{mmu_idx} into the faulting address. Why this is
+    lowest 12 bits. This is used to encode the \texttt{mmu\_idx} into the faulting address. Why this is
     necessary is explained in Section \ref{sect:tlbwrite}},
     label={lst:exceptionThrow}]
 
@@ -227,7 +227,7 @@ as it gets back to the main execution loop \cite{QEMUSource2024}.
         env->two_stage_lookup = two_stage;
         env->two_stage_indirect_lookup = two_stage_indirect;
     }
-}
+
 \end{lstlisting}
 
 % -------------------------------------------------------------------------------------------------
