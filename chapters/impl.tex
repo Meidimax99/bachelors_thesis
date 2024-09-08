@@ -105,8 +105,11 @@ The choice for an address to be used for testing the TLB Miss exception throwing
 As shown in Figure \ref{impl:xv6layout} \cite{cox2011xv6}, the physical memory map of xv6 has a
 area of ''Free memory'' that is managed by the physical memory allocator. The memory allocator
 always gives out the next page starting from low to high addresses when a new page is requested
-by kernel routines. So for the testing address, a high, page-aligned address in that memory area
-was chosen.
+by kernel routines. The address \texttt{0x84fff000} was chosen as a testing address.\\
+Note that the physical memory allocator in \texttt{kalloc.c} will actually touch an this (or
+any address in the range from \texttt{0x80000000} to \texttt{0x88000000}), when initializing
+the linked list used to keep track of the free pages \cite{cox2011xv6}.\todo{explain why this
+    may be relevant or just leave it out? }
 % does not need to be a accessible address now, but later we want to write and read from it
 
 \begin{figure*}[t!]
@@ -233,10 +236,40 @@ as it gets back to the main execution loop \cite{QEMUSource2024}.
 % -------------------------------------------------------------------------------------------------
 
 
-\subsection{xv6}
+\subsection{Exception Triggerer}
 % TODO TLB exception trigger
+To properly test the changes introduced to the QEMU emulator, there needs to be some way to
+trigger a TLB exception.\\
+By implementing this as a user-level program, the exception can be triggered using the xv6 shell.
 
+\textbf{Adding a new Program to xv6} only needs you to add a new \texttt{.c} file to the user subfolder
+and to add the name of the generated binary ( name of \texttt{.c} file prefixed with a \texttt{\_})
+to the list of user binaries in the makefile.\\
+The new \texttt{.c} file only needs a \texttt{main} function and should also include the \texttt{user.h}
+file to gain access to some preimplemented function and system call wrappers \cite{xv6source}.\\
 
+The final exception triggerer may look something like this:
+
+\begin{lstlisting}[language=c,float=h!,
+    caption={}
+    label={lst:excpt_trigger}]
+    #include "kernel/types.h"
+    #include "user/user.h"
+
+    void do_tlb_exc(void) {
+        __asm__("li s2, 0x84fff000\n\t \
+                lw s4, 0(s2)\n\t");
+        register int *foo asm ("s4");
+        printf("%x\n", foo);
+        return;
+    }
+    
+    int main(int argc, char *argv[]) {
+        do_tlb_exc();
+        //exit(0);
+    }
+
+\end{lstlisting}
 % -------------------------------------------------------------------------------------------------
 %                                       END OF SECTION - STEP 1
 % -------------------------------------------------------------------------------------------------
