@@ -246,13 +246,11 @@ By implementing this as a user-level program, the exception can be triggered usi
 and to add the name of the generated binary ( name of \texttt{.c} file prefixed with a \texttt{\_})
 to the list of user binaries in the makefile.\\
 The new \texttt{.c} file only needs a \texttt{main} function and should also include the \texttt{user.h}
-file to gain access to some preimplemented function and system call wrappers \cite{xv6source}.\\
+file to gain access to some preimplemented function and system call wrappers \cite{xv6source}.
 
 The final exception triggerer may look something like this:
 
-\begin{lstlisting}[language=c,float=h!,
-    caption={}
-    label={lst:excpt_trigger}]
+\begin{lstlisting}[language=c,float=h!]
     #include "kernel/types.h"
     #include "user/user.h"
 
@@ -268,8 +266,12 @@ The final exception triggerer may look something like this:
         do_tlb_exc();
         //exit(0);
     }
-
 \end{lstlisting}
+The program first loads the hardcoded address into a register and then tries to load a word from this address.
+If the implementation of the \texttt{TLB Miss Exception} was done correctly, the process will trap to the kernel
+and the kernel will print out an error message, as it does for all exceptions that either have unknown exception
+numbers or do not have a exception handler implemented \cite{cox2011xv6}.\\
+If the exception was not properly implemented, the kernel would report a load page fault exception.
 % -------------------------------------------------------------------------------------------------
 %                                       END OF SECTION - STEP 1
 % -------------------------------------------------------------------------------------------------
@@ -320,6 +322,7 @@ memory accesses.
 \subsection{xv6}
 % TODO TLB fill manager
 
+% TODO DEADBEEFs
 % \subsection{CSR Modifications}
 % \subsubsection{TLB Modification via CSR}
 
