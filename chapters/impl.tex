@@ -285,24 +285,50 @@ If the exception was not properly implemented, the kernel would report a load pa
 \section{Exception Handling and TLB Writing}
 \label{sect:tlbwrite}
 
+Now that the new \textit{TLB Miss Exception} can be triggered by a user-level program, there needs
+to be an exception handler in the kernel that will create virtual-physical mappings and add them to the
+TLB.\\
+This section will first go into a general description to add new CSRs to the RISC-V QEMU emulation and
+will then elaborate on the specific implementation for the TLB CSRs.\\
+The section ends with the implementation of the exception handler.
+
 % TODO Why does the mmuidx need to be encoded into the faulting address -> Explain
 
 
-\subsection{QEMU}
-
 % -------------------------------------------------------------------------------------------------
-
-
+\subsection{Adding CSRs to RISC-V/QEMU}
+Following code locations are relevant for CSRs in the RISC-V/QEMU emulation source code \cite{QEMUSource2024}:
+\begin{itemize}
+    \item \texttt{disas/riscv.c} Contains a big switch case with all the CSR number to CSR name mappings.
+          Name and number of new CSRs need to be added there.
+    \item \texttt{target/riscv/cpu\_bits.h} contains definitions for all CSR numbers.
+          While it is not strictly necessary to add another definition for new CSRs here, readability and maintainability
+          of the code increases if a more descriptive definition name is used instead of a magic constant.
+    \item \texttt{target/riscv/cpu\_cfg.h} contains a structure called \texttt{RISCVCPUConfig}. Every emulated RISC-V hart
+          has this structure to expose all the extensions that the hart supports. \todo{hart already known?}\\
+          The structure has a boolean flag for every extension that is currently supported by the emulator.\\
+          New extensions should get their own flag in this struct.\\
+          Similar entries also need to be added to the \texttt{isa\_edata\_arr} and \texttt{riscv\_cpu\_extensions} arrays in \texttt{target/riscv/cpu.c}.
+    \item \texttt{target/riscv/csr.c} contains the implementation for all CSRs. The \texttt{riscv\_csr\_operations csr\_ops[]}
+          array is essential for adding callback functions to CSR numbers.\\
+          For every new CSR, a struct of the type \texttt{riscv\_csr\_operations} must be added to that array using the
+          CSR number as an index. This struct is comprised of multiple function pointers, which deal with
+          \begin{itemize}
+              \item Checking if the hart implements the CSR
+              \item Reading from the CSR
+              \item Writing to the CSR
+              \item Combined read/write
+              \item 128 bit read/writes
+          \end{itemize}
+\end{itemize}
 %Implementation of CSRs
 
 %   Choosing a CSR number -> back reference to theory section on CSRs
 
-\subsection{Adding new CSRs for writing TLB entries}
-
 % More controll with further CSRs -> MIPS comparison
 %\section{Further possible extensions to the TLB CSRs}
 \todo{typical tlb replacement strategies}
-\todo{How does QEMU replace TLB entries -> index?} % Direct mapped
+\todo{How does QEMU replace TLB entries -> index?} \\% Direct mapped
 With the new CSRs presented above, it is possible to write TLB entries.
 The placement of the entry and thus the entry to be replaced can not be selected.
 The replacement policy would be completely up to the hardware implementation.
