@@ -386,35 +386,30 @@ be written to the TLB when the write to the \texttt{tlbl} CSR has succeeded.
 \end{lstlisting}
 \todo{all these code lines need a theoretical foundation in the fundamentals chapter (BTW, the format
     still adheres to PTEs!)}
-The value written to the \texttt{tlbl} adheres to the same format as the RISC-V Sv39 PTEs (As shown in section \ref{fund:sv39}).
+The value written to the \texttt{tlbl} CSR adheres to the same format as the RISC-V Sv39 PTEs (As shown in section \ref{fund:sv39}).
+
 To get the page-aligned physical address and to get rid of the access bits stored in the lower 10 bits,
 the value will first be right-shifted by ten and then left shifted by 12 bits.\\
 The top most bits are specified to be all zero, as explained in the fundamentals chapter \cite{RISCVInstructionSet}.
 
+In line 10, the \texttt{mmu\_idx} is extracted from the lowest 11 bits of the virtual address. This is
+necesarry, because QEMU uses up to 16 different MMU modes with dedicated TLBs \cite{QEMUSource2024}.
+Whenever QEMU performs a TLB lookup, it does so in a specific MMU mode. This MMU mode is clear when
+a TLB entry is retrieved, it is however not clear when a TLB entry is written.
+To still fill the correct TLB, the \texttt{mmu\_idx} is transfered to the exception handler as part
+of the faulting address in \texttt{mtval} and then back to the emulator via the TLB write CSRs.
 
+The following lines deal with extracting the protection bits from the PTE and with page-aligning
+the virtual and physical addresses. Finally, a preexisting QEMU function is invoked to add
+a new entry to the emulated TLB and the CSR values are cleared.\\
+The return value \texttt{RISCV\_EXCP\_NONE} indicates that nothing out of the ordinary happend.
 
-The other callbacks do not implement any functionality\todo{why?}.
-%   Choosing a CSR number -> back reference to theory section on CSRs
-
-% More controll with further CSRs -> MIPS comparison
-%\section{Further possible extensions to the TLB CSRs}
-\todo{typical tlb replacement strategies}
-\todo{How does QEMU replace TLB entries -> index?} \\% Direct mapped
-With the new CSRs presented above, it is possible to write TLB entries.
-The placement of the entry and thus the entry to be replaced can not be selected.
-The replacement policy would be completely up to the hardware implementation.
-It would also be possible to further extend the ISA with additional CSRs to
-support specific selection of entries to be replaced, or to select between
-a number of replacement strategies.
-However, the efficiency of more complex strategies need to be weighed carefully
-against their benefits, since the TLB filling is on the critical path of all
-memory accesses.
+This is all that needs to be done to add CSRs for TLB filling to the QEMU RISC-V emulator.
 
 
 \todo{discussion of implementation at the end of this chapter: shortcommings, comparison QEMU - MIPS, comparison xv6 new vm - other vm -> eval??}
 
 % -------------------------------------------------------------------------------------------------
-
 
 \subsection{xv6}
 % TODO TLB fill manager

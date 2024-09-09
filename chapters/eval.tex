@@ -82,7 +82,10 @@ von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 % -------------------------------------------------------------------------------------------------
 
 
-
+% TODO : Space optimization: Using only one CSR??
+% 128 bit csr? Not using mmuidx, using mtval as extra space??? (Using mtval for this purpose only 
+% really makes sense for TLB writes in the exception handler, and makes it impossible to add 
+% new TLB entries from anywhere else)
 %?????
 
 
@@ -98,3 +101,14 @@ von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 
 
 
+% \todo{typical tlb replacement strategies}
+% \todo{How does QEMU replace TLB entries -> index?} \\% Direct mapped
+% With the new CSRs presented above, it is possible to write TLB entries.
+% The placement of the entry and thus the entry to be replaced can not be selected.
+% The replacement policy would be completely up to the hardware implementation.
+% It would also be possible to further extend the ISA with additional CSRs to
+% support specific selection of entries to be replaced, or to select between
+% a number of replacement strategies.
+% However, the efficiency of more complex strategies need to be weighed carefully
+% against their benefits, since the TLB filling is on the critical path of all
+% memory accesses.
