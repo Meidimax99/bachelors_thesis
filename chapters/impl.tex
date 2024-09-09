@@ -411,19 +411,32 @@ This is all that needs to be done to add CSRs for TLB filling to the QEMU RISC-V
 
 % -------------------------------------------------------------------------------------------------
 
-\subsection{xv6}
-% TODO TLB fill manager
-
-% TODO DEADBEEFs
-% \subsection{CSR Modifications}
-% \subsubsection{TLB Modification via CSR}
-
-
+\subsection{TLB Miss Exception Handler}
 % Previous state of xv6 machine mode trap handler
 %   -> Only for Timer Interrupt
 %   -> Small amount of saved registers
-
+% TODO TLB fill manager
 % Changes -> Vectored mode to keep timer interrupt as is, just need to move it
+With capabilities to write TLB entries in place, an effective exception handler can be implemented.
+
+\textbf{xv6 Machine-Mode Trap Handler} The xv6 machine-mode trap handler only deals
+with the timer interrupt. All other interrupts and exceptions are delegated to the supervisor
+mode. This allows the trap handler to be very small and very specific to the timer interrupt \cite{cox2011xv6}.
+It thus only needs to store two registers two memory to make enough room in the register file
+to reset the timer and invoke the scheduler.\\
+Adding another trap to be handled adds more complexity, as the trap number needs to be checked
+and the code needs to branch to the right routines for according to the trap number.
+
+But it can also be completely avoided to touch the timer code at all. xv6 uses trap vectoring
+mechanism in \textit{direct} mode.\\ In direct mode, all traps jump to the same address.
+Using the \textit{vectored} mode makes all \textit{exceptions} jump to the address set
+in the \texttt{mtvec BASE} field but all \textit{interrupts} are set the program counter
+to \texttt{BASE} plus four times the interrupt cause \cite{RISCVInstructionSet}.
+
+% HERE TODO explain the implication for implementation
+\subsection{Testing}
+% TODO DEADBEEFs
+
 
 \todo{add xv6 shell output at this stage progression - no more exception printing, xv6 should read deadbeef now}
 
