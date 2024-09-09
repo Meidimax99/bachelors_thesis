@@ -242,7 +242,7 @@ To properly test the changes introduced to the QEMU emulator, there needs to be 
 trigger a TLB exception.\\
 By implementing this as a user-level program, the exception can be triggered using the xv6 shell.
 
-\textbf{Adding a new Program to xv6} only needs you to add a new \texttt{.c} file to the user subfolder
+\textbf{Adding a new user-level Program to xv6} only needs you to add a new \texttt{.c} file to the user subfolder
 and to add the name of the generated binary ( name of \texttt{.c} file prefixed with a \texttt{\_})
 to the list of user binaries in the makefile.\\
 The new \texttt{.c} file only needs a \texttt{main} function and should also include the \texttt{user.h}
@@ -272,6 +272,8 @@ If the implementation of the \texttt{TLB Miss Exception} was done correctly, the
 and the kernel will print out an error message, as it does for all exceptions that either have unknown exception
 numbers or do not have a exception handler implemented \cite{cox2011xv6}.\\
 If the exception was not properly implemented, the kernel would report a load page fault exception.
+
+\todo{add xv6 shell output at this stage progression - should be a error printed by the kernel exception handler}
 % -------------------------------------------------------------------------------------------------
 %                                       END OF SECTION - STEP 1
 % -------------------------------------------------------------------------------------------------
@@ -297,6 +299,8 @@ The section ends with the implementation of the exception handler.
 
 % -------------------------------------------------------------------------------------------------
 \subsection{Adding CSRs to RISC-V/QEMU}
+
+% Relevant Code locations
 Following code locations are relevant for CSRs in the RISC-V/QEMU emulation source code \cite{QEMUSource2024}:
 \begin{itemize}
     \item \texttt{disas/riscv.c} Contains a big switch case with all the CSR number to CSR name mappings.
@@ -323,6 +327,73 @@ Following code locations are relevant for CSRs in the RISC-V/QEMU emulation sour
 \end{itemize}
 %Implementation of CSRs
 
+As previously mentioned, the CSRs have some index ranges for new, custom CSRs. For the implementation
+of TLB write CSRs, the indexes \texttt{0xBEE} and \texttt{BFF} have been selected.\\
+Using these constants and the steps above, two new instructions\todo{are these actually instructions} can be realized.
+
+\subsection{CSR Callback Implementation} Apart from the above mentioned steps to add new CSRs to the emulator, the
+main logic of the implementation is in the callbacks referenced in \texttt{target/riscv/csr.c}.\\
+The implementation of these callbacks is strongly dependent on the structure of the data that is written to
+the CSRs. Fundamentally, these callbacks act as a bridge between the exposed ISA and the implementation of
+that instruction set in software.\\
+As previously mentioned, two new CSRs will be needed to implement the TLB-writing. \todo{ PUT THIS IN THE THEORY PART about CSR format and number: In theory, it would
+    also be possible to implement the functionality using only one CSR, by just taking the faulting address from the mtval register, but
+    this paper focuses on the proof of concept of the design and not on the optimization }.\\
+The implementations
+of the write-callbacks look as follows:
+
+
+% Callbacks
+
+\begin{lstlisting}[language=c,float=h!,
+    label={lst:tlbh}]
+    static RISCVException write_tlbh(CPURISCVState *env, int csrno, target_ulong new_val)
+    {
+        env->tlbh = new_val;
+        return RISCV_EXCP_NONE;
+    }
+\end{lstlisting}
+The implementation of the \texttt{tlbh} CSR write, does not do anything else but saving the value
+that is written to it to the environment of the CPU.\\
+This is because the theory specifies\todo{is it specified yet?}, that the TLB entry will only
+be written to the TLB when the write to the \texttt{tlbl} CSR has succeeded.
+
+\begin{lstlisting}[language=c,float=h!,
+    label={lst:tlbl}]
+    static RISCVException write_tlbl(CPURISCVState *env, int csrno, target_ulong pte)
+    {
+        
+        target_ulong tlb_size = TARGET_PAGE_SIZE;
+        
+        CPUState *cpu = env_cpu(env);
+        vaddr addr = env->tlbh;
+        hwaddr paddr = ((pte & ~(PTE_RESERVED)) >> 10) << 12;
+
+        int mmu_idx = addr & (tlb_size - 1);
+
+        int prot = pte & (PTE_R | PTE_W | PTE_X | PTE_V );
+
+        addr &= ~(tlb_size - 1);
+        paddr &= ~(tlb_size - 1);
+
+        tlb_set_page(cpu, addr, paddr, prot, mmu_idx, tlb_size, false);
+        
+        env->tlbh = 0;
+        env->tlbl = 0;
+
+        return RISCV_EXCP_NONE;
+    }
+\end{lstlisting}
+\todo{all these code lines need a theoretical foundation in the fundamentals chapter (BTW, the format
+    still adheres to PTEs!)}
+The value written to the \texttt{tlbl} adheres to the same format as the RISC-V Sv39 PTEs (As shown in section \ref{fund:sv39}).
+To get the page-aligned physical address and to get rid of the access bits stored in the lower 10 bits,
+the value will first be right-shifted by ten and then left shifted by 12 bits.\\
+The top most bits are specified to be all zero, as explained in the fundamentals chapter \cite{RISCVInstructionSet}.
+
+
+
+The other callbacks do not implement any functionality\todo{why?}.
 %   Choosing a CSR number -> back reference to theory section on CSRs
 
 % More controll with further CSRs -> MIPS comparison
@@ -358,6 +429,8 @@ memory accesses.
 %   -> Small amount of saved registers
 
 % Changes -> Vectored mode to keep timer interrupt as is, just need to move it
+
+\todo{add xv6 shell output at this stage progression - no more exception printing, xv6 should read deadbeef now}
 
 % -------------------------------------------------------------------------------------------------
 %                                       END OF SECTION - STEP 2
@@ -615,30 +688,6 @@ non-deterministic events that influence the execution of the system \cite[Record
     \end{bytefield}
     \caption[RISC-V Sv39 Physical Address]{RISC-V Sv39 Physical Address}
     \label{fig:theory:sv39pa}
-\end{figure*}
-
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
-        \bitheader[endianness=big]{63,62,61,60,54,53,28,27,19,18,10,9,8,7,6,5,4,3,2,1,0} \\
-        \bitbox{1}{N} &
-        \bitbox{2}{\rotatebox{90}{PBMT}} &
-        \bitbox{7}{Reserved} &
-        \bitbox{26}{PPN[2]} &
-        \bitbox{9}{PPN[1]} &
-        \bitbox{9}{PPN[0]} &
-        \bitbox{2}{\rotatebox{90}{RSW}} &
-        \bitbox{1}{D} &
-        \bitbox{1}{A} &
-        \bitbox{1}{G} &
-        \bitbox{1}{U} &
-        \bitbox{1}{X} &
-        \bitbox{1}{W} &
-        \bitbox{1}{R} &
-        \bitbox{1}{V}
-    \end{bytefield}
-    \caption[RISC-V Sv39 Page Table Entry]{RISC-V Sv39 Page Table Entry}
-    \label{fig:theory:sv39pte}
 \end{figure*}
 
 
