@@ -425,13 +425,170 @@ mode. This allows the trap handler to be very small and very specific to the tim
 It thus only needs to store two registers two memory to make enough room in the register file
 to reset the timer and invoke the scheduler.\\
 Adding another trap to be handled adds more complexity, as the trap number needs to be checked
-and the code needs to branch to the right routines for according to the trap number.
+and the code needs to branch to the right routines.
 
 But it can also be completely avoided to touch the timer code at all. xv6 uses trap vectoring
 mechanism in \textit{direct} mode.\\ In direct mode, all traps jump to the same address.
 Using the \textit{vectored} mode makes all \textit{exceptions} jump to the address set
 in the \texttt{mtvec BASE} field but all \textit{interrupts} are set the program counter
 to \texttt{BASE} plus four times the interrupt cause \cite{RISCVInstructionSet}.
+
+\todo{add diff code listing for changes}
+So to add machine mode exception handlers with disrupting the existing code as little as possible only
+requires changing the trap vectoring mode to \texttt{vectored} mode and moving the timer interrupt code
+to the correct offset.
+
+\begin{lstlisting}[language=diff]
+-    w_mtvec((uint64)timervec);
++    w_mtvec((uint64)mtvec_vector_table | 0x1);
+\end{lstlisting}
+
+The changes for changing the mode are trivial. Only the one bit indicating the \texttt{vectored} mode
+needs to be set.\\
+Placing the timer vector at the correct offset from the default trap handler vector can be achieved by
+filling the space between the base address and the timer vector with no-operations. The same could be
+achieved with linker directives.\\
+The interrupt number for the timer interrupt is \texttt{0x7}, so thats puts the timer interrupt vector
+at a positive \texttt{0x1c} offset from the base address.
+
+\begin{lstlisting}[language={[RISC-V]Assembler},float=h!,
+    label={lst:defaultTrapHandler}]
+mtvec_vector_table:
+IRQ_0:
+        j default_exception_handler
+        nop
+IRQ_1:
+        j default_vector_handler
+        nop
+IRQ_2:
+        j default_vector_handler
+        nop
+IRQ_3:
+        j default_vector_handler
+        nop
+IRQ_4:
+        j default_vector_handler
+        nop
+IRQ_5:
+        j default_vector_handler
+        nop
+IRQ_6:
+        j default_vector_handler
+        nop
+IRQ_7:  # timer handler
+        j timervec
+\end{lstlisting}
+
+% TODO verifying the placement of addresses and symbols using the name utility
+
+RISC-V provides 4 bytes for every interrupt request (IRQ) and the default trap handler. This is not enough
+to implement proper trap handling, so these 4 bytes are typically spent jumping to a more elaborate trap
+handling routine.
+
+Now any machine-mode exception (that is not delegated to a lower-priviledge mode) sets the program counter
+to the address of the \texttt{mtvec\_vector\_table} label. The next jump brings the execution into
+the default exception handler.
+The timer interrupt will jump directly to the \texttt{IRQ\_7} label.
+
+\textbf{Store/Load Sandwich} The idea behind the \textit{softtlb} design is to not use as many of the five
+memory references modern architectures need for a page table walk \cite{intel5LevelPaging5Level2017}. But
+for a first proof of concept, it is helpful to not have to think about which registers to use and to optimize
+away all unnecesarry memory references before the design even works.\\
+That is why the first thing the default exception handler will do is to store the current state of the register
+file.\\
+This is essential so that, once returned to the context that triggered the TLB miss, execution can continue
+as if nothing happened.\\
+After storing the state and running the exception handler, the state must again be restored with a number of
+load instructions.
+
+\begin{lstlisting}[language={[x86masm]Assembler},float=h!,
+    label={lst:defaultTrapHandler}, caption={Store/Load Sandwich}]
+default_exception_handler:
+
+    csrrw a0, mscratch, a0
+    sd sp, 40(a0)
+
+    ld sp, 48(a0)
+    csrrw a0, mscratch, a0
+
+    # make room to save registers.
+    addi sp, sp, -256
+
+    # save the registers to the hart stack
+    sd ra, 0(sp)
+    sd gp, 16(sp)
+    ...
+    sd t5, 232(sp)
+    sd t6, 240(sp)
+
+    addi s0, sp, 256 # Set Frame Pointer
+
+    # ??
+    # csrr t0, sscratch
+    # sd t0, 8(sp)
+
+    # TODO Pass args to fx
+
+    # csrr a0, mtval
+    # csrr a1, satp
+
+    call machine_default_exception_handler 
+
+
+    # restore registers from hart stack
+    ld ra, 0(sp)
+    ld gp, 16(sp)
+    ...
+    ld t5, 232(sp)
+    ld t6, 240(sp)
+
+    addi sp, sp, 256
+    
+    csrrw a0, mscratch, a0
+
+    sd sp, 48(a0)
+    ld sp, 40(a0)
+
+    csrrw a0, mscratch, a0
+    mret
+
+\end{lstlisting}
+\todo{side by side}\\
+Most of the load/stores have been omitted, to not flood the listing.\\
+In between the store and load blocks, the machine\_default\_exception\_handler c-function is called. This is
+where the implementation differentiates between the different exception numbers and calls exception handlers
+specific to the exceptions.\\
+In xv6, all other exceptions but the new TLB Miss exception are handled in supervisor mode, so there are
+no handlers for other exceptions.
+
+\begin{lstlisting}[language={[x86masm]Assembler},float=h!,
+    label={lst:defaultTrapHandler}, caption={Exception Switch-Case Statement}]
+    void machine_default_exception_handler() {
+        switch (r_mcause()) {
+            case NONE:
+            case INST_ADDR_MIS:
+            case INST_ACCESS_FAULT:
+            case ILLEGAL_INST:
+            case BREAKPOINT:
+            case LOAD_ADDR_MIS:
+            case LOAD_ACCESS_FAULT:
+            case STORE_AMO_ADDR_MIS:
+            case STORE_AMO_ACCESS_FAULT:
+            case U_ECALL:
+            case S_ECALL:
+            case INST_PAGE_FAULT:
+            case LOAD_PAGE_FAULT:
+            case STORE_PAGE_FAULT:
+            default:
+                unhandled_exc(r_mcause(), r_mtval());
+                break;
+            case TLB_MISS:
+                tlb_handle_miss(r_mtval(), r_satp());
+                break;
+        }
+    }
+\end{lstlisting}
+
 
 % HERE TODO explain the implication for implementation
 \subsection{Testing}
