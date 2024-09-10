@@ -452,7 +452,7 @@ The interrupt number for the timer interrupt is \texttt{0x7}, so thats puts the 
 at a positive \texttt{0x1c} offset from the base address.
 
 \begin{lstlisting}[language={[RISC-V]Assembler},float=h!,
-    label={lst:defaultTrapHandler}]
+    label={lst:defaultTrapHandler}, caption={Vectored Trap Handler Routine}]
 mtvec_vector_table:
 IRQ_0:
         j default_exception_handler
@@ -766,6 +766,9 @@ Emulierter Hardware nachzuverfolgen.\\
 Hier wird keine Anleitung zum benutzen von GDB geliefert, sondern nur ein paar eigenheiten
 und tricks die beim debuggen des Codes für diese Arbeit nützlich waren. Vielleicht sind
 diese ja auch in anderen Szenarios nützlich.
+
+% -------------------------------------------------------------------------------------------------
+
 \subsection{xv6}
 Das Makefile im xv6-riscv source repository verfügt über die Regel qemu-gdb um xv6 in qemu
 mit einem GDB server zu starten. In einem anderen Terminal kann man dann gdb mit der binary
@@ -818,6 +821,33 @@ Setzt man diesen Top-level page table entry als valide, so wird der Speicher
 an dieser Stelle 1 GB Superpage behandelt. Das reicht aus um den Kernelcode
 abzudecken und der Code kann beim Debuggen wieder wie gehabt gesehen werden.
 
+\textbf{Verifying Addresses in Binaries} Implementing the vectored trap vectoring mode
+required moving the interrupt handler code for the timer interrupt to a specific offset
+from the address specified in the \texttt{mtvec} \texttt{BASE} field.\\
+To verify the correct placment of the label, the unix \texttt{nm} tool is very useful:
+It lists the symbols of a object file and their addresses.\\
+Looking back at the code in listing \ref{lst:defaultTrapHandler}, the label \texttt{IRQ\_7}
+is supposed to come exactly \texttt{0x1c} bytes after the \texttt{mtvec\_vector\_table} label.\\
+
+The following call confirms the correct placement of the symbols:
+
+% \begin{minted}{asm}
+%     addi    a0, zero, 2
+%     addi    a1, a0, 1
+%     sw      a1, 0(a5)
+%     addi    a1, zero, 42
+%         \end{minted}
+
+\todo{how to cite this}
+
+\begin{lstlisting}[language={sh}]
+    $ nm kernel/kernel | grep 'mtvec_vector_table\|IRQ_7'
+    00000000800092cc t IRQ_7
+    00000000800092b0 T mtvec_vector_table
+\end{lstlisting}
+
+% -------------------------------------------------------------------------------------------------
+
 \subsection{QEMU Monitor}
 Mit dem Qemu monitor lassen sich allerlei informationen über die laufende
 emulation anzeigen lassen. Besonders interessant für diese Arbeit wäre der
@@ -825,6 +855,7 @@ monitor für die aktuell im emulierten TLB enthaltene Mappings. Gerade für
 RISC-V war dieser allerdings nicht verfügbar.
 \todo{Beschreibung der TLB strukturen früher im kapitel}
 
+% -------------------------------------------------------------------------------------------------
 
 \subsection{QEMU Record/replay}
 QEMUs Redord/replay feature allows a deterministic replay of a machines execution by recording
