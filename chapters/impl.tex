@@ -250,7 +250,8 @@ file to gain access to some preimplemented function and system call wrappers \ci
 
 The final exception triggerer may look something like this:
 
-\begin{lstlisting}[language=c,float=h!]
+\begin{lstlisting}[language=c,float=h!,label{impl:excptTrigger},caption={\textbf{Exception Triggerer} Trying to
+    load from a hardcoded address prompts the emulated hardware to trigger a TLB Miss Exception.}]
     #include "kernel/types.h"
     #include "user/user.h"
 
@@ -355,7 +356,7 @@ of the write-callbacks look as follows:
 \end{lstlisting}
 The implementation of the \texttt{tlbh} CSR write, does not do anything else but saving the value
 that is written to it to the environment of the CPU.\\
-This is because the theory specifies\todo{is it specified yet?}, that the TLB entry will only
+This is because the theory specifies\todo{is it specified yet?}\\, that the TLB entry will only
 be written to the TLB when the write to the \texttt{tlbl} CSR has succeeded.
 
 \begin{lstlisting}[language=c,float=h!,
@@ -433,7 +434,6 @@ Using the \textit{vectored} mode makes all \textit{exceptions} jump to the addre
 in the \texttt{mtvec BASE} field but all \textit{interrupts} are set the program counter
 to \texttt{BASE} plus four times the interrupt cause \cite{RISCVInstructionSet}.
 
-\todo{add diff code listing for changes}
 So to add machine mode exception handlers with disrupting the existing code as little as possible only
 requires changing the trap vectoring mode to \texttt{vectored} mode and moving the timer interrupt code
 to the correct offset.
@@ -492,16 +492,15 @@ The timer interrupt will jump directly to the \texttt{IRQ\_7} label.
 
 \textbf{Store/Load Sandwich} The idea behind the \textit{softtlb} design is to not use as many of the five
 memory references modern architectures need for a page table walk \cite{intel5LevelPaging5Level2017}. But
-for a first proof of concept, it is helpful to not have to think about which registers to use and to optimize
+for a first proof of concept, it is helpful to not have to think about which registers to use and to not optimize
 away all unnecesarry memory references before the design even works.\\
 That is why the first thing the default exception handler will do is to store the current state of the register
 file.\\
 This is essential so that, once returned to the context that triggered the TLB miss, execution can continue
 as if nothing happened.\\
-After storing the state and running the exception handler, the state must again be restored with a number of
-load instructions.
+After storing the state and running the exception handler, the state must again be loaded into the registers.
 
-\begin{lstlisting}[language={[x86masm]Assembler},float=h!,
+\begin{lstlisting}[language={[RISC-V]Assembler},float=h!,
     label={lst:defaultTrapHandler}, caption={Store/Load Sandwich}]
 default_exception_handler:
 
@@ -554,14 +553,14 @@ default_exception_handler:
 
 \end{lstlisting}
 \todo{side by side}\\
-Most of the load/stores have been omitted, to not flood the listing.\\
-In between the store and load blocks, the machine\_default\_exception\_handler c-function is called. This is
+Most of the load/stores have been omitted to not flood the listing.\\
+In between the store and load blocks, the \texttt{machine\_default\_exception\_handler} C function is called. This is
 where the implementation differentiates between the different exception numbers and calls exception handlers
 specific to the exceptions.\\
 In xv6, all other exceptions but the new TLB Miss exception are handled in supervisor mode, so there are
 no handlers for other exceptions.
 
-\begin{lstlisting}[language={[x86masm]Assembler},float=h!,
+\begin{lstlisting}[language={C},float=h!,
     label={lst:defaultTrapHandler}, caption={Exception Switch-Case Statement}]
     void machine_default_exception_handler() {
         switch (r_mcause()) {
@@ -589,10 +588,40 @@ no handlers for other exceptions.
     }
 \end{lstlisting}
 
+Finally, the \texttt{tlb\_handle\_miss()} functions is called with the faulting address and the \texttt{satp} register
+value as arguments.\\
+The initial implementation simply calls the new \texttt{tlbh} and \texttt{tlbl} CSR instructions with and then
+returns.
+% Description of tlb handler and call of tlbh and tlbl
+\begin{lstlisting}[language={C},float=h!,
+    label={lst:defaultTrapHandler}, caption={Simple TLB Miss Exception handler for a single fixed address}]
+void tlb_handle_miss(uint64 addr, uint64 usatp) {
+  //uint64 *paddr = kalloc();
+  w_tlbh(addr);
+  w_tlbl((uint64)addr+(uint64)0x1000);
+  return;
+}
+\end{lstlisting}
+
+Note that this implementation does not yet use the format for the \texttt{tlbh} and \texttt{tlbl} CSRs specified
+in the theory section \todo{reference to right theory section}.\\
+Merely the faulting address and the intended mapping are written to the registers.
 
 % HERE TODO explain the implication for implementation
 \subsection{Testing}
-% TODO DEADBEEFs
+Listing \ref{lst:defaultTrapHandler} already shows a part of the setup to test that the mapping actually worked.\\
+When the mapping worked, it should be possible to read a value from the mapped page.\\
+The user-level exception triggerer already tries to do just that.\\
+With the mapping working, the output of the program looks as follows:
+
+\todo{add console output}\\
+
+The value \texttt{0xDEADBEEF} that was read from the mapped page is not a coincidence:\\
+For testing purposes, the page \texttt{0x85000000} was filled with \texttt{0xDEADBEEF} bit patterns.
+
+The address for the physical ''testing'' page was deliberately chosen to be \texttt{0x85000000} and not
+\texttt{0x84fff000} (like all the hardcoded testing addresses) to make sure that there is no accidental physical
+mapping happening.\\
 
 
 \todo{add xv6 shell output at this stage progression - no more exception printing, xv6 should read deadbeef now}
