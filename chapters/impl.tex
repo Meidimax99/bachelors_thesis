@@ -25,7 +25,7 @@
 %     xv6 - tlb triggerer
 %   Stage2
 %     Qemu - TLB CSRs
-%     xv6 - single address tlb fill
+%     xv6 - Exception Handler, single address tlb fill
 %   Stage3 - VM PTW with TLB miss handler
 %     Qemu -> Extension to all addresses
 %     xv6 -> tlb miss handler with ptw
@@ -636,43 +636,78 @@ mapping happening.\\
 %                                       STEP 3 - New VM
 % -------------------------------------------------------------------------------------------------
 \section{Software Page Table Walk for all Addresses}
-\subsection{QEMU}
+After implementation step 2, we now have a modified QEMU RISC-V emulator, which will throw the new
+TLB Miss exception when the TLB misses.\\
+We have also extended the xv6 operating system to catch said exception and to create a virtual-physical
+mapping for the faulting address.\\
+The mapping is created by writing new TLB entries using newly implemented TLB CSRs.
 
+Currently, all of this only works for one specific ''testing'' address. This step now elaborates on
+how the scheme is extended to be used for all addresses.\\
+To not change too much at once, the page table walk that would typically be done in hardware is
+implemented as part of the TLB Miss exception handler.
+
+\subsection{QEMU}
+The changes introduced to QEMU are simple: Essentially, only the condition checking if the given address is
+the ''testing'' address needs to be changed.\\
+The final implementation looks as follows:
+
+\begin{lstlisting}[language=c,float=h!,
+    caption={},
+    label={lst:updatedTLBFill}]
+    bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
+                        MMUAccessType access_type, int mmu_idx,
+                        bool probe, uintptr_t retaddr)
+    {
+        RISCVCPU *cpu = RISCV_CPU(cs);
+        CPURISCVState *env = &cpu->env;
+        int mode = mmuidx_priv(mmu_idx);
+        int vm = get_field(env->satp, SATP64_MODE);
+
+        //No address translation in m-mode
+        if(vm == VM_1_10_MBARE || mode == PRV_M) {
+            int tlb_size = 4096; //TODO Get from PMP?
+            hwaddr pa = address;
+            int prot = PAGE_READ | PAGE_WRITE | PAGE_EXEC;
+            tlb_set_page(cs, address & ~(tlb_size - 1), pa & ~(tlb_size - 1),
+                        prot, mmu_idx, tlb_size, true);
+            return true;
+        }
+        riscv_cpu_tlb_miss_exception(cs,address,size,access_type, mmu_idx, probe, retaddr);
+        return true;
+    }
+\end{lstlisting}
+
+Note that in comparison to the previous implementation (as shown in figure \ref{lst:specialCaseTLBfill}), the
+call to the original \texttt{riscv\_cpu\_tlb\_fill} function is not called anymore.\\
+Either a TLB Miss exception is raised, or the TLB is filled with an identity mapping if either the current
+priviledge mode is the machine mode or the virtual memory system is configured to use identity mappings only
+\cite{RISCVInstructionSet}.
 % -------------------------------------------------------------------------------------------------
+
 
 
 \subsection{xv6}
-% MODULEs and Systemcalls of xv6 to be discussed
-% \section{Relevant Modules in the xv6 Source}
-% \paragraph*{kalloc - physical memory allocator}
-% \paragraph*{proc}
-% \paragraph*{vm.c}
-% \subsection*{Syscalls to change}
-% System call interface should stay the same so that existing processes can continue
-% as usual -> new virtual memory scheme should be completely transparent%
-%\paragraph*{fork}
-% creating a new addresse space -> fixed number of processes ? ?
-%\paragraph*{exit}
-% freeing memory?
-%\paragraph*{exec}
-% same as fork?
-%\paragraph*{sbrk}
-% allocating new memory
-Sbrk is the system call with which a program can change its program break. The program break
-is the end of the programs data segment. This system call is typically used to either
-increase or decrease a programs memory.
-Sbrk would typically be called by the memory manager of the user program. Calls
-to malloc would for example call sbrk when there is not enough memory available to
-satisfy the call to malloc.
-Internally, sbrk calls a function called growproc(n) which grows or shrinks to calling
-processes memory by n bytes.
-growproc will then call either uvmalloc() or uvmdealloc(). These functions need to be
-changed to use the new allocation scheme.
+
 
 % -------------------------------------------------------------------------------------------------
+%                                               STEP 4
 % -------------------------------------------------------------------------------------------------
 
 \section{Segmented Memory Design using software-defined TLB Filling}
+
+After step 3, xv6's virtual memory system runs completely without using the (emulated) page table
+walking state machine:
+Instead of invoking the page table walker, a TLB miss triggers a exception. This exception is handled by the
+operating system kernel and a TLB entry for the faulting address is generated.\\
+jacob1998look
+Yet at this point, we have not really won anything. We only moved the page table walking to the software side,
+which would certainly be slower at traversing the page table than a real MMU \cite{jacob1998look}. And that
+even if we ignore the expensive context switch that needs to be performed when the exception handler is invoked.\\
+
+While we definitely did not gain any performance, there is now the opportunity to modify the virtual memory system
+completely in software. We do not need to adhere to the rigid structures \cite{tanenbaumOS} of the memory management hardware anymore.
+We gained a great deal of flexibility.
 \subsection{Address Spaces}
 The available physical memory is split into evenly sized portions, from now called address space.
 When a new process is started it tries to acquire an address space by checking whether
@@ -688,7 +723,27 @@ collision detection \ldots
 Verification via % \texttt{\verbatim{readelf -l user/\_*}}
 shows that all vaddr are in the low addresses.
 
-
+% MODULEs and Systemcalls of xv6 to be discussed
+% \paragraph*{kalloc - physical memory allocator}
+% \paragraph*{vm.c}
+% \subsection*{Syscalls to change}
+% System call interface should stay the same so that existing processes can continue
+% as usual -> new virtual memory scheme should be completely transparent%
+%\paragraph*{fork}
+% creating a new addresse space -> fixed number of processes ? ?
+% freeing memory?
+%\paragraph*{sbrk}
+% allocating new memory
+Sbrk is the system call with which a program can change its program break. The program break
+is the end of the programs data segment. This system call is typically used to either
+increase or decrease a programs memory.
+Sbrk would typically be called by the memory manager of the user program. Calls
+to malloc would for example call sbrk when there is not enough memory available to
+satisfy the request.
+Internally, sbrk calls a function called growproc(n) which grows or shrinks to calling
+processes memory by n bytes.
+growproc will then call either uvmalloc() or uvmdealloc(). These functions need to be
+changed to use the new allocation scheme.
 
 % -------------------------------------------------------------------------------------------------
 
