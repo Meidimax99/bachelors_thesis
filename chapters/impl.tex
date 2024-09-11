@@ -26,10 +26,10 @@
 %   Stage2
 %     Qemu - TLB CSRs
 %     xv6 - Exception Handler, single address tlb fill
+%       Exception vector entry -> state save, kernel stack
 %   Stage3 - VM PTW with TLB miss handler
 %     Qemu -> Extension to all addresses
 %     xv6 -> tlb miss handler with ptw
-%       Exception vector entry -> state save, kernel stack
 %   Stage4 - Dynamic Segmentation allocation scheme (btw -> link to MIPS?)
 %     Qemu -> No more changes needed
 %     xv6 -> A lot of changes here
@@ -500,6 +500,7 @@ This is essential so that, once returned to the context that triggered the TLB m
 as if nothing happened.\\
 After storing the state and running the exception handler, the state must again be loaded into the registers.
 
+\todo{use minipages to have text and listing side by side ? https://latex.org/forum/viewtopic.php?t=6652}
 \begin{lstlisting}[language={[RISC-V]Assembler},float=h!,
     label={lst:defaultTrapHandler}, caption={Store/Load Sandwich}]
 default_exception_handler:
@@ -647,7 +648,7 @@ how the scheme is extended to be used for all addresses.\\
 To not change too much at once, the page table walk that would typically be done in hardware is
 implemented as part of the TLB Miss exception handler.
 
-\subsection{QEMU}
+\subsection{TLB Miss Exception for all Addresses}
 The changes introduced to QEMU are simple: Essentially, only the condition checking if the given address is
 the ''testing'' address needs to be changed.\\
 The final implementation looks as follows:
@@ -685,9 +686,60 @@ priviledge mode is the machine mode or the virtual memory system is configured t
 \cite{RISCVInstructionSet}.
 % -------------------------------------------------------------------------------------------------
 
+\subsection{Software Page Table Walk}
 
+Now that the TLB Miss exception is thrown for every faulting address, it also needs to be handled
+for every address.\\
+Even though the goal is to explore alternatives to virtual memory using page tables, we will
+use a software implementation of the hardware page table walk. This is to verify that the
+general setup including exception invokation, exception handling and TLB writing works as
+expected.
+Listing \ref{lst:softptw} shows the implementation.
 
-\subsection{xv6}
+\todo{The listing seems to be way broader than it needs to be}
+\begin{lstlisting}[language=c,float=t,
+    caption={\textbf{TLB Miss Exception Handler with Page Table Walk} 
+    The \texttt{walk\_pt()} function walks the Sv39 page table with the base address
+    encoded in the \texttt{satp} register. If a PTE with the valid bit set is found, the function
+    returns the address encoded in the PTE.\\
+    Otherwise, the function returns \texttt{0}.},
+    label={lst:softptw}]
+#define SATP2PA(satp) ((satp << 12) & ~(0xffull << 44))
+
+pte_t *
+walk_pt(uint64 satp, uint64 va)
+{
+  uint64 *pt = (uint64*)SATP2PA(satp);
+  if(va >= MAXVA)
+    panic("walk");
+  for(int level = 2; level > 0; level--) {
+    pte_t *pte = &pt[PX(level, va)];
+    if(*pte & PTE_V) {
+      pt = (uint64*)PTE2PA(*pte);
+    } else {
+      return 0;
+    }
+  }
+  return &pt[PX(0, va)];
+}
+
+void tlb_handle_miss(uint64 addr, uint64 satp) {
+    w_tp(r_mhartid());
+    pte_t *pte = walk_pt(satp, addr);
+    w_tlbh(addr);
+    uint16 prot =  PTE_R | PTE_W | PTE_U | PTE_V;
+    w_tlbl(*pte | prot);
+    return;
+}
+\end{lstlisting}
+
+\todo{To make it easier to understand -> Architectural overview of the memory path after each implementation step?}
+\\
+If the \texttt{walk_pt()} function returns 0, the virtual address lead to no valid PTE. This is a
+page fault and would raise a page fault fitting the faulting instructions type of access \cite{tanenbaumOS}.
+As xv6 does not handle page faults other than by killing the program \cite{cox2011xv6} this
+paper will not go into more detail of raising and triggering page faults for the \texttt{softtlb}
+design.
 
 
 % -------------------------------------------------------------------------------------------------
