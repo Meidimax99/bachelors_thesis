@@ -752,7 +752,6 @@ After step 3, xv6's virtual memory system runs completely without using the (emu
 walking state machine:
 Instead of invoking the page table walker, a TLB miss triggers a exception. This exception is handled by the
 operating system kernel and a TLB entry for the faulting address is generated.\\
-jacob1998look
 Yet at this point, we have not really won anything. We only moved the page table walking to the software side,
 which would certainly be slower at traversing the page table than a real MMU \cite{jacob1998look}. And that
 even if we ignore the expensive context switch that needs to be performed when the exception handler is invoked.\\
@@ -760,6 +759,15 @@ even if we ignore the expensive context switch that needs to be performed when t
 While we definitely did not gain any performance, there is now the opportunity to modify the virtual memory system
 completely in software. We do not need to adhere to the rigid structures \cite{tanenbaumOS} of the memory management hardware anymore.
 We gained a great deal of flexibility.
+
+The rest of this section explores a first idea of how a table-based virtual memory system can be
+replaced by essentially a simple function that does not require expensive memory accesses.
+
+The idea presented in the theory chapter \todo{reference and make sure I explained it correctly in theory}
+is similar to memory
+\subsection{Removing the Virtual Memory System}
+
+
 \subsection{Address Spaces}
 The available physical memory is split into evenly sized portions, from now called address space.
 When a new process is started it tries to acquire an address space by checking whether
