@@ -735,7 +735,7 @@ void tlb_handle_miss(uint64 addr, uint64 satp) {
 
 \todo{To make it easier to understand -> Architectural overview of the memory path after each implementation step?}
 \\
-If the \texttt{walk_pt()} function returns 0, the virtual address lead to no valid PTE. This is a
+If the \texttt{walk\_pt()} function returns 0, the virtual address lead to no valid PTE. This is a
 page fault and would raise a page fault fitting the faulting instructions type of access \cite{tanenbaumOS}.
 As xv6 does not handle page faults other than by killing the program \cite{cox2011xv6} this
 paper will not go into more detail of raising and triggering page faults for the \texttt{softtlb}
@@ -764,12 +764,28 @@ The rest of this section explores a first idea of how a table-based virtual memo
 replaced by essentially a simple function that does not require expensive memory accesses.
 
 The idea presented in the theory chapter \todo{reference and make sure I explained it correctly in theory}
-is similar to memory
+is similar to memory segementation\todo{cont}
+
 \subsection{Removing the Virtual Memory System}
+Before implementing a new virtual memory system, the existing one must be remove from the kernel
+modules.\\
+The following parts of the code interact directly with the virtual memory system:
+\begin{enumerate}
+    \item \texttt{kernel/exec.c}
+    \item \texttt{kernel/main.c}
+    \item \texttt{kernel/proc.c}
+    \item
+\end{enumerate}
 
+\subsection{Physical Memory Allocator} The virtual memory subsystem relies on the physical memory
+allocator in \texttt{kalloc.c} to get new pages \cite{cox2011xv6}. It is, however, not the only
+part of the system that needs memory on demand. Some modules like the file system and de disc driver
+need memory as well. To still service these parts of the code, the memory managed by the physical
+allocator is simply reduced to leave space for the memory segments.
 
+\todo{changes to systemcalls? Esp. Fork, exec, sbrk}
 \subsection{Address Spaces}
-The available physical memory is split into evenly sized portions, from now called address space.
+As with segmentation, the available physical memory is split into evenly sized portions, from now called address space.
 When a new process is started it tries to acquire an address space by checking whether
 there is a free one and then claiming that free address space.
 The number of address spaces will thus limit the number of concurrently running programs.
@@ -783,45 +799,15 @@ collision detection \ldots
 Verification via % \texttt{\verbatim{readelf -l user/\_*}}
 shows that all vaddr are in the low addresses.
 
-% MODULEs and Systemcalls of xv6 to be discussed
-% \paragraph*{kalloc - physical memory allocator}
-% \paragraph*{vm.c}
-% \subsection*{Syscalls to change}
-% System call interface should stay the same so that existing processes can continue
-% as usual -> new virtual memory scheme should be completely transparent%
-%\paragraph*{fork}
-% creating a new addresse space -> fixed number of processes ? ?
-% freeing memory?
-%\paragraph*{sbrk}
-% allocating new memory
-Sbrk is the system call with which a program can change its program break. The program break
-is the end of the programs data segment. This system call is typically used to either
-increase or decrease a programs memory.
-Sbrk would typically be called by the memory manager of the user program. Calls
-to malloc would for example call sbrk when there is not enough memory available to
-satisfy the request.
-Internally, sbrk calls a function called growproc(n) which grows or shrinks to calling
-processes memory by n bytes.
-growproc will then call either uvmalloc() or uvmdealloc(). These functions need to be
-changed to use the new allocation scheme.
+% -------------------------------------------------------------------------------------------------
+\todo{process creation -> Assigning ASID etc}
+\subsection{Special Mappings}
+
+% Trampoline, Trapframe
 
 % -------------------------------------------------------------------------------------------------
 
 
-
-
-% Final allocation scheme
-% TODO this might actually describe an intermediate allocation scheme
-\paragraph*{Experimental Allocation Scheme}
-xv6 keeps all of its unused physical memory in a linked list. The linked list itself is stored
-in the free blocks, as they are not used for anything else. When a process asks for more memory
-the kalloc() function retrieves the first element from the linked list, updates the head
-of the list to point to the next element and returns the pointer to the first element,
-which is the same as the physical address for the page managed by that first list item.
-kalloc() is called by the uvmalloc() function, and since we want to change the way
-the virtual memory management works, it would make sense to directly change the uvmalloc() function.
-However, in order to properly test the physical memory allocation first, we will change
-the allocation scheme first and then the mapping, as the trampoline page would not work anymore.
 
 The new allocation scheme statically assigns a fixed portion of the available physical memory
 to each process. The size is determined by the size of physical memory and the maximum number
@@ -854,7 +840,6 @@ for all the memory that is allocated for the process.
 
 % -------------------------------------------------------------------------------------------------
 
-% \section{Changing physical memory allocation}
 % \subsection{Special cases}
 % \paragraph*{Kernel direct mapping}
 % \paragraph*{MMIO}
@@ -862,7 +847,7 @@ for all the memory that is allocated for the process.
 
 
 % -------------------------------------------------------------------------------------------------
-%                                    END OF SECTION - Step 3
+%                                    END OF SECTION - Step 4
 % -------------------------------------------------------------------------------------------------
 
 
@@ -961,6 +946,7 @@ The following call confirms the correct placement of the symbols:
     00000000800092b0 T mtvec_vector_table
 \end{lstlisting}
 
+\todo{forktest for testing number of address spaces}
 % -------------------------------------------------------------------------------------------------
 
 \subsection{QEMU Monitor}
