@@ -314,7 +314,27 @@ CSRs are part of the RISC-V priviledged architecture and are provided by the \te
 %   TODO What does the reader need to know at this point, e.g. what does need to be decided 
 %   in theory to create a TLB Miss Handler design??
 
-\subsection{xv6 program memory model}
+\subsection{xv6 process memory model}
+The new memory system needs to be compatible with the existing one. Otherwise the way xv6
+user processes are built and structures needs to be changed.\\
+The program memory model of xv6 programs is shown in figure \ref{impl:xv6layout}
+
+\begin{figure*}[t!]
+    \centering
+    \includegraphics[scale=.5]{figures/prog_vm.pdf}
+    \caption[xv6 memory layout]{Virtual memory layout of xv6 processes. Taken from the xv6 book \cite{cox2011xv6}.}
+    \label{impl:proclayout}
+\end{figure*}
+
+Xv6 processes have their data and text segment and the stack at the very bottom of the virtual
+address space \cite{cox2011xv6}.\\
+A peak into the implementation of the \texttt{sbrk()} system call also shows us, that the heap
+address space grows linearily from low to high addresses.\\
+None of the xv6 programs differ from this memory model. There are no pages mapped in the
+middle of the address space.\\
+The only special cases are the \textit{trampoline} and \textit{trapframe} pages.
+\todo{trampoline and trapframe already explained?}
+
 \subsection{Simple Segmented Mapping}
 
 \begin{figure*}[ht!]
