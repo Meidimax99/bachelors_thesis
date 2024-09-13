@@ -68,6 +68,12 @@ Each section elaborates on both the xv6 side and the QEMU side of the implementa
 The final section describes debugging techniques that were used or can otherwise be useful for
 similar implementations.
 
+\begin{figure*}[t!]
+    \centering
+    \includegraphics[scale=1]{figures/sequence.pdf}
+    \caption[Sequence of actions]{Sequence of action in case of a TLB Hit and Miss}
+    \label{impl:sequence}
+\end{figure*}
 
 
 % First step in the development process
@@ -91,7 +97,7 @@ as soon as exceptions are activated and a memory access happens, because QEMU al
 virtual-to-physical mappings when no virtual memory is used. This speeds up the execution of
 the dynamically-translated code, as it can directly
 lookup addresses in the TLB using a fast path \cite{DeepDiveQEMU}.\\ \todo{add: dynamically-generated tcg code can
-    directly use the TLB structures}\\
+    directly use the TLB structures}
 For this step of the implementation, the QEMU memory system emulation must be changed to throw a
 TLB Miss Exception when a TLB lookup misses. To keep the system running as normal, this will
 be done for only one hardcoded address, that is usually not used by xv6.\\
@@ -310,7 +316,7 @@ Following code locations are relevant for CSRs in the RISC-V/QEMU emulation sour
           While it is not strictly necessary to add another definition for new CSRs here, readability and maintainability
           of the code increases if a more descriptive definition name is used instead of a magic constant.
     \item \texttt{target/riscv/cpu\_cfg.h} contains a structure called \texttt{RISCVCPUConfig}. Every emulated RISC-V hart
-          has this structure to expose all the extensions that the hart supports. \todo{hart already known?}\\
+          has this structure to expose all the extensions that the hart supports. \todo{hart already known?}
           The structure has a boolean flag for every extension that is currently supported by the emulator.\\
           New extensions should get their own flag in this struct.\\
           Similar entries also need to be added to the \texttt{isa\_edata\_arr} and \texttt{riscv\_cpu\_extensions} arrays in \texttt{target/riscv/cpu.c}.
@@ -356,7 +362,7 @@ of the write-callbacks look as follows:
 \end{lstlisting}
 The implementation of the \texttt{tlbh} CSR write, does not do anything else but saving the value
 that is written to it to the environment of the CPU.\\
-This is because the theory specifies\todo{is it specified yet?}\\, that the TLB entry will only
+This is because the theory specifies\todo{is it specified yet?}, that the TLB entry will only
 be written to the TLB when the write to the \texttt{tlbl} CSR has succeeded.
 
 \begin{lstlisting}[language=c,float=h!,
@@ -553,7 +559,7 @@ default_exception_handler:
     mret
 
 \end{lstlisting}
-\todo{side by side}\\
+\todo{side by side}
 Most of the load/stores have been omitted to not flood the listing.\\
 In between the store and load blocks, the \texttt{machine\_default\_exception\_handler} C function is called. This is
 where the implementation differentiates between the different exception numbers and calls exception handlers
@@ -615,7 +621,7 @@ When the mapping worked, it should be possible to read a value from the mapped p
 The user-level exception triggerer already tries to do just that.\\
 With the mapping working, the output of the program looks as follows:
 
-\todo{add console output}\\
+\todo{add console output}
 
 The value \texttt{0xDEADBEEF} that was read from the mapped page is not a coincidence:\\
 For testing purposes, the page \texttt{0x85000000} was filled with \texttt{0xDEADBEEF} bit patterns.
@@ -735,7 +741,7 @@ void tlb_handle_miss(uint64 addr, uint64 satp) {
 \end{lstlisting}
 
 \todo{To make it easier to understand -> Architectural overview of the memory path after each implementation step?}
-\\
+
 If the \texttt{walk\_pt()} function returns 0, the virtual address lead to no valid PTE. This is a
 page fault and would raise a page fault fitting the faulting instructions type of access \cite{tanenbaumOS}.
 As xv6 does not handle page faults other than by killing the program \cite{cox2011xv6} this

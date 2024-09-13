@@ -140,7 +140,7 @@ sind wie folgt:
 \todo{ist dieser Abschnitt vielleicht eher der Idee zuzuordnen? So in der Art sollte es
     auf jeden Fall in die Idee, aber vielleicht nicht in diesem Detail, vielleicht nur einmal
     den ''typischen'' controlflow durchgehen und dann einmal den Modifizierten für softtlb}
-\\
+
 Damit das Betriebssystem im Falle eines TLB Misses sich um das füllen des TLBs kümmern kann
 braucht es zunächst einmal einen Mechanismus um das Betriebssystem wissen zu lassen,
 das es zu einem entsprechenden TLB Miss gekommen ist. In Betriebssystemen, die keinen
@@ -152,7 +152,7 @@ die dann einen entsprechenden Page Table Walk durchführt um den TLB zu füllen.
     explain normal pipeline for TLB misses -> like here + with repeating of fauling instruction
     -> tlb as interface between virtual and physical memory\\
     Aber vielleicht nicht hier
-}\\
+}
 Statt das nun aber das MMU anfängt nach dem passenden PTE zu der virtuellen Adresse zu suchen,
 soll ein Exception geworfen werden, die das Betriebssystem abfängt um den TLB dann in Software
 zu füllen.\\
