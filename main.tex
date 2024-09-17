@@ -51,7 +51,7 @@ parskip, % add space between paragraphs (recommended)
 nohyperref, % do not load the hyperref package (is loaded in setup.tex)
 %headsepline, % print a horizontal line under the page header
 consistentlayout, % layout of declaration, abstract and acknowledgements pages matches the default layout
-%final, % Uncomment to hide all todo notes
+final, % Uncomment to hide all todo notes
 ]{PSIThesis} % The class file specifying the document structure
 
 % version of the guide
@@ -250,13 +250,13 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 %----------------------------------------------------------------------------------------
 
 \begin{abstract}
-	%\addchaptertocentry{\abstractname}
-	% uncomment to add the abstract to the table of contents (not recommended)
-	Hier sind alle todos die für das ganze paper gelten:
-	\begin{itemize}
-		\item formatting single page or double page
-		\item call it faulting, failing, missing address?
-	\end{itemize}
+  %\addchaptertocentry{\abstractname}
+  % uncomment to add the abstract to the table of contents (not recommended)
+  Hier sind alle todos die für das ganze paper gelten:
+  \begin{itemize}
+    \item formatting single page or double page
+    \item call it faulting, failing, missing address?
+  \end{itemize}
 \end{abstract}
 
 
@@ -280,17 +280,17 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 
 % Table of Contents uses a wider layout than the main content
 \newgeometry{
-	head=13.6pt,
-	top=27.4mm,
-	bottom=27.4mm,
-	inner=24.8mm,
-	outer=24.8mm,
-	marginparsep=0mm,
-	marginparwidth=0mm,
+  head=13.6pt,
+  top=27.4mm,
+  bottom=27.4mm,
+  inner=24.8mm,
+  outer=24.8mm,
+  marginparsep=0mm,
+  marginparwidth=0mm,
 }
 {
-	\hypersetup{linkcolor=black}
-	\tableofcontents % Prints the ToC entries
+  \hypersetup{linkcolor=black}
+  \tableofcontents % Prints the ToC entries
 }
 \restoregeometry
 
@@ -370,16 +370,16 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 
 % Bibliography has no wide margins:
 \newgeometry{
-	inner=2cm, % Inner margin
-	outer=2cm, % Outer margin
-	marginparwidth=0cm,
-	marginparsep=0mm,
-	bindingoffset=.5cm, % Binding offset
-	top=1.5cm, % Top margin
-	bottom=2.5cm, % Bottom margin,
-	includehead,
-	includefoot
-	% showframe, % Uncomment to show how the type block is set on the page
+  inner=2cm, % Inner margin
+  outer=2cm, % Outer margin
+  marginparwidth=0cm,
+  marginparsep=0mm,
+  bindingoffset=.5cm, % Binding offset
+  top=1.5cm, % Top margin
+  bottom=2.5cm, % Bottom margin,
+  includehead,
+  includefoot
+  % showframe, % Uncomment to show how the type block is set on the page
 }
 
 \addchap{References}
@@ -387,11 +387,11 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 % enables two-column layout for bibliography
 \setlength\columnsep{2em}
 \begin{multicols}{2}
-	\begin{refcontext}[sorting=nyt] % sort bibliography by last name, year, title
-		\renewcommand*{\bibfont}{\small\RaggedRight}
-		\linespread{1.0}\selectfont % increase linespread if desirBIB
-		\printbibliography[heading=none]
-	\end{refcontext}
+  \begin{refcontext}[sorting=nyt] % sort bibliography by last name, year, title
+    \renewcommand*{\bibfont}{\small\RaggedRight}
+    \linespread{1.0}\selectfont % increase linespread if desirBIB
+    \printbibliography[heading=none]
+  \end{refcontext}
 \end{multicols}
 
 %----------------------------------------------------------------------------------------
@@ -401,25 +401,25 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 %----------------------------------------------------------------------------------------
 \pagenumbering{gobble}
 \begin{declaration}
-	\addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
+  \addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
 
-	% TODO Change the declaration according as needed. *
+  % TODO Change the declaration according as needed. *
 
-	%\selectlanguage{ngerman}
-	Ich erkläre hiermit gemä\ss\ \S~9 Abs.\,12 APO, dass ich die vorstehende {\thesistype}arbeit selbständig verfasst und keine anderen als die angegebenen Quellen und Hilfsmittel benutzt habe. Des Weiteren erkläre ich, dass die digitale Fassung der gedruckten Ausfertigung der {\thesistype}arbeit ausnahmslos in Inhalt und Wortlaut entspricht und zur Kenntnis genommen wurde, dass diese digitale Fassung einer durch Software unterstützten, anonymisierten Prüfung auf Plagiate unterzogen werden kann.
+  %\selectlanguage{ngerman}
+  Ich erkläre hiermit gemä\ss\ \S~9 Abs.\,12 APO, dass ich die vorstehende {\thesistype}arbeit selbständig verfasst und keine anderen als die angegebenen Quellen und Hilfsmittel benutzt habe. Des Weiteren erkläre ich, dass die digitale Fassung der gedruckten Ausfertigung der {\thesistype}arbeit ausnahmslos in Inhalt und Wortlaut entspricht und zur Kenntnis genommen wurde, dass diese digitale Fassung einer durch Software unterstützten, anonymisierten Prüfung auf Plagiate unterzogen werden kann.
 
-	\bigskip
-	\bigskip
+  \bigskip
+  \bigskip
 
-	\begin{tabular}{@{}l@{}}
-		Bamberg, den \rule[-0.8em]{10em}{0.5pt} \\[2ex]
-		~
-	\end{tabular}
-	\hspace{\fill}%
-	\begin{tabular}{@{}c@{}}
-		\rule[-0.8em]{20em}{0.5pt} \\[2ex]
-		\authorname
-	\end{tabular}\hspace{\fill}
+  \begin{tabular}{@{}l@{}}
+    Bamberg, den \rule[-0.8em]{10em}{0.5pt} \\[2ex]
+    ~
+  \end{tabular}
+  \hspace{\fill}%
+  \begin{tabular}{@{}c@{}}
+    \rule[-0.8em]{20em}{0.5pt} \\[2ex]
+    \authorname
+  \end{tabular}\hspace{\fill}
 
 
 
