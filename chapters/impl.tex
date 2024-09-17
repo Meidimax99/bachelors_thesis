@@ -777,22 +777,45 @@ Each new process acquires one of those segments, if there are any left. If none 
 \todo{basic assumption to make this work: xv6 process memory model -> should be mentioned here and explained in detail in theory}
 % TODO Concept of AS used here -> distinct from hard ware mechanism, but could be used for it
 \subsection{Address Spaces}
-As with segmentation, the available physical memory is split into evenly sized portions, from now called address space.
-When a new process is started it tries to acquire an address space by checking whether
-there is a free one and then claiming that free address space.
+As with segmentation, the available physical memory is split into evenly sized portions\todo{is it? Cite!},
+from now called address space. When a new process is started it tries to acquire an address space by
+checking whether there is a free one and then claiming that free address space.
 The number of address spaces will thus limit the number of concurrently running programs.
-Why not just use the Pids and reuse them? The order of termination is not clear, bookkeeping
-may be expensive. PID range is typically a lot bigger -> But this can be limited.
 
+To keep track of which process has which address space, the kernel keeps an integer array of process IDs.
+This array has a size equal to the number of address spaces (NAS).\\
+For a newly created process to acquire an address space, the kernel will (synchronized by a spinlock \cite{cox2011xv6})
+iterate through the array to find a array slot with the value 0. It then writes the process ID into that array.\\
+The process creation fails if there are no more array slots set to 0.
+THE address space ID (ASID) acquired by the process is also written to the processes control block (PCB).
 
-\subsection{Mapping function for Segmented Memory}
+NAS is set via a preprocessor definition and thus set at compilation time. More elaborate implementations
+could also allow dynamic resizing of address spaces to provide space for more processors.\todo{configuration
+    towards ones needs -> embedded systems may need a fixed number of processes, or have a maximum amount}
 
+Using the ASID, the address range for a process can be calculated very easily. The macros in listing \ref{TODO LISTING}
+are used in different parts of the code to calculate different addresses related to an Address Space.
+
+\todo{Add code listing (its in the tex comments)}
 % TODO Macros for AS calculation
 % #define MAX_AS_MEM ((((PHYSTOP - (PGROUNDUP((uint64)end))) / (NAS + 1)) >> 12 )<< 12)
 % #define AS_START(asid) (PGROUNDUP((uint64)end) + ((asid) * MAX_AS_MEM))
 % #define AS_N(index, asid) (PROC_START(asid) + (index * (0x1000)))
 % #define AS_END(asid) ((PGROUNDUP((uint64)end) + ((asid + 1) * MAX_AS_MEM))-0x1000)
 
+\subsection{Mapping function for Segmented Memory}
+The ASID of a process is the foundation for calculating the virtual to physical mapping in the exception handler.
+The only other information required is the faulting address.
+\todo{theory needs to explain that the asid is transfered via SATP reg}
+\\
+The ASID can be used to calculate the actual physical address at which the Address Space starts.
+The faulting address, which would, according to the xv6 process memory model, be a address in the low
+end of the virtual memory space, will provide the offset into the Address Space.
+
+Listing \ref{TODO LISTING} shows the implementation for the TLB Miss exception handler.\\
+
+\todo{Add code listing (its in the tex comments)}
+\todo{caption explaining the code}
 % TODO new and improved exception handler
 % #include "defs.h"
 % #include "param.h"
@@ -804,11 +827,7 @@ may be expensive. PID range is typically a lot bigger -> But this can be limited
 
 % extern char trampoline[];
 % paddr get_mapping(vaddr addr, uint16 asid) {
-%   //Special case for testing deceased meat
 
-%   if(PGROUNDDOWN(addr) == 0x84fff000) {
-%     return 0x85000000;
-%   }
 %   //special case for trampoline, which is in every address space at the same address
 %   // (except for the physical one!)
 %   if(PGROUNDDOWN(addr) == TRAMPOLINE) {
@@ -858,9 +877,17 @@ may be expensive. PID range is typically a lot bigger -> But this can be limited
 %   parts of te OS still use the VM system for stuff
 %       What are these parts that interact with the os?
 %       How can be made it fit this scheme?
-\subsection{Changes in the OS}
-Before implementing a new virtual memory system, the existing one must be removed from the kernel
-modules.\\
+
+\subsection{Special Mappings}
+\todo{has the new mapping and trampoline in general been explained in theory?}
+xv6 needs a trampline page mapped into the address space of the process for system calls to work properly (see Chapter \todo{ref theory}).
+In both the kernel and in the user processes, it is mapped to the highest possible, virtual page.\\
+If a address in this page is encountered, the handler will map it to the physical address of the trampoline page.
+The handler takes the same approach for the \texttt{TRAPFRAME} page set just below the trampoline.
+
+\subsection{Further Changes to the OS}
+Other than the exception handler, other parts of the OS need to be changed to fit the new memory managment scheme.
+
 
 % TODO dont list the code that needs to change but rather the logical parts, and how they logically need to change
 % Rather from   concept -> code  than the other way around
@@ -889,7 +916,7 @@ increase in size to determine the next page for the process.
 \textbf{changes to systemcalls? Esp. Fork, exec, sbrk}
 
 \todo{process creation -> Assigning ASID etc}
-\subsection{Special Mappings}
+
 
 % Trampoline, Trapframe
 
