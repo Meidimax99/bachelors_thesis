@@ -888,44 +888,26 @@ The handler takes the same approach for the \texttt{TRAPFRAME} page set just bel
 \subsection{Further Changes to the OS}
 Other than the exception handler, other parts of the OS need to be changed to fit the new memory managment scheme.
 
+\textbf{Physical Memory Allocator} % Rewrite below version in new context
+Demand paging of the virtual memory system was the main customer of the physical memory allocator.
+But some modules like the virtio disk and pipes also rely on being able to get physical pages. So it is not
+possible to get rid of the physical allocator completely.\\
+Here, its managed memory is merely reduced by assigning it the memory area of the Address Space with index 0.
 
-% TODO dont list the code that needs to change but rather the logical parts, and how they logically need to change
-% Rather from   concept -> code  than the other way around
-The following parts of the code interact directly with the virtual memory system:
-\begin{itemize}
-    \item \texttt{kernel/exec.c}
-    \item \texttt{kernel/main.c} calls the \texttt{kvmmake()} function to initialize a page table for the kernel.
-    \item \texttt{kernel/proc.c}
-    \item
-\end{itemize}
+\textbf{\texttt{copyin() copyout()}} The copyin() and copyout() functions are used to copy data between
+user space and kernel. They traverse the page table tree to acquire the physical location for the data
+to be either copied in or copied out.\\
+Both of those function rely on the \texttt{walkaddr()} function to do the walking for them.
+The implementation can be changed to call the \texttt{tlb\_manager.c:walk\_addr()} function instead.\\
 
-%TODO Change to being about the kernel memory, and how it uses the physical memory allocator
-\textbf{Physical Memory Allocator} The virtual memory subsystem relies on the physical memory
-allocator in \texttt{kalloc.c} to get new pages \cite{cox2011xv6}. It is, however, not the only
-part of the system that needs memory on demand. Some modules like the file system and de disc driver
-need memory as well. To still service these parts of the code, the memory managed by the physical
-allocator is simply reduced to leave space for the memory segments.
-
-The new allocation scheme statically assigns a fixed portion of the available physical memory
-to each process. The size is determined by the size of physical memory and the maximum number
-of processes.
-kalloc() will then use the process id, the current size of the process and the requested
-increase in size to determine the next page for the process.
-\todo{assumptions on the process model -> allocation works only for processes that grow linearily and do not use pages in between or at the top}
-
-\textbf{changes to systemcalls? Esp. Fork, exec, sbrk}
-
-\todo{process creation -> Assigning ASID etc}
-
-
-% Trampoline, Trapframe
-
-% -------------------------------------------------------------------------------------------------
-
-% \subsection{Special cases}
-% \paragraph*{Kernel direct mapping}
-% \paragraph*{MMIO} -> Kernel
-% \paragraph*{Trampoline}
+\textbf{Process Loading} % No page table creation, asid allocation, also no destruction, % Parsing elf directly into AS
+\textbf{sbrk()}The \texttt{sbrk()} system call is used by the program to increase the size
+of the programs data segment. Typically, this call would demand a new page from the physical memory allocator
+and then add a new PTE to the page table.
+This system call normally returns the previous program break if it was successful (so basically a pointer to
+the new program area) and \texttt{-1} if it was not successful.\\
+This design instead checks if the program size would increase to be bigger than the maximum program size and
+then return \texttt{-1} if it is and the previous program break otherwise.
 
 
 % -------------------------------------------------------------------------------------------------
