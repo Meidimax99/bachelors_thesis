@@ -770,27 +770,12 @@ We gained a great deal of flexibility.
 The rest of this section explores a first idea of how a table-based virtual memory system can be
 replaced by essentially a simple function that does not require expensive memory accesses.
 
-The idea presented in the theory chapter \todo{reference and make sure I explained it correctly in theory}
-is similar to memory segementation\todo{cont}
+The initial idea, as presented in the theory chapter, is a segmented memory design. It splits the total
+available memory into parts of equal size, also called segments.\\
+Each new process acquires one of those segments, if there are any left. If none are left, process creation fails.
 
-\subsection{Removing the Virtual Memory System}
-Before implementing a new virtual memory system, the existing one must be remove from the kernel
-modules.\\
-The following parts of the code interact directly with the virtual memory system:
-\begin{enumerate}
-    \item \texttt{kernel/exec.c}
-    \item \texttt{kernel/main.c}
-    \item \texttt{kernel/proc.c}
-    \item
-\end{enumerate}
-
-\subsection{Physical Memory Allocator} The virtual memory subsystem relies on the physical memory
-allocator in \texttt{kalloc.c} to get new pages \cite{cox2011xv6}. It is, however, not the only
-part of the system that needs memory on demand. Some modules like the file system and de disc driver
-need memory as well. To still service these parts of the code, the memory managed by the physical
-allocator is simply reduced to leave space for the memory segments.
-
-\todo{changes to systemcalls? Esp. Fork, exec, sbrk}
+\todo{basic assumption to make this work: xv6 process memory model -> should be mentioned here and explained in detail in theory}
+% TODO Concept of AS used here -> distinct from hard ware mechanism, but could be used for it
 \subsection{Address Spaces}
 As with segmentation, the available physical memory is split into evenly sized portions, from now called address space.
 When a new process is started it tries to acquire an address space by checking whether
@@ -798,23 +783,101 @@ there is a free one and then claiming that free address space.
 The number of address spaces will thus limit the number of concurrently running programs.
 Why not just use the Pids and reuse them? The order of termination is not clear, bookkeeping
 may be expensive. PID range is typically a lot bigger -> But this can be limited.
-\subsection{Discussion: Limitations}
-This is not really virtual memory and works only, because xv6 just added more memory at the low
-end of the address space. No mappings are made in between or at high addresses.
-This is where a hash function could come in handy. However collisions and access rights and
-collision detection \ldots
-Verification via % \texttt{\verbatim{readelf -l user/\_*}}
-shows that all vaddr are in the low addresses.
-
-% -------------------------------------------------------------------------------------------------
-\todo{process creation -> Assigning ASID etc}
-\subsection{Special Mappings}
-
-% Trampoline, Trapframe
-
-% -------------------------------------------------------------------------------------------------
 
 
+\subsection{Mapping function for Segmented Memory}
+
+% TODO Macros for AS calculation
+% #define MAX_AS_MEM ((((PHYSTOP - (PGROUNDUP((uint64)end))) / (NAS + 1)) >> 12 )<< 12)
+% #define AS_START(asid) (PGROUNDUP((uint64)end) + ((asid) * MAX_AS_MEM))
+% #define AS_N(index, asid) (PROC_START(asid) + (index * (0x1000)))
+% #define AS_END(asid) ((PGROUNDUP((uint64)end) + ((asid + 1) * MAX_AS_MEM))-0x1000)
+
+% TODO new and improved exception handler
+% #include "defs.h"
+% #include "param.h"
+% #include "types.h"
+% #include "riscv.h"
+% #include "memlayout.h"
+
+% #define SATP2ASID(satp) ((satp << 4) >> 48)
+
+% extern char trampoline[];
+% paddr get_mapping(vaddr addr, uint16 asid) {
+%   //Special case for testing deceased meat
+
+%   if(PGROUNDDOWN(addr) == 0x84fff000) {
+%     return 0x85000000;
+%   }
+%   //special case for trampoline, which is in every address space at the same address
+%   // (except for the physical one!)
+%   if(PGROUNDDOWN(addr) == TRAMPOLINE) {
+%     return (uint64)trampoline;
+%   }
+%   if(asid == 0) {
+%     //Kernel -> direkt mapping
+%     //TODO special mappings
+%     return addr;
+%   } else {
+%     //mappings for processes
+%     //TODO trapframe and trampoline mappings
+%     if(PGROUNDDOWN(addr) == TRAPFRAME) {
+%       return TRAPFRAME_FROM_ASID(asid);
+%     }
+
+%     //Base case 
+%     uint64 vpage = PGROUNDDOWN(addr);
+%     if(vpage >= MAX_AS_MEM - (0x1000 * 4)) {
+%       //Error, address out of range
+%       panic("tlb_manager: address to high!");
+%     }
+%     return AS_START(asid) + vpage;
+%   }
+%   return 0;
+% }
+
+% void tlb_handle_miss(vaddr addr, uint64 satp) {
+%   w_tp(r_mhartid()); //fix problems with locks based on cpuid()
+
+%   //TODO Locks!
+%   //TODO buffering printer, only prints completed lines
+%   //uint16 mmuid = addr & 0xfff;
+%   vaddr addr_no_mmuid = addr & ~0xfff;
+%   //printf("tlb_manager: addr=%p satp=%p mmuid=%d\n", addr_no_mmuid, satp, mmuid);
+%   paddr pa = get_mapping(addr_no_mmuid, SATP2ASID(satp));
+
+%   w_tlbh(addr);
+%   //TODO all access rights for now
+%   uint16 prot =  PTE_R | PTE_W | PTE_X | PTE_V | ((SATP2ASID(satp) != 0) ? PTE_U : 0);
+%   w_tlbl(PA2PTE(pa) | prot);
+%   return;
+% }
+
+
+% TODO it is not enough to simply change the tlb miss manager, because other
+%   parts of te OS still use the VM system for stuff
+%       What are these parts that interact with the os?
+%       How can be made it fit this scheme?
+\subsection{Changes in the OS}
+Before implementing a new virtual memory system, the existing one must be removed from the kernel
+modules.\\
+
+% TODO dont list the code that needs to change but rather the logical parts, and how they logically need to change
+% Rather from   concept -> code  than the other way around
+The following parts of the code interact directly with the virtual memory system:
+\begin{itemize}
+    \item \texttt{kernel/exec.c}
+    \item \texttt{kernel/main.c} calls the \texttt{kvmmake()} function to initialize a page table for the kernel.
+    \item \texttt{kernel/proc.c}
+    \item
+\end{itemize}
+
+%TODO Change to being about the kernel memory, and how it uses the physical memory allocator
+\textbf{Physical Memory Allocator} The virtual memory subsystem relies on the physical memory
+allocator in \texttt{kalloc.c} to get new pages \cite{cox2011xv6}. It is, however, not the only
+part of the system that needs memory on demand. Some modules like the file system and de disc driver
+need memory as well. To still service these parts of the code, the memory managed by the physical
+allocator is simply reduced to leave space for the memory segments.
 
 The new allocation scheme statically assigns a fixed portion of the available physical memory
 to each process. The size is determined by the size of physical memory and the maximum number
@@ -823,27 +886,12 @@ kalloc() will then use the process id, the current size of the process and the r
 increase in size to determine the next page for the process.
 \todo{assumptions on the process model -> allocation works only for processes that grow linearily and do not use pages in between or at the top}
 
-% discussion on the new allocation scheme -> 
-\subsection*{Why does this not work for anything else but the sbrk syscall}
-- kalloc with sbrk uses the current process size to determine the next free space in
-the address space of the process
-- The processes size only keeps track of the text data and so on segments. So only stuff
-the program is aware of. Page table pages need to be allocated per process as well but
-do not contribute to the overall size of the process so they can not be put into the
-processes memory space. This has the direct advantage that users can not access their page tables
-but this was never the problem because pages containing page tables could simply be marked
-as not user accessible. And of course this brings some disadvantages: Kernel size becomes
-a scarce resource and user address spaces are not self contained anymore, page tables now reside
-somewhere else entirely.
-But since it is the goal to get rid of page tables anyways, its not too big of a problem.
-When we get rid of the page tables, we get rid of a huge part of the tables that can not
-be directly allocated using the respective process size.
-What are the other pages and allocations that can not rely on the processes size?
+\textbf{changes to systemcalls? Esp. Fork, exec, sbrk}
 
-One further problem is that deallocation is not working. But in principle, all pages belonging
-strictly to one process can be allocated on this sort of stack. The size counter
-needs to be adapted to not only account for the processes own memory, but also
-for all the memory that is allocated for the process.
+\todo{process creation -> Assigning ASID etc}
+\subsection{Special Mappings}
+
+% Trampoline, Trapframe
 
 % -------------------------------------------------------------------------------------------------
 
