@@ -46,11 +46,6 @@
 %         - More?
 
 
-
-
-
-
-
 % -------------------------------------------------------------------------------------------------
 %                                            Intro
 % -------------------------------------------------------------------------------------------------
@@ -154,6 +149,49 @@ to create a virtual to physical mapping.
     \label{fig:theory:mapping_fx}
 \end{figure*}
 
+% TODO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Give a rough description of the required changes here?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Overview of the different parts necessary to implement the idea
+\section{Conceptual Basis for Implementation Modifications}
+% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
+Dieser Abschnitt enthält die theoretischen Ausarbeitungen zu den einzelnen Bestandteilen die für
+die Implementation des Software kontrollierten TLB Miss Handlers benötigt werden. Diese Bestandteile
+sind wie folgt:
+\begin{itemize}
+    \item Die Erweiterung des Qemu Emulators um einen Exceptionwurf bei TLB Miss
+    \item Einen Maschine-Mode Traphandler in xv6 der die neue TLB Miss Exception entsprechend behandelt
+    \item Eine Möglichkeit um TLB einträge mittels spezieller Instruktionen zu schreiben
+\end{itemize}
+
+% -------------------------------------------------------------------------------------------------
+%                                            Required Changes
+% -------------------------------------------------------------------------------------------------
+
+% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
+% New Exception - TLB Miss Exception
+% CSRs to write TLBs
+% Exception Handler
+
+% Steps necessary to implement Idea -> relating to the implementation
+
+% Architecture: Handle TLB Miss -> Like Liedtke MIPS
+
+% TLB Exception
+% TLB Filling
+
+
+
+%elaboration on general costs of page table walks -> basically exactly what related
+% work motivated their designs with
+
+
+
+\todo{elaboration on xv6 here or in fundamentals (or an extra platform chapter)?? -> because theory
+    may be independent from the platform in big parts, but still needs to be taken into consideration (like with
+    csrs)}
+
+% TODO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Kapitel endet mit der Frage was man für die Implementation benötigt?
 
 % -------------------------------------------------------------------------------------------------
@@ -199,105 +237,68 @@ TLB emuliert.
 %                                            IMPL THEORY
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
-% Overview of the different parts necessary to implement the idea
-\section{Conceptual Basis for Implementation Modifications}
-% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
-Dieser Abschnitt enthält die theoretischen Ausarbeitungen zu den einzelnen Bestandteilen die für
-die Implementation des Software kontrollierten TLB Miss Handlers benötigt werden. Diese Bestandteile
-sind wie folgt:
-\begin{itemize}
-    \item Die Erweiterung des Qemu Emulators um einen Exceptionwurf bei TLB Miss
-    \item Einen Maschine-Mode Traphandler in xv6 der die neue TLB Miss Exception entsprechend behandelt
-    \item Eine Möglichkeit um TLB einträge mittels spezieller Instruktionen zu schreiben
-\end{itemize}
-
-% -------------------------------------------------------------------------------------------------
-%                                            Required Changes
-% -------------------------------------------------------------------------------------------------
-
-% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
-% New Exception - TLB Miss Exception
-% CSRs to write TLBs
-% Exception Handler
-
-% Steps necessary to implement Idea -> relating to the implementation
-
-% Architecture: Handle TLB Miss -> Like Liedtke MIPS
-
-% TLB Exception
-% TLB Filling
-
-
-
-%elaboration on general costs of page table walks -> basically exactly what related
-% work motivated their designs with
-
-
-
-\todo{elaboration on xv6 here or in fundamentals (or an extra platform chapter)?? -> because theory
-    may be independent from the platform in big parts, but still needs to be taken into consideration (like with
-    csrs)}
-
 
 
 % -------------------------------------------------------------------------------------------------
 %                                            TLB MISS EXCEPTION
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
-\subsection{TLB Miss Exception}
+\section{TLB Miss Exception}
+Usually, an operating system running on RISC-V hardware is not notified directly of TLB misses.
+A TLB miss can only be infered when a page fault occurs. Otherwise, TLB misses will be handled
+by the MMU.\\
+To manage a TLB in software the operating system needs to be made aware that a TLB miss occured.\\
+The natural mechanism to do this is the exception mechanism. \todo{similarity TLB Miss Page Fault}
 
 % -------------------------------------------------------------------------------------------------
-\subsubsection{MIPS TLB Exceptions}
+\textbf{RISC-V Exceptions}
+Unlike MIPS \cite{heiserAnatomyHighPerformanceMicrokernel}, RISC-V does not raise a TLB miss exception
+on TLB miss.\\
+Instead, the \emph{Virtual Address Translation Process} is initiated: The MMU will walk through
+the page table tree and may, depending on the PTEs, either throw different kinds of page faults, or
+successfully add the missing entry to the TLB.\\
+At this point the faulting instruction will either be repeated, if the TLB fill was successful, or
+a page fault exception will be invoked. The kernel then has to handle that page fault with help
+of the contents of the \texttt{satp} and \texttt{mtval} (or \texttt{stval}) registers.
+
+The behavior of a TLB Miss exception should be pretty similar: If the TLB hits, the program will
+just continue as usual. If the TLB misses, a exception should be risen, providing context
+information about the miss in registers. The invokation of the hardware page table walker is
+not necessary.
+
 
 % -------------------------------------------------------------------------------------------------
-\subsubsection{RISC-V Exceptions}
+\textbf{Adding a new Exception to RISC-V}
+Extending the emulator to throw a new exception is explained in the Implementation chapter.
+On the theoretical side, it is important to chose a exception code from the code ranges designated
+for custom use. These are $24-31$ and $48-63$ \cite{RISCVInstructionSet}. For the implementation we chose $24$ or $0x18$.
 
-% -------------------------------------------------------------------------------------------------
-\subsubsection{New Exception}
 
 
 % -------------------------------------------------------------------------------------------------
 %                                            Exception Handling
 % -------------------------------------------------------------------------------------------------
-\todo{ist dieser Abschnitt vielleicht eher der Idee zuzuordnen? So in der Art sollte es
-    auf jeden Fall in die Idee, aber vielleicht nicht in diesem Detail, vielleicht nur einmal
-    den ''typischen'' controlflow durchgehen und dann einmal den Modifizierten für softtlb}
-
-Damit das Betriebssystem im Falle eines TLB Misses sich um das füllen des TLBs kümmern kann
-braucht es zunächst einmal einen Mechanismus um das Betriebssystem wissen zu lassen,
-das es zu einem entsprechenden TLB Miss gekommen ist. In Betriebssystemen, die keinen
-software managed TLB, wie z.b. MIPS \cite{MIPSArchitectureProgrammers2016} umfassen, ist der
-Zugriff auf den TLB in der Regel komplett transparent für das Betriebssystem und somit auch wenn
-es zu einem TLB miss kommt. Normalerweiße würde dann die Hardware State Machine aktiviert werden
-die dann einen entsprechenden Page Table Walk durchführt um den TLB zu füllen.
-\todo{
-    explain normal pipeline for TLB misses -> like here + with repeating of fauling instruction
-    -> tlb as interface between virtual and physical memory\\
-    Aber vielleicht nicht hier
-}
-Statt das nun aber das MMU anfängt nach dem passenden PTE zu der virtuellen Adresse zu suchen,
-soll ein Exception geworfen werden, die das Betriebssystem abfängt um den TLB dann in Software
-zu füllen.\\
-Im folgenden wird zunächst der allgemeine RISCV-Trap mechanismus betrachtet und dann
-wird erleutert wie eine neue Exception in RISC-V hinzugefügt werden kann, bzw. was alles beachtet
-werden muss.
-
 
 % -------------------------------------------------------------------------------------------------
-\subsection{Exception Handling}
+\section{Exception Handling}
+Throwing a exception is only one half of the puzzle. The operating system also has to handle the exception
+properly.
+% -------------------------------------------------------------------------------------------------
+\subsection{L4/MIPS TLB Exception Handling}
+MIPS vectors its exception vectors in a continuous area in memory, starting at a base address.
+That gives the TLB miss handler 32 instructions to server the TLB Miss. Otherwise it has to jump
+somewhere with more space.\\
+The \emph{Fast TLB Miss} handler is able to service the miss using only the two kernel-reserved
+registers \texttt{k0} and \texttt{k1} and another register, which has to be saved first \cite{heiserAnatomyHighPerformanceMicrokernel}.\\
+Thus the memory footprint of handler is really low.
 
 % -------------------------------------------------------------------------------------------------
-\subsubsection{L4/MIPS TLB Exception Handling}
+\subsection{xv6 Exception Handler}
+xv6's exception handler does not actually handle most of the exceptions. For most of the exceptions,
+but notably also the different page fault exceptions, xv6 will simply kill the offending process \cite{cox2011xv6}.
 
 % -------------------------------------------------------------------------------------------------
-\subsubsection{Exception Handling in General}
-
-% -------------------------------------------------------------------------------------------------
-\subsubsection{xv6 Exception Handler}
-
-% -------------------------------------------------------------------------------------------------
-\subsubsection{TLB Miss Exception Handler}
-% Compare my implementation to a mips one -> Heiser TLB Fastpath
+\subsection{TLB Miss Exception Handler}
 
 % Catching New Exception
 %   Current xv6 machine mode exception handler ( -> maybe too implementation specific)
@@ -305,7 +306,7 @@ werden muss.
 %   Exception Catching theory, context switch, state save restore
 %\section{TLB Miss exception handling}
 % Allgemeines über Exception Handling, Context Switches, etc
-%\subsection{xv6 exception handling}
+%\section{xv6 exception handling}
 
 
 
@@ -314,10 +315,12 @@ werden muss.
 % -------------------------------------------------------------------------------------------------
 %                                            TLB FILLING
 % -------------------------------------------------------------------------------------------------
-\subsection{TLB Filling}
+\section{TLB Filling}
+Usually (in RISC-V), the TLB is completely transparent to the operating system, meaning that the
+there is no way for the OS to directly interact with it and write to it \cite{RISCVInstructionSet}.
 
 % -------------------------------------------------------------------------------------------------
-\subsubsection{MIPS TLBs}               % Combine TLB Sections into one ( Multiple TLB designs clash here ...)
+\subsection{MIPS TLBs}               % Combine TLB Sections into one ( Multiple TLB designs clash here ...)
 
 %       Starting with MIPS for inspiration on how instructions for TLB manipulation may look like
 %       Then continue with a possible RISCV Implementation Idea
@@ -363,11 +366,11 @@ other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \te
 
 
 % -------------------------------------------------------------------------------------------------
-\subsubsection{RISC-V TLBs}
+\subsection{RISC-V TLBs}
 % Riscv can flush entries of a specific ASID only, this means that it keeps that information
 % selective TLB flushing -> RISCV ASIDs (or even no TLB flushing  because VAs contain ASID?)
 % Somewhere in the TLB structure
-\subsubsection{QEMU TLBs}
+\subsection{QEMU TLBs}
 % Qemu -> TLB structure, replacement
 RISC-V and its extensions currently provide no support for modifying the TLB in software.
 RISC-V does however provide a lot of extensibility with the \texttt{Control and Status Registers} (CSRs).\\
@@ -375,14 +378,14 @@ CSRs are part of the RISC-V priviledged architecture and are provided by the \te
 
 % How is the RISCV Tlb indexed -> Check Qemu source
 % -------------------------------------------------------------------------------------------------
-\subsubsection{Real TLBs}
+\subsection{Real TLBs}
 % Typical TLB entry format
 
 % -------------------------------------------------------------------------------------------------
-\subsubsection{RISC-V CSRs}
+\subsection{RISC-V CSRs}
 
 % -------------------------------------------------------------------------------------------------
-\subsubsection{TLB CSRs}
+\subsection{TLB CSRs}
 % Fixed TLB format, but flexibilty of CSR format
 
 % Required Size of CSRs for TLB writing
@@ -410,9 +413,9 @@ CSRs are part of the RISC-V priviledged architecture and are provided by the \te
 % -------------------------------------------------------------------------------------------------
 %                                            MAPPING FUNCTION
 % -------------------------------------------------------------------------------------------------
-\subsection{Mapping Functions}
+\section{Mapping Functions}
 % -------------------------------------------------------------------------------------------------
-\subsubsection{Segmented Mapping}
+\subsection{Segmented Mapping}
 
 % Assumptions
 %Design of Segmented VM softtlb -> Assumption: Process Memory allocation Model -> Only growing upwards
@@ -430,7 +433,7 @@ CSRs are part of the RISC-V priviledged architecture and are provided by the \te
 %   TODO What does the reader need to know at this point, e.g. what does need to be decided 
 %   in theory to create a TLB Miss Handler design??
 
-% xv6 Process Model
+% xv6 Process Memory Model
 The new memory system needs to be compatible with the existing one. Otherwise the way xv6
 user processes are built and structures needs to be changed.\\
 The program memory model of xv6 programs is shown in figure \ref{impl:xv6layout}
