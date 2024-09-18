@@ -338,15 +338,13 @@ in an consistent state when execution resumes.
 %                                            TLB FILLING
 % -------------------------------------------------------------------------------------------------
 \section{TLB Filling}
-Usually (in RISC-V), the TLB is completely transparent to the operating system, meaning that the
-there is no way for the OS to directly interact with it and write to it \cite{RISCVInstructionSet}.\\
-Not only does the operating system need to be made aware of TLB misses occuring by adding a TLB
-Miss exception, the operating system also needs to be able to write to the TLB to actually create
+Not only does the operating system need to be made aware of TLB misses,
+the operating system also needs to be able to write to the TLB to actually create
 mappings that will be used after the handler finishes.\\
-RISC-V also does not provide any means to write to the TLB. But the RISC-V Control and Status Registers
+RISC-V also does not provide any means to write to the TLB out of the box. But the RISC-V Control and Status Registers
 (CSRs) allow for a great deal of extensibility \cite{riscvreader}.
 With CSRs, it is possible to implement custom behavior, which can then be accessed using instructions
-of the \texttt{tlbwrr}\todo{check reader: is this correct?} instruction group.\\
+of the \texttt{CSRR}\todo{check reader: is this correct?} instruction group.\\
 To make an informed decision on how the CSR format for TLB writing may look like, we will first
 look at the TLB and the TLB instructions of \emph{MIPS}. Then we will take a look at what the
 RISC-V ISA specifies about TLB, how QEMU implements TLBs and finally we will look at a the
@@ -359,12 +357,11 @@ CSR format that is used for the implementation.
 %       Then continue with a possible RISCV Implementation Idea
 %       I-TLB and D-TLB out of scope
 % Inspiration: MIPS
-MIPS is a good source of inspiration for a possible CSR format design, since it already provides
-instructions to modify the TLB.\\
+
 The MIPS64 instruction set manual \cite{MIPSArchitectureProgrammers2016}
 shows a number of different instructions concerned with the invalidation, probing, flushing, reading
 and writing (indexed and random).\\
-The most interesting for a first design would be the \texttt{TLBWR} instruction for writing a TLB
+The most interesting instruction for a first design would be the \texttt{TLBWR} instruction for writing a TLB
 entry at a random index. With a similar instruction in RISC-V, we can already implement a purely
 software-controlled virtual memory system.\\
 The other types of TLB instructions that MIPS provides are not strictly necesarry,
@@ -411,30 +408,29 @@ RISC-V does however provide a lot of extensibility with the \texttt{Control and 
 CSRs are part of the RISC-V priviledged architecture and are provided by the \texttt{Zicsr} extension\cite{RISCVInstructionSet}.\\
 
 % How is the RISCV Tlb indexed -> Check Qemu source
-% -------------------------------------------------------------------------------------------------
-\subsection{Real TLBs}
-% Typical TLB entry format
 
 % -------------------------------------------------------------------------------------------------
 \subsection{RISC-V CSRs}
-
+% CSR size
 % -------------------------------------------------------------------------------------------------
 \subsection{TLB CSRs}
+The minimum information the hardware needs to create a mapping is the faulting physical address and
+the virtual address it maps to.\\
+The mapping is has a granularity of 4 KB pages. Thus the lower 12 bits of both the physical and the
+virtual address are not needed.\\
+This still leaves $2*(64-12)=104$ bits for the mapping.\\
+The virtual address can not be easily shortened anymore. Taking some of the most significant bits
+would shorten the virtual memory space of the programs.\\
+The physical address could still be shortened to only have enough bits to cover the physical address
+space used by xv6.\\
+But this would still end up taking more than 64 bit and thus more than one CSR.
+
+So instead of trying to save as much space as possible, two CSRs are used.\\
+They are called \texttt{tlbwh} (TLB Write High) and \texttt{tlbwl} (TLB Write Low).
+The emulator will expect the physical address \ref{fig:theory:sv39pa} in \texttt{tlbwh} and a the virtual address in form
+of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
 % Fixed TLB format, but flexibilty of CSR format
 
-% Required Size of CSRs for TLB writing
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/39,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{39}
-        \bitheader[endianness=big]{38,30,29,21,20,12,11,0} \\
-        \bitbox{9}{VPN[2]} &
-        \bitbox{9}{VPN[1]} &
-        \bitbox{9}{VPN[0]} &
-        \bitbox{12}{Page Offset}\\
-    \end{bytefield}
-    \caption[RISC-V Sv39 Virtual Address]{RISC-V Sv39 Virtual Address}
-    \label{fig:theory:sv39va}
-\end{figure*}
 
 
 
@@ -497,13 +493,7 @@ The only special cases are the \textit{trampoline} and \textit{trapframe} pages.
     \label{fig:theory:segLayout}
 \end{figure*}
 
-\begin{figure*}[ht!]
-    \centering
-    \includegraphics[]{figures/simple_mapping.pdf}
 
-    \caption[Simple Mapping Scheme]{Simple Mapping Scheme}
-    \label{fig:theory:simplemapping}
-\end{figure*}
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------

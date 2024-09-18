@@ -23,19 +23,19 @@
 %                                           VIRTUAL MEMORY
 % -------------------------------------------------------------------------------------------------
 
-This chapter introduces some essential concepts and mechanism that are required for the comprehension
-of following chapters. It first gives an overview of \textit{Virtual Memory}, its core requirements,
+This chapter introduces some essential concepts and mechanism which form the basis of the following
+chapters. It first gives an overview of \textit{Virtual Memory}, its core requirements,
 tradeoffs and implementations.\\
-Then the hardware components and caches used to accelerate \textit[Virtual Memory] systems is
+Then the hardware components and caches used to accelerate \textit[Virtual Memory] systems are
 presented.\\
-A overview of purely software-managed systems follows with a comparison of the general trade-offs
+An overview of purely software-managed systems follows with a comparison of the general trade-offs
 between software-managed and hardware-managed \textit{Virtual Memory} systems.\\
 Finally, some specifics of the memory system of the chosen implementation platform, \textit{RISC-V},
 are shown.
 
 \section{Virtual Memory}
 \textit{Virtual Memory} was first introduced in the Atlas System \cite{fotheringham1961dynamic} to
-automate the task of swapping pages between main and secondary memory, when main memory was full.
+automate the task of swapping pages between main and secondary memory.
 The idea was to make the programms completely unaware of of the real, physical memory by providing
 an abstraction layer called virtual memory \cite{denning1996virtual}.\\
 With virtual memory, programs appear to have the whole memory space of the machine at their disposal (flexibility) and
@@ -53,10 +53,12 @@ The terms of \textit{Virtual} and \textit{Physical} addresses will be coming up 
 Virtual addresses refer to the addresses that are used by the program to reference memory object in its address
 space. They are only valid in the programs own address space and may thus be reused by different programs.
 Virtual addresses are translated to physical addresses, which are actual addresses to memory locations
-on main memory. The \textit{Virtual Memory System} is tasked with performing this translation.
+on main memory. The \textit{Virtual Memory System} is tasked with performing this translation, creating mappings
+and keeping book of those mappings.
 \\
 Some memory systems using an inverted page tables also use the notion of \textit{effective} addresses.
-These form an addition layer of indirection that allows the sharing of pages \cite{jacob1998virtualissues}.
+These form an addition layer of indirection that allows the sharing of pages \cite{jacob1998virtualissues}.\\
+Effective addresses will not be discussed here any further.
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Memory System Requirements}
@@ -138,15 +140,10 @@ space with a sparse population for programs that do not require a lot of pages
 % \paragraph{Memory Mapped IO}
 % \cite{tanenbaumOS}
 
-
-
-Diese Eigenschaften setzen die meisten Leute die auf Applikationsebene Programmieren mehr oder
-weniger als gegeben voraus und machen sich keine weiteren Gedanken darüber\todo{cite?}.
 Durch das immer weiter Auseinanderdriften der CPU und Memory geschwindigkeiten und vor allem
 durch das größer werden von Addressräumen (von 32 auf 64 bit!) \todo{cite} sind die Ansprüche an
 das Virtual Memory system gewachsen und so mussten sich auch die Implementationen weiterentwickeln.
 
-Im Folgenden werden die meistgenutzten VM systeme betrachtet.
 % VM Properties and benefits: Was für Nutzen hat VM?
 % Fazit: VM hat sehr nützliche Eigenschaften
 % More: jacob1998virtualissues
@@ -160,22 +157,18 @@ Im Folgenden werden die meistgenutzten VM systeme betrachtet.
 %   [ Issues of implementation]
 \subsection{Implementation of Virtual Memory}
 Every virtual memory system has to realize a mapping from virtual addresses of each processes
-private, virtual address space to actual physical addresses that index data in main memory.
-This section will provide an overview of the most commonly used virtual memory implementation.\\
+private, virtual address space to physical addresses that index data in main memory.
+This section will provide an overview of how most commonly used virtual memory implementation.\\
 
-\todo{page table splits, vpn -> tanenbaum}
-% Naiver Page Table ansatz
-Das einfachste wäre natürlich eine große Tabelle mit den virtuellen zu physischen mappings im
-speicher zu halten. Bei einem 32 Bit virtuellen zu physischen mapping mit einer typischen Page Größe
-von 4 KiBi ( $ 2^{12}$Byte), bräuchte man mindestens 20 Bit pro Page Table Entry (PTE), also mindestestens
-\[ 20 * 2^{20} Bit = 20971520 / 8 Byte = 2.5 MiBi \]
-pro Page Table. Und da jeder Prozess eine eigene Pagetable braucht um die Isolation und damit Grundlage
-für Sicherheit im System zu gewährleisten kann das insgesamt recht teuer werden.
-Normalerweise würde man die PTEs auch noch auf wordsize alignen um dann auch noch platz für weitere
-Protection flags zu haben, was dann die größe der Pagetable noch auf 4 MiBi erhöhen würde.
-Bei 64-bit Computern wäre dieser naiver ansatz völlig unpraktikabel.
-\todo{tanenbaum -> numbers for paging}\\
-
+% Naive approache
+The naive approache is to simply have a big array in main memory. This array can be indexed
+using the virtual addresses, at which the physical address to that virtual address is placed.\\
+In a 32 bit address space with 4 KB pages, this requires 20 bits per page table entry. This
+adds up to \[ 20 * 2^{20} bit = 20971520 / 8 Byte = 2.5 MB \].
+To properly isolate the processes from each other, every process needs to have one of those arrays.
+To realize fine-grained protection of pages, there would also need to be some bits per array entry
+for read/write/execute rights.\\
+With 64 bit computer, the space requirements for such page tables would be even higher.
 
 \subsubsection{Hierarchical page tables}
 \todo{Verschiedene andere namen -> aus den übersichtspapern [a look at several, issues of impl], radix tree}
@@ -591,4 +584,17 @@ this data is best communicated via the CSRs to the computer.\\
     \end{bytefield}
     \caption[RISC-V Sv39 \texttt{satp} CSR]{RISC-V Sv39 \texttt{satp} CSR}
     \label{fig:theory:sv39satp}
+\end{figure*}
+
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/39,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{39}
+        \bitheader[endianness=big]{38,30,29,21,20,12,11,0} \\
+        \bitbox{9}{VPN[2]} &
+        \bitbox{9}{VPN[1]} &
+        \bitbox{9}{VPN[0]} &
+        \bitbox{12}{Page Offset}\\
+    \end{bytefield}
+    \caption[RISC-V Sv39 Virtual Address]{RISC-V Sv39 Virtual Address}
+    \label{fig:theory:sv39va}
 \end{figure*}
