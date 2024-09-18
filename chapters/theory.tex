@@ -299,16 +299,38 @@ but notably also the different page fault exceptions, xv6 will simply kill the o
 
 % -------------------------------------------------------------------------------------------------
 \subsection{TLB Miss Exception Handler}
+To simplify things, we will let the TLB Miss exception handler run in machine mode only.
+The usual mode for a operating system kernel would be the supervisor mode. However, this
+mode also uses address translation. This could create a situation in which we would have
+to deal with nested exception.\\
+
+\textbf{Catching the Exception} M-mode exceptions will set the program counter to the address
+specified in the \texttt{mtvec} register. Originally, xv6 only serviced the asynchronous
+timer interrupt in machine mode. Every other trap is forwarded to supervisor mode.\\
+The trap vectoring mode can also be changed by setting the \texttt{MODE} field of the
+\texttt{mtvec} register \cite{RISCVInstructionSet}. The alternative mode forwards
+each interrupt to its own address, set at a fixed offset from the \texttt{BASE} address.
+\todo{mtvec bytefield}.
+
+Every exception will still be forwarded to the \texttt{BASE} address set in the \texttt{mtvec}
+register, regardless of the vectoring mode.
+
+The value of the \texttt{mcause} register identifies the reason for the exception.
+This value can be used in something like a switch-case statement to call specific handlers
+for the different exception causes.
+This switch-case is not really necessary in xv6, since the only exception that can enter
+the machine-mode exception handler is the TLB Miss exception.
+
+Before running any code that modifies general-purpose registers, the current state of the
+registers and the program counter should be saved to memory. These need to be restored after
+the exception handler code has finished.\\
+This is essential to keep the process, that was just running when the exception triggered,
+in an consistent state when execution resumes.
 
 % Catching New Exception
 %   Current xv6 machine mode exception handler ( -> maybe too implementation specific)
 %   riscv interrupt mechanism (precice, vectorized)
 %   Exception Catching theory, context switch, state save restore
-%\section{TLB Miss exception handling}
-% Allgemeines über Exception Handling, Context Switches, etc
-%\section{xv6 exception handling}
-
-
 
 
 
@@ -317,7 +339,18 @@ but notably also the different page fault exceptions, xv6 will simply kill the o
 % -------------------------------------------------------------------------------------------------
 \section{TLB Filling}
 Usually (in RISC-V), the TLB is completely transparent to the operating system, meaning that the
-there is no way for the OS to directly interact with it and write to it \cite{RISCVInstructionSet}.
+there is no way for the OS to directly interact with it and write to it \cite{RISCVInstructionSet}.\\
+Not only does the operating system need to be made aware of TLB misses occuring by adding a TLB
+Miss exception, the operating system also needs to be able to write to the TLB to actually create
+mappings that will be used after the handler finishes.\\
+RISC-V also does not provide any means to write to the TLB. But the RISC-V Control and Status Registers
+(CSRs) allow for a great deal of extensibility \cite{riscvreader}.
+With CSRs, it is possible to implement custom behavior, which can then be accessed using instructions
+of the \texttt{tlbwrr}\todo{check reader: is this correct?} instruction group.\\
+To make an informed decision on how the CSR format for TLB writing may look like, we will first
+look at the TLB and the TLB instructions of \emph{MIPS}. Then we will take a look at what the
+RISC-V ISA specifies about TLB, how QEMU implements TLBs and finally we will look at a the
+CSR format that is used for the implementation.
 
 % -------------------------------------------------------------------------------------------------
 \subsection{MIPS TLBs}               % Combine TLB Sections into one ( Multiple TLB designs clash here ...)
@@ -338,7 +371,8 @@ The other types of TLB instructions that MIPS provides are not strictly necesarr
 except for flushing. Without being able to flush existing translations from the TLB,
 user mode processes may try to access physical mappings stemming from other processes.\todo{can this even happen? -> why else would we need to flush the tlb??}
 But the RISC-V priviledged Architecture already provides this functionality
-with the \texttt{sfence.vma} instruction \cite{riscvreader}.
+with the \texttt{sfence.vma} instruction \cite{riscvreader}.\\
+
 
 % Replacement policy
 %   MIPS -> Indexed writes
