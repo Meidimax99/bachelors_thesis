@@ -1,11 +1,60 @@
 \chapter{Theory}
 \label{chap:theory}
 
-% Überblick über die Idee schaffen -> Virtueller Speicher durch funktion möglich
+% -------------------------------------------------------------------------------------------------
+%                                            Structure
+% -------------------------------------------------------------------------------------------------
+
+% - Reiteration of Idea       -> Was wird hier gemacht    -> Was benötigt man dafür
+
+% - Impl Platform             -> Was provided die Hardware und Plattform schon, Was braucht es noch?
+
+% - Implementation Steps      -> Overview over the implementation chapter (but without the single address cases)
+
+% -Übersicht über die benötigten Änderungen
+%     - TLB Miss Exception
+%         - Exceptions and TLBS in RISC-V
+%         - New Exception
+%         - Vorlage: MIPS
+%             - Riscv Exception basics (if not in fundamentals)
+%             - New Exceptions? -> Was man beachten muss
+
+
+%      - Exception Handler in general
+%             - General Stuff, xv6 Exception Handler
+%             - Vectored 
+%             - All registers that come into play
+%             - xv6 book, exception machinery
+
+%         - Exception Handler for the TLB Miss exception
+
+%     - TLB Filling
+%         - Vorlage MIPS
+
+%         - RISCV CSRs -> Extensibility
+
+
+%         - QEMU TLB
+
+
+%         - Concrete CSRs for TLB filling (THIS IS THE RESULT OF THIS CHAPTER)
+%             (- TLB Flushing, Replacement policy (vs mips))
+
+
+%     - Mapping functions
+%         - Segmented
+%         - More?
+
+
+
+
+
+
 
 % -------------------------------------------------------------------------------------------------
 %                                            Intro
 % -------------------------------------------------------------------------------------------------
+% Überblick über die Idee schaffen -> Virtueller Speicher durch funktion möglich
 
 
 This chapter presents the theoretical foundation of the the implementation presented in the next chapter.
@@ -17,6 +66,34 @@ It then presents the theory behind the different components of the implementatio
 % -------------------------------------------------------------------------------------------------
 %                                            Idea
 % -------------------------------------------------------------------------------------------------
+% Beantwortet die Frage: Was wird hier überhaupt gemacht? (Ohne zu sehr ins detail zu gehen)
+% Auch die Motivation und was das Ergebnis sein könnte/ erwartet ist
+
+
+
+% Conclusion on previous Work -> Still need a memory access
+
+% The Idea -> Getting rid of any memory access in favor of simple arithmetic operation (eg. hash functions)
+% statefull -> stateless
+
+\todo{start - reuse this}
+% Previous approaches aimed to reduce the memory footprint or optimize cache accesses, or reduce page table
+% walks to a minimum, this approach aims to eliminate paging structures completely
+While previous work tried to either reduce the number of memory accesses \todo{CITE Lidtke ,Skip no walk, single hit uppsala paper},
+decrease the occurrence of a TLB miss and decrease the latency of handling a TLB Miss, this paper
+presents an approach to create a virtual memory scheme not requiring paging structures at all.\\
+
+Not unlike the software-managed address translation design presented by Jacob and Mudge \cite{jacobSoftwaremanagedAddressTranslation1997},
+the \textit{softtlb} approach utilizes a exception triggered by a cache miss to invoke a software-defined
+exception handler.\\
+Unlike the \textit{softvm} design, this approach will be based on handling an exception that is triggered
+when die TLB misses \todo{TLB and its role explained?}.
+The handler code for this \textit{TLB\_Miss} exception will from now on be called \textit{TLB Manager}.
+
+The \textit{TLB Manager}s job is then to resolve the exception by filling the TLB for the failing address
+that triggered the exception.
+
+\todo{end - reuse this}
 
 \section{The Idea}
 % Idea Description
@@ -77,11 +154,12 @@ to create a virtual to physical mapping.
     \label{fig:theory:mapping_fx}
 \end{figure*}
 
+% Kapitel endet mit der Frage was man für die Implementation benötigt?
 
 % -------------------------------------------------------------------------------------------------
 %                                            Platform
 % -------------------------------------------------------------------------------------------------
-
+% Answers: Welche Platform wird verwendet? Warum?  Was provided die Platform, was nicht?
 \section{Platform}
 The chosen platform is the xv6 operating system \cite{xv6source}. It is a teaching operating system
 used by some MIT courses.\\
@@ -114,14 +192,15 @@ Dafür wurde der Qemu Emulator gewählt, da dieser sehr Umfassend und performant
 TLB emuliert.
 % Zukünftige Idee -> Configurierbarer "stateless" physical frame calculator hw baustein
 
+% Was provided die Platform noch nicht, was muss noch gemacht werden um das Design zu realisieren?
 % Implications of programming platform on implementation -> needing to implement TLB Miss
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
 %                                            IMPL THEORY
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
-
-
+% Overview of the different parts necessary to implement the idea
+\section{Conceptual Basis for Implementation Modifications}
 % What to do to realize this idea? (basically top level overview of the theory and impl chapters)
 Dieser Abschnitt enthält die theoretischen Ausarbeitungen zu den einzelnen Bestandteilen die für
 die Implementation des Software kontrollierten TLB Miss Handlers benötigt werden. Diese Bestandteile
@@ -135,53 +214,23 @@ sind wie folgt:
 % -------------------------------------------------------------------------------------------------
 %                                            Required Changes
 % -------------------------------------------------------------------------------------------------
-% Conclusion on previous Work -> Still need a memory access
 
-% The Idea -> Getting rid of any memory access in favor of simple arithmetic operation (eg. hash functions)
-% statefull -> stateless
 % What to do to realize this idea? (basically top level overview of the theory and impl chapters)
 % New Exception - TLB Miss Exception
 % CSRs to write TLBs
 % Exception Handler
-% Exception triggerer for testing
-
-
-% New Exception - TLB Miss Exception
-% CSRs to write TLBs
-% Exception Handler
-% Exception triggerer for testing
-
 
 % Steps necessary to implement Idea -> relating to the implementation
 
 % Architecture: Handle TLB Miss -> Like Liedtke MIPS
 
 % TLB Exception
-
 % TLB Filling
 
 
 
 %elaboration on general costs of page table walks -> basically exactly what related
 % work motivated their designs with
-
-% Previous approaches aimed to reduce the memory footprint or optimize cache accesses, or reduce page table
-% walks to a minimum, this approach aims to eliminate paging structures completely
-While previous work tried to either reduce the number of memory accesses \todo{CITE Lidtke ,Skip no walk, single hit uppsala paper},
-decrease the occurrence of a TLB miss and decrease the latency of handling a TLB Miss, this paper
-presents an approach to create a virtual memory scheme not requiring paging structures at all.\\
-
-Not unlike the software-managed address translation design presented by Jacob and Mudge \cite{jacobSoftwaremanagedAddressTranslation1997},
-the \textit{softtlb} approach utilizes a exception triggered by a cache miss to invoke a software-defined
-exception handler.\\
-Unlike the \textit{softvm} design, this approach will be based on handling an exception that is triggered
-when die TLB misses \todo{TLB and its role explained?}.
-The handler code for this \textit{TLB\_Miss} exception will from now on be called \textit{TLB Manager}.
-
-The \textit{TLB Manager}s job is then to resolve the exception by filling the TLB for the failing address
-that triggered the exception.
-
-
 
 
 
@@ -192,11 +241,24 @@ that triggered the exception.
 
 
 % -------------------------------------------------------------------------------------------------
-%                                            New Exception
+%                                            TLB MISS EXCEPTION
 % -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+\subsection{TLB Miss Exception}
 
-\section{New Exception}
-% Allgemeines über Riscv Exceptions
+% -------------------------------------------------------------------------------------------------
+\subsubsection{MIPS TLB Exceptions}
+
+% -------------------------------------------------------------------------------------------------
+\subsubsection{RISC-V Exceptions}
+
+% -------------------------------------------------------------------------------------------------
+\subsubsection{New Exception}
+
+
+% -------------------------------------------------------------------------------------------------
+%                                            Exception Handling
+% -------------------------------------------------------------------------------------------------
 \todo{ist dieser Abschnitt vielleicht eher der Idee zuzuordnen? So in der Art sollte es
     auf jeden Fall in die Idee, aber vielleicht nicht in diesem Detail, vielleicht nur einmal
     den ''typischen'' controlflow durchgehen und dann einmal den Modifizierten für softtlb}
@@ -222,33 +284,44 @@ werden muss.
 
 
 % -------------------------------------------------------------------------------------------------
-%                                            Exception Handling
+\subsection{Exception Handling}
+
 % -------------------------------------------------------------------------------------------------
+\subsubsection{L4/MIPS TLB Exception Handling}
+
+% -------------------------------------------------------------------------------------------------
+\subsubsection{Exception Handling in General}
+
+% -------------------------------------------------------------------------------------------------
+\subsubsection{xv6 Exception Handler}
+
+% -------------------------------------------------------------------------------------------------
+\subsubsection{TLB Miss Exception Handler}
+% Compare my implementation to a mips one -> Heiser TLB Fastpath
+
 % Catching New Exception
 %   Current xv6 machine mode exception handler ( -> maybe too implementation specific)
 %   riscv interrupt mechanism (precice, vectorized)
 %   Exception Catching theory, context switch, state save restore
-\section{TLB Miss exception handling}
+%\section{TLB Miss exception handling}
 % Allgemeines über Exception Handling, Context Switches, etc
-\subsection{xv6 exception handling}
+%\subsection{xv6 exception handling}
+
+
+
+
 
 % -------------------------------------------------------------------------------------------------
-%                                            TLB Writing
+%                                            TLB FILLING
 % -------------------------------------------------------------------------------------------------
-% Writing TLBs -> Implementation Theory
+\subsection{TLB Filling}
+
+% -------------------------------------------------------------------------------------------------
+\subsubsection{MIPS TLBs}               % Combine TLB Sections into one ( Multiple TLB designs clash here ...)
+
 %       Starting with MIPS for inspiration on how instructions for TLB manipulation may look like
 %       Then continue with a possible RISCV Implementation Idea
 %       I-TLB and D-TLB out of scope
-%
-\section{TLB modification}
-
-% -------------------------------------------------------------------------------------------------
-%   Comparison to MIPS
-%       MIPS TLB instructions
-%       MIPS TLB entries -> Qemu TLB?
-%       Replacement
-\subsection{MIPS TLB} % ---------------------------------------------------------------------------
-
 % Inspiration: MIPS
 MIPS is a good source of inspiration for a possible CSR format design, since it already provides
 instructions to modify the TLB.\\
@@ -263,28 +336,6 @@ except for flushing. Without being able to flush existing translations from the 
 user mode processes may try to access physical mappings stemming from other processes.\todo{can this even happen? -> why else would we need to flush the tlb??}
 But the RISC-V priviledged Architecture already provides this functionality
 with the \texttt{sfence.vma} instruction \cite{riscvreader}.
-
-\paragraph{MIPS - TLBWR} The arguments for the instruction need to be written in some
-other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \texttt{PageMask}.
-
-% \section{L4/MIPS als Vorlage für Software TLB Management in RISCV (Qemu)}
-% \subsection{TLB Miss Exception}
-% \subsection{TLB Loading instructions}
-% \paragraph{tlbwi}
-% \paragraph{tlbwr}
-% Comparison to MIPS tlb software
-
-
-% Compare my implementation to a mips one -> Heiser TLB Fastpath
-% Fixed TLB format, but flexibilty of CSR format
-
-% Qemu TLB
-
-% Typical TLB entry format
-
-% selective TLB flushing -> RISCV ASIDs (or even no TLB flushing  because VAs contain ASID?)
-
-% How is the RISCV Tlb indexed -> Check Qemu source
 
 % Replacement policy
 %   MIPS -> Indexed writes
@@ -307,6 +358,33 @@ This is useful to keep some mappings in the TLB that are valid all the time.
 Having a protected space of TLB entries can especially be useful for global mappings. xv6 employs such a global
 mapping for every process and the kernel with the trampoline page.\todo{trampoline page should be explained in fundamentals/platform}
 
+\paragraph{MIPS - TLBWR} The arguments for the instruction need to be written in some
+other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \texttt{PageMask}.
+
+
+% -------------------------------------------------------------------------------------------------
+\subsubsection{RISC-V TLBs}
+% Riscv can flush entries of a specific ASID only, this means that it keeps that information
+% selective TLB flushing -> RISCV ASIDs (or even no TLB flushing  because VAs contain ASID?)
+% Somewhere in the TLB structure
+\subsubsection{QEMU TLBs}
+% Qemu -> TLB structure, replacement
+RISC-V and its extensions currently provide no support for modifying the TLB in software.
+RISC-V does however provide a lot of extensibility with the \texttt{Control and Status Registers} (CSRs).\\
+CSRs are part of the RISC-V priviledged architecture and are provided by the \texttt{Zicsr} extension\cite{RISCVInstructionSet}.\\
+
+% How is the RISCV Tlb indexed -> Check Qemu source
+% -------------------------------------------------------------------------------------------------
+\subsubsection{Real TLBs}
+% Typical TLB entry format
+
+% -------------------------------------------------------------------------------------------------
+\subsubsection{RISC-V CSRs}
+
+% -------------------------------------------------------------------------------------------------
+\subsubsection{TLB CSRs}
+% Fixed TLB format, but flexibilty of CSR format
+
 % Required Size of CSRs for TLB writing
 \begin{figure*}[t]
     \centering
@@ -321,43 +399,21 @@ mapping for every process and the kernel with the trampoline page.\todo{trampoli
     \label{fig:theory:sv39va}
 \end{figure*}
 
-% -------------------------------------------------------------------------------------------------
-% Foundation for RISCV extensibility
-%   RISCV CSRs
-%       CSRs instructions
-%       Data to be communicated to the cpu
-%       CSRs chosen Format
-\subsection{RISC-V CSR} % -------------------------------------------------------------------------
 
-RISC-V and its extensions currently provide no support for modifying the TLB in software.
-RISC-V does however provide a lot of extensibility with the \texttt{Control and Status Registers} (CSRs).\\
-CSRs are part of the RISC-V priviledged architecture and are provided by the \texttt{Zicsr} extension\cite{RISCVInstructionSet}.\\
-
-
-
-% -------------------------------------------------------------------------------------------------
-
-\subsection{TLB writing via CSRs} % ---------------------------------------------------------------
-
-% Riscv can flush entries of a specific ASID only, this means that it keeps that information
-% Somewhere in the TLB structure
-
-
-% Qemu -> TLB structure, replacement
 
 \todo{TLB CSR Format}
 
 \todo{Hardware dependenc -> still dependent on the TLB structure of RISCV Sv39, VAs and PAs remain, as do PTEs}
-% -------------------------------------------------------------------------------------------------
-%                                            Exception Handler
-% -------------------------------------------------------------------------------------------------
-\section{Exception Handler}
+
 
 
 % -------------------------------------------------------------------------------------------------
-%                                            Mapping Function Design
+%                                            MAPPING FUNCTION
 % -------------------------------------------------------------------------------------------------
-\section{Mapping function}
+\subsection{Mapping Functions}
+% -------------------------------------------------------------------------------------------------
+\subsubsection{Segmented Mapping}
+
 % Assumptions
 %Design of Segmented VM softtlb -> Assumption: Process Memory allocation Model -> Only growing upwards
 % Segmentation -> ASIDs -> HW support for Address Space Protection
@@ -374,7 +430,7 @@ CSRs are part of the RISC-V priviledged architecture and are provided by the \te
 %   TODO What does the reader need to know at this point, e.g. what does need to be decided 
 %   in theory to create a TLB Miss Handler design??
 
-\subsection{xv6 process memory model}
+% xv6 Process Model
 The new memory system needs to be compatible with the existing one. Otherwise the way xv6
 user processes are built and structures needs to be changed.\\
 The program memory model of xv6 programs is shown in figure \ref{impl:xv6layout}
@@ -395,7 +451,7 @@ middle of the address space.\\
 The only special cases are the \textit{trampoline} and \textit{trapframe} pages.
 \todo{trampoline and trapframe already explained?}
 
-\subsection{Simple Segmented Mapping}
+% Segmented memory layout
 
 \begin{figure*}[ht!]
     \centering
@@ -411,3 +467,7 @@ The only special cases are the \textit{trampoline} and \textit{trapframe} pages.
     \caption[Simple Mapping Scheme]{Simple Mapping Scheme}
     \label{fig:theory:simplemapping}
 \end{figure*}
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
