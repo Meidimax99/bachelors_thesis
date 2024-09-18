@@ -638,7 +638,7 @@ mapping happening.\\
 % -------------------------------------------------------------------------------------------------
 
 
-% Third step: Dynamic Segmented memory with a simple function and no page table
+
 % -------------------------------------------------------------------------------------------------
 %                                       STEP 3 - New VM
 % -------------------------------------------------------------------------------------------------
@@ -694,6 +694,15 @@ priviledge mode is the machine mode or the virtual memory system is configured t
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Software Page Table Walk}
+
+
+\begin{figure*}[ht!]
+    \centering
+    \includegraphics[scale=1.5]{figures/theory_sw_ptw.pdf}
+    \caption[Software Page Table Walker]{Instead of transfering control over to the MMU to fill in the missing mapping,
+        the TLB Miss exception invokes a software page table walker}
+    \label{fig:theory:sw_ptw}
+\end{figure*}
 
 Now that the TLB Miss exception is thrown for every faulting address, it also needs to be handled
 for every address.\\
@@ -1055,43 +1064,11 @@ non-deterministic events that influence the execution of the system \cite[Record
 .% -------------------------------------------------------------------------------------------------
 
 
-\begin{figure*}[ht!]
-    \centering
-    \includegraphics[scale=1.5]{figures/theory_sw_ptw.pdf}
-    \caption[Software Page Table Walker]{Instead of transfering control over to the MMU to fill in the missing mapping,
-        the TLB Miss exception invokes a software page table walker}
-    \label{fig:theory:sw_ptw}
-\end{figure*}
 
 
 
 
 
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/56,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{56}
-        \bitheader[endianness=big]{55,30,29,21,20,12,11,0} \\
-        \bitbox{26}{PPN[2]} &
-        \bitbox{9}{PPN[1]} &
-        \bitbox{9}{PPN[0]} &
-        \bitbox{12}{Page Offset}\\
-    \end{bytefield}
-    \caption[RISC-V Sv39 Physical Address]{RISC-V Sv39 Physical Address}
-    \label{fig:theory:sv39pa}
-\end{figure*}
-
-
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
-        \bitheader[endianness=big]{63,60,59,44,43,0} \\
-        \bitbox{4}{Mode} &
-        \bitbox{16}{ASID} &
-        \bitbox{44}{PPN} \\
-    \end{bytefield}
-    \caption[RISC-V Sv39 \texttt{satp} CSR]{RISC-V Sv39 \texttt{satp} CSR}
-    \label{fig:theory:sv39satp}
-\end{figure*}
 
 
 

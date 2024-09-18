@@ -4,15 +4,58 @@
 % Überblick über die Idee schaffen -> Virtueller Speicher durch funktion möglich
 
 % -------------------------------------------------------------------------------------------------
+%                                            Intro
+% -------------------------------------------------------------------------------------------------
+
+
+This chapter presents the theoretical foundation of the the implementation presented in the next chapter.
+It will start with a short elaboration on the general idea followed by a description of the
+programming platform.\\
+It then presents the theory behind the different components of the implementation.
+% Then?
+
+% -------------------------------------------------------------------------------------------------
 %                                            Idea
 % -------------------------------------------------------------------------------------------------
 
 \section{The Idea}
 % Idea Description
 
-% Steps necessary to implement Idea
 
-% Gegenüberstellung: Normaler HW Page Table Walk - Mapping function
+Current hardware-supported virtual memory systems suffer from inflexibility and costly memory accesses.\\
+Software-based approaches are a lot more flexible, but are based on page table lookups as well.
+
+This paper is to based on the idea that virtual memory can be realized with a
+mapping functions instead of the costly page table walks \cite{van2002memory}.\\
+
+
+% About the software management
+Figure \ref{fig:theory:mapping_fx} depicts the usual lookup approach of hierarchical page tables.
+When the TLB misses, the MMU will perform a page table walk through the page table to retrieve the mapping
+for the given virtual address.\\
+The specification of the MMU binds the software to a specific interface and page table structure. This restricts
+the flexibilty of the software.
+
+To provide more flexibility, systems like MIPS allow for TLBs to be managed in software \cite{heiserAnatomyHighPerformanceMicrokernel}.
+This still binds the operating system to adhere to the TLB structure, but leaves freedom on how the actual
+entry is determined.\\
+Virtual memory systems like Jochen Liedtkes Guarded Page Tables \cite{liedtkeGPT} use a table like structure
+in combination with the flexible access to TLBs.\\
+This flexibility also enables the implementation of alternative approaches that are not based on page tables,
+but rather on mapping functions.\\
+Figure \ref{fig:theory:mapping_fx} shows what the architecture of a system using a mapping function for
+filling the TLB may look like.
+
+% About mapping functions
+In this paper, we want to take a closer look at such mapping functions and if a virtual memory system
+can be realized without the usual bookkeeping cost of page tables.\\
+Good candidates for such functions are non-cryptographic hash functions\todo{elaboration on hash functions}
+to create a virtual to physical mapping.
+
+
+
+% TODO der Zwischenschritt mit dem Software Page Table walk wird dann in der Impl
+% eingeführt
 
 % Normal Page Table Walk
 \begin{figure*}[ht!]
@@ -24,10 +67,6 @@
         then executes the failing instruction again which will then result in a TLB hit}
     \label{fig:theory:normal_tlb_miss}
 \end{figure*}
-
-% TODO der Zwischenschritt mit dem Software Page Table walk wird dann in der Impl
-% eingeführt
-
 % Virtual Memory using a Mapping Function
 \begin{figure*}[ht!]
     \centering
@@ -39,26 +78,89 @@
 \end{figure*}
 
 
+% -------------------------------------------------------------------------------------------------
+%                                            Platform
+% -------------------------------------------------------------------------------------------------
+
+\section{Platform}
+The chosen platform is the xv6 operating system \cite{xv6source}. It is a teaching operating system
+used by some MIT courses.\\
+xv6 implements the basic Unix Version 6 interfaces, but does so in a very simplified fashion.\\
+There is a x86 version and a RISC-V version. For this project, the RISC-V version was chosen.\\
+xv6's simplicity and the accompanying handbook \cite{cox2011xv6} make it a good choice for a first
+proof of concept.
+
+xv6 will be run on the QEMU \cite{QEMUSource2024} emulator. The QEMU RISC-V emulator implements
+all the RISC-V features and extensions that xv6 needs.
+
+Running the operating system on an emulator is a necessity, because the requires the hardware to
+throw a TLB Miss exception.\\ The RISC-V ISA does not provide such functionality by default, so
+part of the theory and implementation chapters will be dedicated to extending the RISC-V ISA and
+the QEMU emulation to support TLB Miss exceptions.
+%Implementation Platform
+Diese Kapitel betrachtet zwar nur die Theorie des softtlb desings, allerdings muss diese in Kontext
+der gewählten Platform gestellt werden und wird daher an manchen Stellen in tieferes Detail der konkreten
+Platform eintauchen als man für eine theoretische Ausarbeitung des Designs erwarten würde.
+Das ist wichtig um dem späteren Implementierungskapitel den nötigen Kontext zu liefern.\\
+Als Platform für die Implementierung wurde der Einfachkeit halber das xv6-riscv educational operating
+system \cite{cox2011xv6} gewählt.\\
+\textit{Xv6} wird am MIT genutzt um Operating Systems Kurse zu bieten und bietet mit dem Handbuch eine
+einfache und verständliche Platform die ein vereinfachtes Unix Version 6 Interface implementiert.\\
+Xv6 gibt es in einer x86 version und in einer RISC-V version, es wurde hier die RISC-V version verwendet.
+\\
+Da im Rahme der Implementierung einer neuen Exception das nutzen echter RISC-V Hardware nicht möglich
+ist, muss ein Emulator benutzt werden um die nötigen Änderungen an der ISA zu implementieren und zu nutzen.
+Dafür wurde der Qemu Emulator gewählt, da dieser sehr Umfassend und performant ist und außerdem einen
+TLB emuliert.
+% Zukünftige Idee -> Configurierbarer "stateless" physical frame calculator hw baustein
+
+% Implications of programming platform on implementation -> needing to implement TLB Miss
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+%                                            IMPL THEORY
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
 
 
+% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
+Dieser Abschnitt enthält die theoretischen Ausarbeitungen zu den einzelnen Bestandteilen die für
+die Implementation des Software kontrollierten TLB Miss Handlers benötigt werden. Diese Bestandteile
+sind wie folgt:
+\begin{itemize}
+    \item Die Erweiterung des Qemu Emulators um einen Exceptionwurf bei TLB Miss
+    \item Einen Maschine-Mode Traphandler in xv6 der die neue TLB Miss Exception entsprechend behandelt
+    \item Eine Möglichkeit um TLB einträge mittels spezieller Instruktionen zu schreiben
+\end{itemize}
+
+% -------------------------------------------------------------------------------------------------
+%                                            Required Changes
+% -------------------------------------------------------------------------------------------------
+% Conclusion on previous Work -> Still need a memory access
 
 % The Idea -> Getting rid of any memory access in favor of simple arithmetic operation (eg. hash functions)
-Die grundlegende Idee dieser Arbeit ist es die Page Table Strukturen, seien es Hashed Page Tables oder
-Radix Page Tables, oder andere Designs wie sie in Related work presentiert wurden, komplett loszuwerden.
-Diese sollen durch eine einfache funktion ersetzt werden die das Mapping von virtuellen zu physischen
-Addressen realisiert.\\
-Offensichtliche Kandidaten für so eine Funktion wären natürlich Hashfunktionen. Vor allem die in
-\cite{skarlatos2020elastic} vorgestellte Elastic Cuckoo Hash function verfügt schon über Eigenschaften
-die für ein direktes virtual-physical mapping, statt einem virtual-hash table index, nützlich wären.
-\todo{Das mit den Cuckoo hash ist vielleicht für diese Stelle schon zu viel detail}.
-Der wichtigste Aspekt diese Funktion ist allerdings, dass sie, anders als alle anderen Page Table designs,
-keine Speicherorte referenziert, also praktisch komplett ohne einen Zustand auskommt.\\
-Die phyische Addresse soll also möglichs nur aus informationen,  die in registern zur verfügung
-gestellt werden können, ermittelt werden.\\
-% Wie related das zu: Demand Paging?, Virtual Memory Requirements, Features wie page sharing
-Für einen ersten Proof of Concept soll die funktion in einem Exception Handler implementiert werden.
-Diese Excepion handler wird getriggert sobald es zu einem TLB miss kommt, das heißt wenn ein
-gesuchtes Mapping für einen Speicherzugriff nicht im TLB zu finden war.
+% statefull -> stateless
+% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
+% New Exception - TLB Miss Exception
+% CSRs to write TLBs
+% Exception Handler
+% Exception triggerer for testing
+
+
+% New Exception - TLB Miss Exception
+% CSRs to write TLBs
+% Exception Handler
+% Exception triggerer for testing
+
+
+% Steps necessary to implement Idea -> relating to the implementation
+
+% Architecture: Handle TLB Miss -> Like Liedtke MIPS
+
+% TLB Exception
+
+% TLB Filling
+
+
 
 %elaboration on general costs of page table walks -> basically exactly what related
 % work motivated their designs with
@@ -80,36 +182,6 @@ The \textit{TLB Manager}s job is then to resolve the exception by filling the TL
 that triggered the exception.
 
 
-%Implementation Platform
-Diese Kapitel betrachtet zwar nur die Theorie des softtlb desings, allerdings muss diese in Kontext
-der gewählten Platform gestellt werden und wird daher an manchen Stellen in tieferes Detail der konkreten
-Platform eintauchen als man für eine theoretische Ausarbeitung des Designs erwarten würde.
-Das ist wichtig um dem späteren Implementierungskapitel den nötigen Kontext zu liefern.\\
-Als Platform für die Implementierung wurde der Einfachkeit halber das xv6-riscv educational operating
-system \cite{cox2011xv6} gewählt.\\
-\textit{Xv6} wird am MIT genutzt um Operating Systems Kurse zu bieten und bietet mit dem Handbuch eine
-einfache und verständliche Platform die ein vereinfachtes Unix Version 6 Interface implementiert.\\
-Xv6 gibt es in einer x86 version und in einer RISC-V version, es wurde hier die RISC-V version verwendet.
-\\
-Da im Rahme der Implementierung einer neuen Exception das nutzen echter RISC-V Hardware nicht möglich
-ist, muss ein Emulator benutzt werden um die nötigen Änderungen an der ISA zu implementieren und zu nutzen.
-Dafür wurde der Qemu Emulator gewählt, da dieser sehr Umfassend und performant ist und außerdem einen
-TLB emuliert.
-% Zukünftige Idee -> Configurierbarer "stateless" physical frame calculator hw baustein
-
-% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
-Dieser Abschnitt enthält die theoretischen Ausarbeitungen zu den einzelnen Bestandteilen die für
-die Implementation des Software kontrollierten TLB Miss Handlers benötigt werden. Diese Bestandteile
-sind wie folgt:
-\begin{itemize}
-    \item Die Erweiterung des Qemu Emulators um einen Exceptionwurf bei TLB Miss
-    \item Einen Maschine-Mode Traphandler in xv6 der die neue TLB Miss Exception entsprechend behandelt
-    \item Eine Möglichkeit um TLB einträge mittels spezieller Instruktionen zu schreiben
-\end{itemize}
-% New Exception - TLB Miss Exception
-% CSRs to write TLBs
-% Exception Handler
-% Exception triggerer for testing
 
 
 
@@ -117,18 +189,6 @@ sind wie folgt:
     may be independent from the platform in big parts, but still needs to be taken into consideration (like with
     csrs)}
 
-% -------------------------------------------------------------------------------------------------
-%                                            Required Changes
-% -------------------------------------------------------------------------------------------------
-% Conclusion on previous Work -> Still need a memory access
-
-% The Idea -> Getting rid of any memory access in favor of simple arithmetic operation (eg. hash functions)
-% statefull -> stateless
-% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
-% New Exception - TLB Miss Exception
-% CSRs to write TLBs
-% Exception Handler
-% Exception triggerer for testing
 
 
 % -------------------------------------------------------------------------------------------------

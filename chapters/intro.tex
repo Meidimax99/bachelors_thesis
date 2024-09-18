@@ -83,3 +83,12 @@ Im siebten Kapitel werden noch Vorschläge für auf diese Arbeit aufbauende Arbe
 nehmen noch Bezug auf zuvor ausgeschlossene Themen wie Hardwareoptimierungen der Idee.\todo{future  work:
     Hardware stateless hash mmu, der meine Idee in hardware realisiert}
 Das achte und letzte Kapitel gibt eine zusammenfassende Einschätzung der Arbeit ab.\\
+
+
+
+\\
+Current radix page tables can get up to 5 levels deep \cite{intel5LevelPaging5Level2017}. Every level
+adds another memory access to the page table lookup.\\
+Caching structures can alleviate the cost by storing complete or partial translation results \cite{van2002memory}.
+But especially large-memory applications, virtualized environments and graph-processing applications
+suffer extensively from address translation costs \cite{zagieboylo2020cost}.

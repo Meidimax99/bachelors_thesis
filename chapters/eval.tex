@@ -113,3 +113,12 @@ von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 % However, the efficiency of more complex strategies need to be weighed carefully
 % against their benefits, since the TLB filling is on the critical path of all
 % memory accesses.
+
+
+% Such a system may have an alternative MMU, which, instead of traversing the page table, may use simple
+% arithmetic operations to calculate the physical address for a given virtual address (and potentially other
+% context information like the process ID).\\
+% Taking into account the speed differences of memory accesses and processor clocks, this would surely
+% be faster than doing memory lookups
+
+% Configurable MMU -> Eval

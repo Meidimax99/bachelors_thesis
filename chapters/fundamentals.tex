@@ -350,6 +350,7 @@ werden kann \cite{drepper2007every}.
 \section{Sofware-based Virtual Memory System}
 % VM in Software möglich mit ähnlicher Performance wie hw möglich -> Sollte ja mehr Flexibilität geben
 %   [ A look at several...]
+% Software managed address translation
 % \subsection{Guarded Page Tables}
 
 
@@ -385,7 +386,7 @@ Der Sprung zurück ins Betriebssystem sorgt für einen Context-Switch, es muss a
 des aktuellen Prozesses gespeichert werden. Dabei wird der Reorder buffer geflushed und die
 pipeline massiv gestört. Durch den switch in den Kernel kann es langfristig auch noch zu weiteren
 Data und Instruction misses kommen, da ja der Kerneleintritt sicherlich einige Cache lines die der
-laufende Prozess benötigt hat überschrieben hat.
+laufende Prozess benötigt hat überschrieben hat. \todo{Cite}
 
 \paragraph{Embedded} Auch für embedded systems wird es interessanter virtual memory zu nutzen.
 Diese würden sicherlich von flexibleren designs profitieren. Außerdem würde die ein Einsparen
@@ -408,7 +409,6 @@ vollständig durch das OS definiert werden kann.
 
 \todo{section on basic operating system structures like exception handler, load store sandwich}
 
-\todo{basics on riscv here or in the theory chapter only?}
 \todo{fundamentals on the implementation platform}
 % -------------------------------------------------------------------------------------------------
 
@@ -565,3 +565,30 @@ this data is best communicated via the CSRs to the computer.\\
 % All approaches are based on a table.
 % Überleitung zu meinem Thema -> Avoid all memory references and just have a simple (hash?) function that realizes VM
 % [ a look at severeal ] -> conlsion
+
+
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/56,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{56}
+        \bitheader[endianness=big]{55,30,29,21,20,12,11,0} \\
+        \bitbox{26}{PPN[2]} &
+        \bitbox{9}{PPN[1]} &
+        \bitbox{9}{PPN[0]} &
+        \bitbox{12}{Page Offset}\\
+    \end{bytefield}
+    \caption[RISC-V Sv39 Physical Address]{RISC-V Sv39 Physical Address}
+    \label{fig:theory:sv39pa}
+\end{figure*}
+
+
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
+        \bitheader[endianness=big]{63,60,59,44,43,0} \\
+        \bitbox{4}{Mode} &
+        \bitbox{16}{ASID} &
+        \bitbox{44}{PPN} \\
+    \end{bytefield}
+    \caption[RISC-V Sv39 \texttt{satp} CSR]{RISC-V Sv39 \texttt{satp} CSR}
+    \label{fig:theory:sv39satp}
+\end{figure*}
