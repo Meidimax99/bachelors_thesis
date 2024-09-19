@@ -1,8 +1,86 @@
 \chapter{Evaluation}
 \label{chap:eval}
 
+% -------------------------------------------------------------------------------------------------
+%                                             Structure
+% -------------------------------------------------------------------------------------------------
 
-\section{Qualitative analysis}
+
+% What the project did not do
+
+% What the project did do ? -> Order?
+
+Qualitative Analysis (Does not need a heading, the whole chapter is about this)
+
+- Cost of the design
+- Context Switch (Just general cost, specifics later)
+- Exception Handler
+- Optimization Opportunities
+- Heisers Fast TLB Miss handler
+- Inlining
+
+- General problems of a Segmented Design
+
+- More shortcommings related to the functional requirements of virtual memory
+
+- Qualitative Cost analysis
+- Problems with acquiring quantitative data from QEMU
+- Typical Metrics (and if they can be acquired from qemu)
+- Instruction Count
+- Cycle count
+- Real hardware: Comparing Cycle count, or measuring ms (-> MMU freezes the CPU)
+
+- Functional Properties of VM Systems
+-> Present ways to improve the shortcommings?
+- General Shortcommings of the exception handler for MM design
+- Context Switch
+- General Shortcommings of a segmented design
+
+Specific shortcomings of this implementation
+
+Reasoning about Cost of the new VM system
+Problems with gaining quantitative data
+
+Qualitative Data -> Memory accesses
+Actual accesses -> Theoretical Cost analysis
+
+Optimization opportunities -> What accesses could still be removed?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% -------------------------------------------------------------------------------------------------
+%                                             Structure
+% -------------------------------------------------------------------------------------------------
+
+
 \subsection{Cost}
 % Context Switch
 % -> Inline Handler + Vergleich mit größe de Heiser fast TLB miss handlers
