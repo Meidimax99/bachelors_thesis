@@ -40,7 +40,7 @@ for free. While the general trade-offs between software and hardware TLB managem
 already been discussed in the Fundamentals chapter \ref{chap:fund}, this section will
 go into more detail of the trade-offs of this specific design and implementation.
 
-\textbf{Context Switch} The fast TLB miss handler presented by Gernot Heiser for the
+\subsection{Context Switch} The fast TLB miss handler presented by Gernot Heiser for the
 L4/MIPS implementation only uses three registers: Two of those registers are reserved
 for the kernel and the other one has to be saved in memory to later be restored \cite{heiserAnatomyHighPerformanceMicrokernel}.
 \\While the processor still has to run the instructions, this is only minimaly invasive
@@ -52,7 +52,7 @@ This allows running C code from the exception handler without having the think a
 registeres are mangeled by the code, which is very useful for trying different implementations.\\
 The tradeoff here lies between ease of programmability and performance.
 
-\textbf{Pipeline Flush} Exception handlers not only change the state of the processor that is
+\subsection{Pipeline Flush} Exception handlers not only change the state of the processor that is
 exposed to the programmer, they also disturb the transparent state consisting of the
 instruction pipeline and the reorder buffer.\\
 Running instructions from the context of the exception handler (coupled with RISC-V handling
@@ -61,7 +61,7 @@ and instruction pipeline \cite{jacobVirtualMemoryContemporary1998}.\\
 Instructions that have already been partially executed in the pipeline have to be restarted,
 imposing extra cost on the software handler \cite{jacob1998look}.
 
-\textbf{Exception Handler} The key difference of this exception handler and exception handlers
+\subsection{Exception Handler} The key difference of this exception handler and exception handlers
 of other software-based virtual memory designs is that this one does not need to access
 memory to generate mappings (apart from the register state save).\\
 Looking back at listing \ref{Final Handler Code} it is apparent that there still are some
