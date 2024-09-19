@@ -66,7 +66,7 @@ of other software-based virtual memory designs is that this one does not need to
 memory to generate mappings (apart from the register state save).\\
 Looking back at listing \ref{Final Handler Code} it is apparent that there still are some
 memory references:\\
-Mostly the function call of the \texttt{get_mapping()} function would generate code that
+Mostly the function call of the \texttt{get\_mapping()} function would generate code that
 writes to the stack. But the function call is only for readability of the code and could also
 be inlined.\\
 Otherwise the implementation is based on calculation for determining the memory offset from
