@@ -6,85 +6,91 @@
 % -------------------------------------------------------------------------------------------------
 
 
-% What the project did not do
 
-% What the project did do ? -> Order?
+% Qualitative Analysis (Does not need a heading, the whole chapter is about this)
 
-Qualitative Analysis (Does not need a heading, the whole chapter is about this)
+% - Cost of the design
+%     - Context Switch (Just general cost, specifics later)
+%         jacobVirtualMemoryContemporary1998 -> Pipeline flushing etc
+%     - Exception Handler
+%     - Optimization Opportunities
+%         - Heisers Fast TLB Miss handler
+%         - Inlining
 
-- Cost of the design
-- Context Switch (Just general cost, specifics later)
-- Exception Handler
-- Optimization Opportunities
-- Heisers Fast TLB Miss handler
-- Inlining
+% - General problems of a Segmented Design
 
-- General problems of a Segmented Design
+% - More shortcommings related to the functional requirements of virtual memory
+%     (Resolve shortcommings?)
 
-- More shortcommings related to the functional requirements of virtual memory
-
-- Qualitative Cost analysis
-- Problems with acquiring quantitative data from QEMU
-- Typical Metrics (and if they can be acquired from qemu)
-- Instruction Count
-- Cycle count
-- Real hardware: Comparing Cycle count, or measuring ms (-> MMU freezes the CPU)
-
-- Functional Properties of VM Systems
--> Present ways to improve the shortcommings?
-- General Shortcommings of the exception handler for MM design
-- Context Switch
-- General Shortcommings of a segmented design
-
-Specific shortcomings of this implementation
-
-Reasoning about Cost of the new VM system
-Problems with gaining quantitative data
-
-Qualitative Data -> Memory accesses
-Actual accesses -> Theoretical Cost analysis
-
-Optimization opportunities -> What accesses could still be removed?
+% - Qualitative Cost analysis
+%     - Problems with acquiring quantitative data from QEMU
+%         - Typical Metrics (and if they can be acquired from qemu)
+%             - Instruction Count
+%             - Cycle count
+%         - Real hardware: Comparing Cycle count, or measuring ms (-> MMU freezes the CPU)
+%     - Mem Access Counting (Instruction counting?)
 
 
+% -------------------------------------------------------------------------------------------------
+%                                             Software-Managed TLBs
+% -------------------------------------------------------------------------------------------------
+\section{Software-managed TLBs}
+Managing TLBs in software grants a lot of flexibility, but this flexibilty does not come
+for free. While the general trade-offs between software and hardware TLB managements have
+already been discussed in the Fundamentals chapter \ref{chap:fund}, this section will
+go into more detail of the trade-offs of this specific design and implementation.
 
+\textbf{Context Switch} The fast TLB miss handler presented by Gernot Heiser for the
+L4/MIPS implementation only uses three registers: Two of those registers are reserved
+for the kernel and the other one has to be saved in memory to later be restored \cite{heiserAnatomyHighPerformanceMicrokernel}.
+\\While the processor still has to run the instructions, this is only minimaly invasive
+for the state of the kernel.
 
+This implementation performs a complete save of the processor state, including most of the
+32 registers that RISC-V offers.\\
+This allows running C code from the exception handler without having the think about what
+registeres are mangeled by the code, which is very useful for trying different implementations.\\
+The tradeoff here lies between ease of programmability and performance.
 
+\textbf{Pipeline Flush} Exception handlers not only change the state of the processor that is
+exposed to the programmer, they also disturb the transparent state consisting of the
+instruction pipeline and the reorder buffer.\\
+Running instructions from the context of the exception handler (coupled with RISC-V handling
+memory faults precisely \cite{RISCVInstructionSet}) requires a flush of both reorder buffer
+and instruction pipeline \cite{jacobVirtualMemoryContemporary1998}.\\
+Instructions that have already been partially executed in the pipeline have to be restarted,
+imposing extra cost on the software handler \cite{jacob1998look}.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\textbf{Exception Handler}
+% -------------------------------------------------------------------------------------------------
+%                                             Segmented VM Desing
+% -------------------------------------------------------------------------------------------------
+\section{Segmented Memory Design}
 
 
 
 % -------------------------------------------------------------------------------------------------
-%                                             Structure
+%                                             Functional Requirements
 % -------------------------------------------------------------------------------------------------
+\section{Memory System Requirements}
 
+
+% -------------------------------------------------------------------------------------------------
+%                                             Cost Analysis
+% -------------------------------------------------------------------------------------------------
+\section{Cost Analysis}
+
+
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
 
 \subsection{Cost}
 % Context Switch
 % -> Inline Handler + Vergleich mit größe de Heiser fast TLB miss handlers
-% Annahme: Mein TLB miss handler/mapping function könnte sehr klein sein wenn sie 
+% Annahme: Mein TLB miss handler/mapping function könnte sehr klein sein wenn sie
 % nur sehr gut optimiert wird und dann könnte man sie eventuell inlinen!
 % Hardware Freeze on HW MMU Walk (but independent instruktions can go on -> issues of impl)
 
@@ -92,11 +98,11 @@ Optimization opportunities -> What accesses could still be removed?
 
 
 % Theoretische Kostenanalyse -> context switch in sw (ausblick inline?)
-% -> Optimization -> Reserve Registers for kernel handler, but this wont be good 
+% -> Optimization -> Reserve Registers for kernel handler, but this wont be good
 % -> l4 20 year paper -> registeres important for optiization
 
 % \section{Other operating system features in light of the segmented design}
-% TODO discussion (extra chapter?) about whether fork makes sense with 
+% TODO discussion (extra chapter?) about whether fork makes sense with
 % this segmented allokation approach
 
 % Instruction Count, Software Page Walk vs TLB manager
@@ -161,8 +167,8 @@ von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 
 
 % TODO : Space optimization: Using only one CSR??
-% 128 bit csr? Not using mmuidx, using mtval as extra space??? (Using mtval for this purpose only 
-% really makes sense for TLB writes in the exception handler, and makes it impossible to add 
+% 128 bit csr? Not using mmuidx, using mtval as extra space??? (Using mtval for this purpose only
+% really makes sense for TLB writes in the exception handler, and makes it impossible to add
 % new TLB entries from anywhere else)
 %?????
 
