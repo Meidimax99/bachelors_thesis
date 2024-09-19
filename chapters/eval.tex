@@ -61,7 +61,18 @@ and instruction pipeline \cite{jacobVirtualMemoryContemporary1998}.\\
 Instructions that have already been partially executed in the pipeline have to be restarted,
 imposing extra cost on the software handler \cite{jacob1998look}.
 
-\textbf{Exception Handler}
+\textbf{Exception Handler} The key difference of this exception handler and exception handlers
+of other software-based virtual memory designs is that this one does not need to access
+memory to generate mappings (apart from the register state save).\\
+Looking back at listing \ref{Final Handler Code} it is apparent that there still are some
+memory references:\\
+Mostly the function call of the \texttt{get_mapping()} function would generate code that
+writes to the stack. But the function call is only for readability of the code and could also
+be inlined.\\
+Otherwise the implementation is based on calculation for determining the memory offset from
+the ASID and bitwise operations.\\
+This is an advantage over radix page table systems that may need up to five memory references
+in contemporary architectures \cite{intel5LevelPaging5Level2017}.
 % -------------------------------------------------------------------------------------------------
 %                                             Segmented VM Desing
 % -------------------------------------------------------------------------------------------------
