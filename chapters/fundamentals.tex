@@ -170,19 +170,19 @@ To realize fine-grained protection of pages, there would also need to be some bi
 for read/write/execute rights.\\
 With 64 bit computer, the space requirements for such page tables would be even higher.
 
-\subsubsection{Hierarchical page tables}
-\todo{Verschiedene andere namen -> aus den übersichtspapern [a look at several, issues of impl], radix tree}
-Um die Speicherkosten der Verwaltung der Pages zu reduzieren benutzten die meisten \todo{cite?}
-Virtual Memory Systeme eine Multi-Level Page Table, oder auch hierarchische Page Table genannt.
-Diese ähnelt aber in ihrere Struktur weniger einer Tabelle sondern mehr einem Baum dessen Nodes tabellen
-von PTEs sind.
-Hier wird die Virtuelle Page nummer nochmal in mehrere Teile unterteilt. Jeder Teil der VPN
-wird benutzt um eine kleiner Tabelle zu indizieren. Der indizierte PTE verweißt dann auf die
-nächste kleinere Page Table, die dann entsprechend mit dem nächsten Teil der VPN indiziert wird.
-Je nach implementierung können hier bis zu 5 weitere indirektionen anfallen.
-Ein gängiges Schema wie es z.B. in der RISC-V ISA spezifiziert wird ist Sv39, dass insgesamt
-3 Level pro Page Table Tree vorsieht\cite{riscvreader}. Dieses Schema is auch nochmal
-in Figure \ref{fig:fund:pagetree} zu sehen.
+% Hierarchical
+\subsubsection{Hierarchical page tables} \todo{Different names -> from the survey papers
+[a look at several issues of impl], Radix Tree}
+To reduce the memory cost of managing pages, most \todo{cite?} virtual memory systems use a
+multi-level page table, also known as a hierarchical page table. However, its structure is less like a
+is less like a table and more like a tree, where the nodes are tables of page table entries (PTEs).
+Here the virtual page number is divided into several parts. Each part of the VPN (Virtual Page Number)
+is used to index a smaller table. The indexed PTE then points to the next smaller page table,
+which in turn is indexed by the next part of the VPN. Depending on the implementation
+this can involve up to 5 further indirections. A common scheme, as specified in the RISC-V ISA,
+is Sv39, which provides a total of 3 levels per page table tree\cite{riscvreader}.
+This scheme is also shown in the figure \ref{fig:fund}.
+
 \begin{figure*}[t]
     \centering
     \includegraphics[scale=.8]{figures/VM-Tree.pdf}
@@ -195,42 +195,44 @@ in Figure \ref{fig:fund:pagetree} zu sehen.
     \label{fig:fund:pagetree}
 \end{figure*}
 
-% Fazit -> Viele Main Memory Zugriffe -> Teuer
-Das traversieren der Page Table zum finden des Mappings benötigt pro Level eine weitere Memory reference\todo{cite}
-und da das Ermitteln des Mappings auf dem kritischen Pfad jeder Memory-operation befindet,  sodass
-es im schlimmsten fall, wenn alle caches missen, zu 5 memory accesses kommen muss (bei einem 5 -level
-paging scheme) nur um das Mapping für einen Memory Zugriff zu finden.
+% USE DEEPL WRITE FOR ALL FOLLOWING
 
-% Lösung? Hashed!
+% Conclusion -> Many main memory accesses -> Expensive
+Traversing the page table to find the mapping requires an additional memory reference for each
+level\todo{cite}, and since finding the mapping is on the critical path of every memory operation,
+in the worst case, if all caches are missed, up to 5 memory accesses may be required (in a 5-level paging
+scheme) just to find the mapping for a single memory access.
+
+% Solution? Hashed!
 \subsubsection{Inverted page tables}
-Ein alternatives Paging schema geht von der anderen richtung an das ganze ran und stellt statt einen
-Eintrag pro theoretischer virtueller Page einen PTE pro physischem Frame zur Verfügung.
-Ein physisches Page Frame ist ein Page-aligneter platz im physischen speicher für eine Page.
-Somit ergibt sich die anzahl der physischen Frames durch die Größe des Hauptspeichers geteilt
-durch die Page-Größe \todo{Pages schon definiert? Auch die variable größe?}.
-Vor allem für 64-bit Addressräume hat das den enormen Vorteil, dass nur so viele Seiten verwaltet
-werden müssen die es auch tatsächlich physisch gibt.\\
-Das Pagetable design hat noch den Vorteil, dass man im besten Fall deutlich weniger Hauptspeicherzugriffe
-benötigt. In dem einfachen Design aus Figure \ref{fig:fund:inverted} kann der entsprechende
-Page Table entry schon mit zwei Speicherlookups gefunden werden \cite{skarlatos2020elastic}.
+An alternative paging scheme approaches the problem from the opposite direction and provides a PTE
+for each physical frame instead of one entry per theoretical virtual page.
+A physical page frame is a page-aligned space in physical memory for a page.
+So the number of physical frames is determined by the size of main memory divided by the page size.
+\todo{Pages already defined? Variable size too?}.
+This has the enormous advantage, especially for 64-bit address spaces, that only as many pages need to be
+as physically exist.
+The page table design also has the advantage that, in the best case, significantly fewer main memory
+accesses are required. In the simple design shown in figure \ref{fig:fund}, the corresponding
+page table entry can be found with just two memory lookups \cite{skarlatos2020elastic}.
 
-% worst case -> collision count only bound by page frame number
-Da allerdings die Page Frame INdizies durch eine Hashfunktion aus der VPN berechnet werden, kann es zu
-Hashkollisionen kommen. Da die Länge einer Kollisionskette nicht absehbar ist, ist die maximale
-Anzahl der Speicherzugriffe um den richtigen PTE zu finden nur durch die maximale Anzahl der
-Page Frames und damit durch die größe des Hauptspeichers beschränkt.
+% yyWorst case -> Collision count limited only by page frame number
+However, as the page frame indices are calculated by the VPN using a hash function, collisions may occur,
+hash collisions can occur. Since the length of a collision chain is unpredictable, the maximum number of memory
+of memory accesses required to find the correct PTE is only limited by the maximum number of
+page frames and therefore by the size of the main memory.
 
-% hierachical -> fixed number of refs (but memory usage)
-Hier haben die hierarchieschen multi-level page tables den entscheidenden Vorteil, dass sie immer
-die feste Anzahl an Speicherzugriffen benötigen um den PTE zu ermitteln.
+% Hierarchical -> fixed number of refs (but memory usage)
+Hierarchical multi-level page tables have the key advantage that they always require
+a fixed number of memory accesses to determine the PTE.
 
-% Hash anchor to reduce the collision count
-Typische Inverted page table designs haben meistens noch eine sogenannte Hash Anchor Table, die zwischen
-dem Output der Hashfunktion und der Page Table liegt. Hat der Hash anchor doppelte größe
-der Pagetable, lässt sich die durchschnittliche Collision Chain Length halbieren.
-Allerdings wird nun mindestens eine Speicherreferenz in jedem Fall mehr gebraucht \cite{jacob1998virtualissues}.
-Alternative inverted page table designes erlauben eine dynamische größenänderung der Tabelle um
-Hash Collisionen zu verhindern. Dies ist jedoch sehr teuer und wird in der Regel vermieden \cite{skarlatos2020elastic}.
+% Hash anchor to reduce the number of collisions
+Typical inverted page table designs often include a so-called hash anchor table, which is placed between the output of the
+between the output of the hash function and the page table. If the hash anchor is twice the size of the
+of the page table, the average collision chain length can be halved.
+However, at least one additional memory reference is required in any case \cite{jacob1998virtualissues}.
+Alternative designs for inverted page tables allow the table to be dynamically resized to avoid hash collisions.
+hash collisions. However, this is very expensive and is generally avoided \cite{skarlatos2020elastic}.
 
 % Inverted Page Table figure
 \begin{figure*}[t]
@@ -242,26 +244,27 @@ Hash Collisionen zu verhindern. Dies ist jedoch sehr teuer und wird in der Regel
     \label{fig:fund:inverted}
 \end{figure*}
 
-% Fazit-> Nachteile von Invertierten Page Tables [siehe auch hash dont cache!]
-Inverted Page Tables reduzieren zwar die durchschnittliche Zugriffszeit auf die PTEs enorm, sie machen
-es jedoch schwerer andere features wie superpages und memory sharing zu unterstützen.
-Die Power Architecture unterstützt dies zum Beispiel durch einen zweistufigen übersetzungsprozess\cite{yaniv2016hash}.
+% Conclusion -> Disadvantages of inverted page tables [see also hash don’t cache!]
+Inverted page tables significantly reduce the average access time to the PTEs, but they make it
+more difficult to support other features like superpages and memory sharing.
+The Power Architecture, for example, supports this through a two-stage translation process \cite{yaniv2016hash}.
 % [hash dont cache] -> Hashed paging performs better
 
 
 % [hash dont cache] -> superpages are harder
 
-% [issues of impl] -> 
+% [issues of impl] ->
 
-% [ A look at several] -> 
+% [ A look at several] ->
 
-% -> Most commonly used in todays hardware -> Multi level page tables
-Einen klaren sieger in der debatte hashed vs radix \todo{radix begriff noch einführen} gibt es nicht
-und kommerzielle Hardware unterstützt verschiedenste designs die nicht standatisiert sich und z.t.
-stark unterscheiden \cite{jacob1998look}.
+% -> Most commonly used in today's hardware -> Multi level page tables
+There is no clear winner in the debate between hashed vs. radix \todo{still need to introduce the term "radix"}
+and commercial hardware supports a variety of designs that are not standardized and, in some cases,
+differ significantly \cite{jacob1998look}.
 
-Moderne INtel prozessoren unterstützen inzwischen radix designs mit einer tiefe von bis zu 5 ebenen,
-die nach wie vor 4KB pages benutzten um Kompatibilität zu bewaren.
+
+Modern Intel processors now support radix designs with a depth of up to 5 levels,
+which still use 4KB pages to maintain compatibility.
 
 % Todo, aber größere pages erhöhen tlb reach usw
 % Fazit -> Hauptproblem von VM sind teure Hauptspeicherzugriffe im kritischen Pfade von allen Memory Operations
@@ -278,9 +281,10 @@ die nach wie vor 4KB pages benutzten um Kompatibilität zu bewaren.
 % -------------------------------------------------------------------------------------------------
 \cite{denning1970virtual} % Hardware support source
 \section{Memory Management Hardware}
-Um die Umwandlung der virtuellen in physische Addressen weiter zu beschleuningen nutzen die meisten
-modernen Rechner extra hardwarebausteine. Diese bestehen aus einem Hardware Page Table walker (MMU) und
-einem Translation Cache, meistens Translation Lookaside Buffer (TLB) genannt\cite{jacobVirtualMemoryContemporary1998}.
+To further accelerate the translation of virtual to physical addresses, most modern computers use additional
+hardware components. These consist of a hardware page table walker (MMU) and a translation cache,
+commonly referred to as a Translation Lookaside Buffer (TLB) \cite{jacobVirtualMemoryContemporary1998}.
+
 % Frage: Besteht das MMU aus TLB + State Walker oder ist MMU der State Walker und TLB einfach extra?
 % FIGURE Simple HW Architecture for VM Acceleration Hardware
 \begin{figure*}[t]
@@ -299,18 +303,19 @@ einem Translation Cache, meistens Translation Lookaside Buffer (TLB) genannt\cit
 
 % Davor sollte der Page Table walk bekannt sein
 \subsection{MMU}
-Das Memory Management Unit (MMU) übernimmt die Aufgabe der addressübersetzung für den Computer.
-Dabei steht es zwischen dem Prozessor, der hauptsächlich mit virtuellen Addressen arbeitet und dem
-Memory Bus, der mit physischen Adressen zugegriffen wird. Greift der Prozessor auf eine gewisse
-virtuelle addresse zu, so führt das MMU einen Page Table walk durch um die zu der virtuellen
-Addresse passende physische addresse zu bestimmen. Währenddessen ist der Prozessor effektiv eingefrohren\cite{jacobVirtualMemoryContemporary1998}
+The Memory Management Unit (MMU) takes on the task of address translation for the computer.
+It sits between the processor, which primarily works with virtual addresses, and the memory bus,
+which is accessed with physical addresses. When the processor accesses a certain virtual address,
+the MMU performs a page table walk to determine the physical address corresponding to the virtual
+address. During this process, the processor is effectively frozen \cite{jacobVirtualMemoryContemporary1998}
 \todo{more fine-grained citation? -> Probably not, these are only fundamentals, should however quote overarching works}
+
 \subsection{TLB}
-Weil es sehr teuer wäre bei jedem Lade oder Speicher Memory Zugriff einmal die Page Table in hardware zu durchgehen,
-gibt es einen Cache für die Übersetzungen, den Translation Lookaside Buffer (TLB). Dieser Cache enthält
-most recent Translations von virtueller zu physischer addresse.\\
-Das MMU kann also erst mal in den TLB schauen, der parallelisiert und damit extrem schnell durchsucht
-werden kann \cite{drepper2007every}.
+Since it would be very costly to traverse the page table in hardware for every load or store memory access,
+there is a cache for the translations, the Translation Lookaside Buffer (TLB). This cache contains
+the most recent translations from virtual to physical addresses.\\
+The MMU can first check the TLB, which can be searched in parallel and thus extremely quickly \cite{drepper2007every}.
+
 
 
 % Gute quelle für alles hier : [jacob2010memory]
@@ -326,6 +331,23 @@ werden kann \cite{drepper2007every}.
 \subsection{Address Space Identifies}
 % \cite{jacobSoftwaremanagedAddressTranslation1997}
 %TODO in the vm requirements , ASIDs are presented as HW-support for address space protection
+With Address Space Identifiers (ASIDs), RISC-V provides a way to more efficiently utilize virtual memory:
+Since every process has its own virtual address space, translations that are still present in the
+TLB may not be valid after a context switch.\\
+
+\textbf{SFENCE.VMA} RISC-V provides one instruction that acts primarily as a memory barrier:
+It prevents reordering of instructions accessing memory accross the \texttt{sfence.vma} instruction.\\
+This is important when the page tables are switched, e.g. when the kernel is entered from user mode,
+because the translations will change.\\
+The instruction also acts as a flushing operation for TLB entries. With both of the optional registers
+arguments set to zero, the instruction will flush all entries.\\
+Setting the first register to a specific address will only flush translations containing that address.\\
+The second register specifies the address space that should be flushed, given a ASID.
+
+This mechanism allows for a precise control over flushing of TLB entries, which can improve the
+memory system performance \cite{RISCVInstructionSet}.
+
+
 
 % -------------------------------------------------------------------------------------------------
 
@@ -358,46 +380,43 @@ werden kann \cite{drepper2007every}.
 % With only software ptw process would have to context switch to the kernel -> Very expensive
 % With an MMU the processor essentially just freezes until the memory operation has completed
 % \subsection{HW-Dependent PTE Structure} -> inflexibility
-Zwischen hardware und software managed translations gibt es einige Erwägungen die in betracht
-gezogen werden sollten.
+There are several considerations that should be taken into account when comparing hardware and
+software-managed translations.
 
-\paragraph{Feste Paging Structuren} Bei Hardware Managed Virtual Memory sind die structuren für
-für die Page Tables und Page Table Entries fest von der Microarchitecture definiert.
-Dadurch kann das Betriebssystem das Memory Management nicht auf seine zwecke und seinen Use case
-zurecht schneiden und ist stuck mit dem fixen design.
-Dieses erschwert auch die Portabilität von Systemsoftware, da es keinen Standard für diese
-Memory Management Strukturen gibt.
-Bei diesen gibt es auch keinerlei standartisierung obwohl es keine bedeutenden Performance unterschiede
-in den Verschiedenen designs  gibt \cite{jacob1998look}.
+\paragraph{Fixed Paging Structures} In hardware-managed virtual memory, the structures for page tables
+and page table entries are fixed by the microarchitecture. As a result, the operating system cannot tailor
+memory management to its purposes and use case, and it is stuck with the fixed design.
+This also complicates the portability of system software, as there is no standard for these memory management
+structures. Despite there being no significant performance differences among the various designs,
+there is no standardization \cite{jacob1998look}.
 
-\paragraph{Pipeline freezing / flushing} Bei einem TLB Miss \todo{schon definiert?} kommt es bei
-einem hardware verwalteten TLB nur zu einem einfrieren der Pipeline (zumindest für die Instruktionen
-die abhängig von dem Speicherzugriff sind). Bei einem software verwalteten TLB wird die Kontrolle
-jedoch zurück an das Betriebssystem über eine Exception gegeben, die entsprechend vermerkt,
-dass sich die benötigte Adresse nicht im TLB befindet (TLB Miss Exception).
-Der Sprung zurück ins Betriebssystem sorgt für einen Context-Switch, es muss also der Zustand
-des aktuellen Prozesses gespeichert werden. Dabei wird der Reorder buffer geflushed und die
-pipeline massiv gestört. Durch den switch in den Kernel kann es langfristig auch noch zu weiteren
-Data und Instruction misses kommen, da ja der Kerneleintritt sicherlich einige Cache lines die der
-laufende Prozess benötigt hat überschrieben hat. \todo{Cite}
+\paragraph{Pipeline Freezing / Flushing} On a TLB miss \todo{already defined?},
+with a hardware-managed TLB, only the pipeline freezes (at least for instructions dependent on
+the memory access). However, with a software-managed TLB, control is handed back to the operating system
+via an exception, which notes that the required address is not in the TLB (TLB miss exception).
+The jump back to the operating system causes a context switch, requiring the state of the current process
+to be saved. During this, the reorder buffer is flushed, and the pipeline is heavily disrupted.
+Switching to the kernel can also lead to further data and instruction misses in the long term,
+as the kernel entry likely overwrites some cache lines that the running process needed. \todo{Cite}
 
-\paragraph{Embedded} Auch für embedded systems wird es interessanter virtual memory zu nutzen.
-Diese würden sicherlich von flexibleren designs profitieren. Außerdem würde die ein Einsparen
-an Chipgröße durch weglassen des MMUs auch die Kosten in der Produktion senken. \cite{jacob1998look}
-\todo{weiß ja nicht}
+\paragraph{Embedded} Using virtual memory is becoming increasingly relevant for embedded systems.
+They would certainly benefit from more flexible designs. Additionally, saving on chip size by
+eliminating the MMU would also reduce production costs \cite{jacob1998look}. \todo{not sure about this}
+
 
 
 % Conclusion of HW vs SW
-\cite{jacob1998look} schließt in einer vergleichenden Studie verschiedener HW und SW memory designs,
-dass wohl HW basierte Ansätze grundsätzlich performanter sind, aber das SW basierte designs durchaus
-viable sind, wenn die caches groß genug sind um die Anzahl der Cache misses zu reduzieren.
-Besonders bezüglich der flexibilität haben sw ansätze auch einen großen vorteil, da das VM system
-vollständig durch das OS definiert werden kann.
-% -------------------------------------------------------------------------------------------------
+\cite{jacob1998look} concludes in a comparative study of various HW and SW memory designs
+that hardware-based approaches are generally more performant, but software-based designs are certainly
+viable if the caches are large enough to reduce the number of cache misses.
+Especially in terms of flexibility, software-based approaches have a significant advantage,
+as the VM system can be fully defined by the operating system.
 
 % -------------------------------------------------------------------------------------------------
 
-% TODO Short discussion hw and sw vm -> common problem: Page Table Walks require in either case a 
+% -------------------------------------------------------------------------------------------------
+
+% TODO Short discussion hw and sw vm -> common problem: Page Table Walks require in either case a
 % lot of memory references. These costs can be aleviated using caches, but will still cost [ cite a source abouts costs here]
 
 \todo{section on basic operating system structures like exception handler, load store sandwich}
@@ -409,10 +428,11 @@ vollständig durch das OS definiert werden kann.
 
 
 \section{RISC-V Basics}
-Die Implementation die in dieser Arbeit vorgestellt läuft auf einer RISC-V Platform. Daher ist
-es notwendig ein paar Grundlagen zur RISC-V Platform durchzugehen. Relevant sind hier vor allem
-das Virtual Memory System, der Exception/Trap Mechanismus und die Control und Status Registers (CSRs), die
-die Grundlage der Erweiterung von RISC-V darstellen.
+The implementation presented in this work runs on a RISC-V platform. Therefore, it is necessary
+to go over some basic concepts of the RISC-V platform. Particularly relevant here are the virtual
+memory system, the exception/trap mechanism, and the control and status registers (CSRs), which
+form the foundation for extending RISC-V.
+
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Sv39 Virtual Memory}
@@ -445,57 +465,56 @@ die Grundlage der Erweiterung von RISC-V darstellen.
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Traps}
-\todo{Das hier alles in fundamentals?}
+\todo{Should this be in fundamentals?}
 % exceptions vs interrupts
-Traps sind Teil der RISC-V privilegierten Architecture. Sie bieten einen Mechanismus
-um auf externe Events und auf unusual runtime events, also Exceptions, zu reagieren\cite{riscvreader}.
-Der Begriff Trap ist ein Überbegriff der nochmal in Interrupts - asynchrone Events - und
-Exceptions - synchrone Events - aufgeteilt wird.\\
-Besonders von Interesse sind hier die Exceptions, da ein TLB Miss beim ausführen einer Instruktion
-passiert, also synchron zur Clock des Prozessors. Allerdings ist es für das Arbeiten mit
-dem Qemu und dem xv6 Quellcode auch wichtig die Interrupts mit im Kopf zu behalten, da auf der
-einen Seite der Qemu Code exceptions und interrupts in den gleichen Funktionen behandelt und
-auf der anderen Seite xv6, bzw. RiscV im allgemeinen einen vereinten Vektor für das handling
-von Interrupts und Exceptions nutzt\cite{RISCVInstructionSet}. \\
+Traps are part of the RISC-V privileged architecture. They provide a mechanism to respond to
+external events and unusual runtime events, known as exceptions \cite{riscvreader}.
+The term "trap" is an umbrella term that is further divided into interrupts — asynchronous events —
+and exceptions — synchronous events.\\
+Exceptions are particularly of interest here, as a TLB miss occurs during the execution of an instruction,
+meaning it happens synchronously with the processor's clock. However, it is also important to keep interrupts
+in mind when working with Qemu and xv6 source code, because on one hand, the Qemu code handles exceptions
+and interrupts within the same functions, and on the other hand, xv6, or RISC-V in general, uses a unified
+vector for handling both interrupts and exceptions \cite{RISCVInstructionSet}.\\
 
 % Exception registers
-Für das Auslößen und Behandeln von Exceptions sind 6 register zentral. Diese gibt es sowohl
-für den Supervisor Mode (starting with an s) als auch den Machine Mode (starting with an m).
-\todo{priviledge modes schon eingeführt?} Ob für die Exception die machine mode variante des
-registers oder die Supervisor Mode Variante verwendet werden sollte hängt von dem Modus ab
-in dem die Exception behandelt wird. Im folgenden werden alle Register nur mit dem M-Mode \todo{
-    M-Mode als abkürzung für Machine Mode schon eingeführt?
-}
-prefix dargestellt. \todo{Weil die Exception am ende als M-Mode exception konzipiert wurde?}
+There are six central registers for triggering and handling exceptions. These exist both for
+Supervisor Mode (prefixed with "s") and Machine Mode (prefixed with "m").
+\todo{Have privilege modes been introduced already?}
+Whether the machine mode or supervisor mode version of the register should be used for an exception depends
+on the mode in which the exception is handled. In the following, all registers are presented with the
+M-Mode prefix only \todo{Has M-Mode as an abbreviation for Machine Mode been introduced?}.
+\todo{Because the exception was ultimately designed as an M-Mode exception?}
 
-% TODO sortierung der Register nach rolle?
+% TODO: sorting of registers by role?
 
 % Vector -> mtvec
-\textbf{Exception Vector} Der Hart \todo{Begriff Hart schon eingeführt?} bei dem zu einem
-außerordentlichen Zustand gekommen ist muss wissen wo die Kernel Routine ist zu der er zur
-Exception behandlung springen muss. Dafür enthält \texttt{BASE} field des registers eine
-4-Byte alignten physischen Adresse zu der der Program Counter im Exception fall gesetzt wird.\\
-Das \texttt{MODE} field erlaut es zwischen einem \texttt{direct} und \texttt{vectored} Mode
-umzuschalten. Im \texttt{MODE=Direct} wird bei allen Traps der PC zu BASE gesetzt, bei
-\texttt{MODE=Vectored} wird der PC für asynchrone interrupts zu $ BASE+4*CAUSE $ gesetzt.\\
+\textbf{Exception Vector} The hart \todo{Has the term "hart" been introduced?} experiencing
+an exceptional state must know where the kernel routine is located to handle the exception.
+The \texttt{BASE} field of the register contains a 4-byte aligned physical address to which
+the program counter is set in the case of an exception.\\
+The \texttt{MODE} field allows switching between \texttt{direct} and \texttt{vectored} modes.
+In \texttt{MODE=Direct}, the PC is set to BASE for all traps, whereas in \texttt{MODE=Vectored},
+the PC is set to $BASE+4*CAUSE$ for asynchronous interrupts.\\
+
 % Delegation -> medeleg
 
 % Data for exception handling -> mcause, mtval, mepc, mscratch
-\textbf{Context Information} Um die Exception ordentlich zu behandeln sind einige
-Kontextinformationen notwendig. Das \textbf{mcause} Registe enthält den den Exeption Code
-der Exception; \textbf{mepc} enthält den Program Counter der Instruktion die zum werfen der
-exception geeführt hat; und \textbf{mtval} enthält exception spezifische informationen wie
-zum Beispiel die virtuelle Addresse die eine Page Fault Exception ausgelößt hat.
-\textbf{mstatus} enthält allgemeine Informationen zum aktuellen Zustand der Hardware.\\
+\textbf{Context Information} To properly handle the exception, some context information is required.
+The \textbf{mcause} register contains the exception code of the exception; \textbf{mepc} contains
+the program counter of the instruction that triggered the exception; and \textbf{mtval} holds
+exception-specific information, such as the virtual address that triggered a page fault exception.
+\textbf{mstatus} contains general information about the current hardware state.\\
 
-\textbf{Delegation} Normalerweiße werden alle Exceptions im machine mode behandelt, allerdings
-kann es manchmal auch sinnvoll sein die die Exception in einem niedrigeren Privilegienmodus
-zu behandeln. Mit dem Bitfield im \textbf{medeleg} register kann man für einzelne Exceptions
-auswählen, ob diese zum nächst-niedrigeren Privilegienmodus weitergereich werden sollen.\\
+\textbf{Delegation} Normally, all exceptions are handled in machine mode; however, in some cases,
+it may be useful to handle the exception in a lower privilege mode. With the bitfield in the
+\textbf{medeleg} register, individual exceptions can be chosen to be delegated to the next-lower
+privilege mode.\\
 
 % Exception number
-\textbf{Exception Code} Jeder exception ist eine eindeutige nummer, der Exception code zugewießen
-\cite{riscvreader}. Diese findet sich beim behandeln der Exception im mcause register wieder.
+\textbf{Exception Code} Each exception is assigned a unique number, the exception code \cite{riscvreader}.
+This can be found in the \texttt{mcause} register when handling the exception.
+
 
 % Zusammenspiel der Register im Exception Fall -> xv6 Book Exception Machinery
 
