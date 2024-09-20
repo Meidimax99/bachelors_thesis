@@ -375,6 +375,9 @@ memory system performance \cite{RISCVInstructionSet}.
 % With only software ptw process would have to context switch to the kernel -> Very expensive
 % With an MMU the processor essentially just freezes until the memory operation has completed
 % \subsection{HW-Dependent PTE Structure} -> inflexibility
+
+%elaboration on general costs of page table walks -> basically exactly what related
+% work motivated their designs with
 There are several considerations that should be taken into account when comparing hardware and
 software-managed translations.
 
@@ -459,7 +462,6 @@ form the foundation for extending RISC-V.
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Traps}
-\todo{Should this be in fundamentals?}
 % exceptions vs interrupts
 Traps are part of the RISC-V privileged architecture. They provide a mechanism to respond to
 external events and unusual runtime events, known as exceptions \cite{riscvreader}.

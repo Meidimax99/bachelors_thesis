@@ -66,7 +66,7 @@ It then presents the theory behind the different components of the implementatio
 
 
 
-\section{General idea of stateless Virtual Memory}
+\section{General Idea of function-based Virtual Memory}
 % Idea Description
 
 % The implementation is not only about the mapping functiion but also about the  platform modifications to create mapping functions
@@ -74,7 +74,7 @@ It then presents the theory behind the different components of the implementatio
 The goal of this work is to provide a proof of concept of an alternative approach
 to virtual memory management that reduces the overhead associated with traditional page tables walks.\\
 Instead of suffering the penalty of up to five memory accesses on a TLB miss,
-we want to explore using simple functions for the mapping.
+we want to explore using simple functions for the mapping.\\
 
 Figure \ref{fig:theory:normal_tlb_miss} shows the usual architecture of a system
 with a hierarchical page table.\\
@@ -113,50 +113,14 @@ The final architecture for the memory sytem will look like depicted in figure \r
     \label{fig:theory:mapping_fx}
 \end{figure*}
 
-% TODO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Give a rough description of the required changes here?
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Overview of the different parts necessary to implement the idea
-\section{Conceptual Basis for Implementation Modifications}
-% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
-Dieser Abschnitt enthält die theoretischen Ausarbeitungen zu den einzelnen Bestandteilen die für
-die Implementation des Software kontrollierten TLB Miss Handlers benötigt werden. Diese Bestandteile
-sind wie folgt:
+To adapt the RISC-V emulator to fit the architectural design, a number of changes to the implementation of the emulator are necessary:
+
 \begin{itemize}
-    \item Die Erweiterung des Qemu Emulators um einen Exceptionwurf bei TLB Miss
-    \item Einen Maschine-Mode Traphandler in xv6 der die neue TLB Miss Exception entsprechend behandelt
-    \item Eine Möglichkeit um TLB einträge mittels spezieller Instruktionen zu schreiben
+    \item Extending the Qemu emulator to trigger an exception on a TLB miss
+    \item A machine-mode trap handler in xv6 that handles the TLB miss exception
+    \item A way to write TLB entries using special instructions
 \end{itemize}
 
-% -------------------------------------------------------------------------------------------------
-%                                            Required Changes
-% -------------------------------------------------------------------------------------------------
-
-% What to do to realize this idea? (basically top level overview of the theory and impl chapters)
-% New Exception - TLB Miss Exception
-% CSRs to write TLBs
-% Exception Handler
-
-% Steps necessary to implement Idea -> relating to the implementation
-
-% Architecture: Handle TLB Miss -> Like Liedtke MIPS
-
-% TLB Exception
-% TLB Filling
-
-
-
-%elaboration on general costs of page table walks -> basically exactly what related
-% work motivated their designs with
-
-
-
-\todo{elaboration on xv6 here or in fundamentals (or an extra platform chapter)?? -> because theory
-    may be independent from the platform in big parts, but still needs to be taken into consideration (like with
-    csrs)}
-
-% TODO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Kapitel endet mit der Frage was man für die Implementation benötigt?
 
 % -------------------------------------------------------------------------------------------------
 %                                            Platform
@@ -208,21 +172,20 @@ TLB emuliert.
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
 \section{TLB Miss Exception}
-Usually, an operating system running on RISC-V hardware is not notified directly of TLB misses.
+Operating system running on RISC-V hardware are not directly notified of TLB misses.
 A TLB miss can only be infered when a page fault occurs. Otherwise, TLB misses will be handled
 by the MMU.\\
 To manage a TLB in software the operating system needs to be made aware that a TLB miss occured.\\
-The natural mechanism to do this is the exception mechanism. \todo{similarity TLB Miss Page Fault}
+The natural mechanism to do this is the exception mechanism.
 
 % -------------------------------------------------------------------------------------------------
 \textbf{RISC-V Exceptions}
-Unlike MIPS \cite{heiserAnatomyHighPerformanceMicrokernel}, RISC-V does not raise a TLB miss exception
-on TLB miss.\\
+Unlike MIPS \cite{heiserAnatomyHighPerformanceMicrokernel}, RISC-V does not raise a TLB miss exception on TLB miss.\\
 Instead, the \emph{Virtual Address Translation Process} is initiated: The MMU will walk through
 the page table tree and may, depending on the PTEs, either throw different kinds of page faults, or
 successfully add the missing entry to the TLB.\\
 At this point the faulting instruction will either be repeated, if the TLB fill was successful, or
-a page fault exception will be invoked. The kernel then has to handle that page fault with help
+a page fault exception will be invoked \cite{RISCVInstructionSet}. The kernel then has to handle that page fault with help
 of the contents of the \texttt{satp} and \texttt{mtval} (or \texttt{stval}) registers.
 
 The behavior of a TLB Miss exception should be pretty similar: If the TLB hits, the program will
@@ -248,7 +211,7 @@ for custom use. These are $24-31$ and $48-63$ \cite{RISCVInstructionSet}. For th
 Throwing a exception is only one half of the puzzle. The operating system also has to handle the exception
 properly.
 % -------------------------------------------------------------------------------------------------
-\subsection{L4/MIPS TLB Exception Handling}
+\textbf{L4/MIPS TLB Exception Handling}
 MIPS vectors its exception vectors in a continuous area in memory, starting at a base address.
 That gives the TLB miss handler 32 instructions to server the TLB Miss. Otherwise it has to jump
 somewhere with more space.\\
@@ -257,12 +220,12 @@ registers \texttt{k0} and \texttt{k1} and another register, which has to be save
 Thus the memory footprint of handler is really low.
 
 % -------------------------------------------------------------------------------------------------
-\subsection{xv6 Exception Handler}
+\textbf{xv6 Exception Handler}
 xv6's exception handler does not actually handle most of the exceptions. For most of the exceptions,
 but notably also the different page fault exceptions, xv6 will simply kill the offending process \cite{cox2011xv6}.
 
 % -------------------------------------------------------------------------------------------------
-\subsection{TLB Miss Exception Handler}
+\textbf{TLB Miss Exception Handler}
 To simplify things, we will let the TLB Miss exception handler run in machine mode only.
 The usual mode for a operating system kernel would be the supervisor mode. However, this
 mode also uses address translation. This could create a situation in which we would have
@@ -291,12 +254,6 @@ the exception handler code has finished.\\
 This is essential to keep the process, that was just running when the exception triggered,
 in an consistent state when execution resumes.
 
-% Catching New Exception
-%   Current xv6 machine mode exception handler ( -> maybe too implementation specific)
-%   riscv interrupt mechanism (precice, vectorized)
-%   Exception Catching theory, context switch, state save restore
-
-
 
 % -------------------------------------------------------------------------------------------------
 %                                            TLB FILLING
@@ -308,7 +265,7 @@ mappings that will be used after the handler finishes.\\
 RISC-V also does not provide any means to write to the TLB out of the box. But the RISC-V Control and Status Registers
 (CSRs) allow for a great deal of extensibility \cite{riscvreader}.
 With CSRs, it is possible to implement custom behavior, which can then be accessed using instructions
-of the \texttt{CSRR}\todo{check reader: is this correct?} instruction group.\\
+of the \texttt{CSRR} instruction group.\\
 To make an informed decision on how the CSR format for TLB writing may look like, we will first
 look at the TLB and the TLB instructions of \emph{MIPS}. Then we will take a look at what the
 RISC-V ISA specifies about TLB, how QEMU implements TLBs and finally we will look at a the
@@ -337,7 +294,7 @@ with the \texttt{sfence.vma} instruction \cite{riscvreader}.\\
 
 % Replacement policy
 %   MIPS -> Indexed writes
-A advantage of software-managed TLBs is, that the operating system can implement custom
+\textbf{Replacement Strategies} A advantage of software-managed TLBs is, that the operating system can implement custom
 TLB replacement policies, that may even change depending on workload, programs running
 and other circumstances.\\
 The default replacement strategy for the MIPS \texttt{tlbwr} instruction is to simply
@@ -356,31 +313,18 @@ This is useful to keep some mappings in the TLB that are valid all the time.
 Having a protected space of TLB entries can especially be useful for global mappings. xv6 employs such a global
 mapping for every process and the kernel with the trampoline page.\todo{trampoline page should be explained in fundamentals/platform}
 
-\paragraph{MIPS - TLBWR} The arguments for the instruction need to be written in some
-other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \texttt{PageMask}.
+\textbf{MIPS - TLBWR} The arguments for the instruction need to be written in some
+other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \texttt{PageMask}.\\
+The contents of those registers directly correspont to the TLB entry, which creates quite large
+TLB entries \cite{heiserAnatomyHighPerformanceMicrokernel}.
 
 
-% -------------------------------------------------------------------------------------------------
-\subsection{RISC-V TLBs}
-% Riscv can flush entries of a specific ASID only, this means that it keeps that information
-% selective TLB flushing -> RISCV ASIDs (or even no TLB flushing  because VAs contain ASID?)
-% Somewhere in the TLB structure
-\subsection{QEMU TLBs}
-% Qemu -> TLB structure, replacement
-RISC-V and its extensions currently provide no support for modifying the TLB in software.
-RISC-V does however provide a lot of extensibility with the \texttt{Control and Status Registers} (CSRs).\\
-CSRs are part of the RISC-V priviledged architecture and are provided by the \texttt{Zicsr} extension\cite{RISCVInstructionSet}.\\
 
-% How is the RISCV Tlb indexed -> Check Qemu source
-
-% -------------------------------------------------------------------------------------------------
-\subsection{RISC-V CSRs}
-% CSR size
 % -------------------------------------------------------------------------------------------------
 \subsection{TLB CSRs}
 The minimum information the hardware needs to create a mapping is the faulting physical address and
 the virtual address it maps to.\\
-The mapping is has a granularity of 4 KB pages. Thus the lower 12 bits of both the physical and the
+The mapping has a granularity of 4 KB pages. Thus the lower 12 bits of both the physical and the
 virtual address are not needed.\\
 This still leaves $2*(64-12)=104$ bits for the mapping.\\
 The virtual address can not be easily shortened anymore. Taking some of the most significant bits
@@ -396,10 +340,44 @@ of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
 % Fixed TLB format, but flexibilty of CSR format
 
 
+\todo{TLB CSR Format bitfields}
 
+% TLBH
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/39,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{39}
+        \bitheader[endianness=big]{38,30,29,21,20,12,11,0} \\
+        \bitbox{27}{VPN}&
+        \bitbox{12}{Page Offset}\\
+    \end{bytefield}
+    \caption[TLBH CSR Format]{TLBH CSR Format}
+    \label{fig:theory:tlbh}
+\end{figure*}
 
-\todo{TLB CSR Format}
-
+%TLBL
+\begin{figure*}[h!]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
+        \bitheader[endianness=big]{63,62,61,60,54,53,28,27,19,18,10,9,8,7,6,5,4,3,2,1,0} \\
+        \bitbox{1}{N} &
+        \bitbox{2}{\rotatebox{90}{PBMT}} &
+        \bitbox{7}{Reserved} &
+        \bitbox{26}{PPN[2]} &
+        \bitbox{9}{PPN[1]} &
+        \bitbox{9}{PPN[0]} &
+        \bitbox{2}{\rotatebox{90}{RSW}} &
+        \bitbox{1}{D} &
+        \bitbox{1}{A} &
+        \bitbox{1}{G} &
+        \bitbox{1}{U} &
+        \bitbox{1}{X} &
+        \bitbox{1}{W} &
+        \bitbox{1}{R} &
+        \bitbox{1}{V}
+    \end{bytefield}
+    \caption[TLBL CSR Format]{TLBL CSR Format}
+    \label{fig:theory:tlbl}
+\end{figure*}
 \todo{Hardware dependenc -> still dependent on the TLB structure of RISCV Sv39, VAs and PAs remain, as do PTEs}
 
 
