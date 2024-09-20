@@ -8,8 +8,23 @@
 % Configurable MMU for more flexibility jacob1998look
 
 % -> Mapping function can be created from simple arithmetic primitives
-% -> Configurable MMU for hashed stateless softtlb virtual memory 
+% -> Configurable MMU for hashed stateless softtlb virtual memory
 
 % Future work -> finer TLB control (or discussion)
 %       Weil die genaue controlle des TLBs wäre ja ein entscheidenderr
 %       Vorteil von Software managed vm
+
+
+% -------------------------------------------------------------------------------------------------
+% DISCUSSION ON REAL HARDWARE
+% Extensibility foundations: CSRs, satp mode field open slots for more memory modes
+%   Configurable HASHING MMU
+% \subsubsection{Switching between HW and SW TLB miss handling}
+
+% TODO TLB Structure could also be different in a system focused on only softtlb design,
+%   because it would not have to adhere to the formate forced on it by the page table design
+% -------------------------------------------------------------------------------------------------
+
+
+% Hardware erweiterung wenn die funktion parametrisierbar ist
+

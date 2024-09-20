@@ -78,55 +78,24 @@ Otherwise the implementation is based on calculation for determining the memory 
 the ASID and bitwise operations.\\
 This is an advantage over radix page table systems that may need up to five memory references
 in contemporary architectures \cite{intel5LevelPaging5Level2017}.
+
+% \todo{typical tlb replacement strategies}
+% \todo{How does QEMU replace TLB entries -> index?} \\% Direct mapped
+% With the new CSRs presented above, it is possible to write TLB entries.
+% The placement of the entry and thus the entry to be replaced can not be selected.
+% The replacement policy would be completely up to the hardware implementation.
+% It would also be possible to further extend the ISA with additional CSRs to
+% support specific selection of entries to be replaced, or to select between
+% a number of replacement strategies.
+% However, the efficiency of more complex strategies need to be weighed carefully
+% against their benefits, since the TLB filling is on the critical path of all
+% memory accesses.
 % -------------------------------------------------------------------------------------------------
-%                                             Segmented VM Desing
+%                                             Segmented VM Desing (Design shortcommings)
 % -------------------------------------------------------------------------------------------------
 \section{Segmented Memory Design}
 
-
-
-% -------------------------------------------------------------------------------------------------
-%                                             Functional Requirements
-% -------------------------------------------------------------------------------------------------
-\section{Memory System Requirements}
-
-
-% -------------------------------------------------------------------------------------------------
-%                                             Cost Analysis
-% -------------------------------------------------------------------------------------------------
-\section{Cost Analysis}
-
-
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-
-\subsection{Cost}
-% Context Switch
-% -> Inline Handler + Vergleich mit größe de Heiser fast TLB miss handlers
-% Annahme: Mein TLB miss handler/mapping function könnte sehr klein sein wenn sie
-% nur sehr gut optimiert wird und dann könnte man sie eventuell inlinen!
-% Hardware Freeze on HW MMU Walk (but independent instruktions can go on -> issues of impl)
-
-% Passt das in eine Cache line -> code localität
-
-
-% Theoretische Kostenanalyse -> context switch in sw (ausblick inline?)
-% -> Optimization -> Reserve Registers for kernel handler, but this wont be good
-% -> l4 20 year paper -> registeres important for optiization
-
-% \section{Other operating system features in light of the segmented design}
-% TODO discussion (extra chapter?) about whether fork makes sense with
-% this segmented allokation approach
-
-% Instruction Count, Software Page Walk vs TLB manager
-
-% switching to kernel evicts other cache entries for kernel in real hardware
-
-% -------------------------------------------------------------------------------------------------
-\subsection{Design Restrictions} % Generall Segmented Design shortcommings
+% Generall Segmented Design shortcommings
 % Allgemeine Discussion eines Segmentierten Designs
 % \cite{skarlatos2020elastic}
 % \cite{tanenbaumOS}
@@ -149,7 +118,10 @@ in contemporary architectures \cite{intel5LevelPaging5Level2017}.
 %Maybe appropiate for embedded applications?
 
 % -------------------------------------------------------------------------------------------------
-\subsection{Memory System Requirements} % Shortcommings of my implementation
+%                                             Functional Requirements
+% -------------------------------------------------------------------------------------------------
+\section{Memory System Requirements}
+% Shortcommings of my implementation
 Für eine qualitative Analyse des implementierten Virtual Memory Systems bietet \cite{jacobSoftwaremanagedAddressTranslation1997}
 eine gute Vorlage. Dort wurden die zentralen Anforderungen an ein Virtual Memory System auf Grundlage
 von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
@@ -163,56 +135,62 @@ von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 % Idee -> Address spaces with different sizes, so that slots can be swapped, or address spaces can be merged
 % Memory hungry process can get multiple Address spaces
 
-%
+
 % -------------------------------------------------------------------------------------------------
-\section{Quantitative Analysis}
-\subsection{Problems with measuring performance of an emulated system}
-% Warum geht es nicht -> Emuliert
+%                                             Cost Analysis
+% -------------------------------------------------------------------------------------------------
+\section{Cost Analysis}
+% Context Switch
+% -> Inline Handler + Vergleich mit größe de Heiser fast TLB miss handlers
+% Annahme: Mein TLB miss handler/mapping function könnte sehr klein sein wenn sie
+% nur sehr gut optimiert wird und dann könnte man sie eventuell inlinen!
+% Hardware Freeze on HW MMU Walk (but independent instruktions can go on -> issues of impl)
+
+% Passt das in eine Cache line -> code localität
+
+
+% Theoretische Kostenanalyse -> context switch in sw (ausblick inline?)
+% -> Optimization -> Reserve Registers for kernel handler, but this wont be good
+% -> l4 20 year paper -> registeres important for optiization
+
+% \section{Other operating system features in light of the segmented design}
+% TODO discussion (extra chapter?) about whether fork makes sense with
+% this segmented allokation approach
+
+% Instruction Count, Software Page Walk vs TLB manager
+
+% switching to kernel evicts other cache entries for kernel in real hardware
+
+% Warum geht quantitativ  nicht -> Emuliert
 
 % Ohne caches -> Emualtion vs Real Hardware -> Warum keine quantitaive analyse
 
 % -------------------------------------------------------------------------------------------------
-% DISCUSSION ON REAL HARDWARE
-% Extensibility foundations: CSRs, satp mode field open slots for more memory modes
-%   Configurable HASHING MMU
-% \subsubsection{Switching between HW and SW TLB miss handling}
+%                                        Implementation Shortcommings
+% -------------------------------------------------------------------------------------------------
 
-% TODO TLB Structure could also be different in a system focused on only softtlb design,
-%   because it would not have to adhere to the formate forced on it by the page table design
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
 
 
-% TODO : Space optimization: Using only one CSR??
-% 128 bit csr? Not using mmuidx, using mtval as extra space??? (Using mtval for this purpose only
-% really makes sense for TLB writes in the exception handler, and makes it impossible to add
-% new TLB entries from anywhere else)
-%?????
+% -------------------------------------------------------------------------------------------------
 
 
-% Vergleich MIPS Page table fast path
+% -------------------------------------------------------------------------------------------------
 
-% Inside L4 Mips fastpath vs slowpath
+%
+% -------------------------------------------------------------------------------------------------
 
 
 % vs demand paging
 
 
-% Hardware erweiterung wenn die funktion parametrisierbar ist
 
 
 
-
-% \todo{typical tlb replacement strategies}
-% \todo{How does QEMU replace TLB entries -> index?} \\% Direct mapped
-% With the new CSRs presented above, it is possible to write TLB entries.
-% The placement of the entry and thus the entry to be replaced can not be selected.
-% The replacement policy would be completely up to the hardware implementation.
-% It would also be possible to further extend the ISA with additional CSRs to
-% support specific selection of entries to be replaced, or to select between
-% a number of replacement strategies.
-% However, the efficiency of more complex strategies need to be weighed carefully
-% against their benefits, since the TLB filling is on the critical path of all
-% memory accesses.
 
 
 % Such a system may have an alternative MMU, which, instead of traversing the page table, may use simple
@@ -225,6 +203,5 @@ von vielen gängigen microarchitekturen und Betriebssystemen herausgearbeitet.
 
 % Compare my implementation to a mips one -> Heiser TLB Fastpath
 
-% REAL TLB Structures? \subsection{Real TLBs}
-% Typical TLB entry format
+
 
