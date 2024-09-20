@@ -4,17 +4,78 @@
 % TODO CHECK Keine Definitionen
 % TODO CHECK Alles relevante vorhanden
 
+
+
+% -------------------------------------------------------------------------------------------------
+%                                             Structure
+% -------------------------------------------------------------------------------------------------
+
+
+
+% Motivation for VM
+
+% Description of Problems with VM
+
+% Description of Approach
+
+% Proof of concept
+% Description of Contents
+
+
+
+
+
+
+
+
+
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% Motivation
+% Most Computer use Virtual Memory
+
+% THIS SECTION may primarily be about some facts about VM
+
+%Quick Facts
+% Intel 5 Level Paging intelTLBsPagingStructureCaches2008
+% Sv57 RISC-V Paging RISCVInstructionSet
+
+
+% Plethora of interfaces suggesting performance problems
+
+% [ A look at several ]
+% implemented on either the hardware or software side of the interface. The myriad of design choices and incompatible hardware mechanisms suggests potential performance problems, especially since increasing numbers of systems (even embedded systems) are using memory management. A comparative study of the implementation choices in virtual memory should therefore aid system-level designers.
 \label{Intro}
 
 \todo{CITE Architectural and operating system support for virtual memory}
 Virtual memory is used by computer systems at all scales. Everything from systems running in huge data
 centers to embedded computers rely on virtual memory.
 
-
-
 % Relevance: Most computers today use a page-based virtual memory approach
+Current radix page tables can get up to 5 levels deep \cite{intel5LevelPaging5Level2017}. Every level
+adds another memory access to the page table lookup.\\
+Caching structures can alleviate the cost by storing complete or partial translation results \cite{van2002memory}.
+But especially large-memory applications, virtualized environments and graph-processing applications
+suffer extensively from address translation costs \cite{zagieboylo2020cost}.
+
+
+% -------------------------------------------------------------------------------------------------
+% Problems with VM
+
 % Very short summarization of the way page-based virtual memory works, ending with the amount of memory references
 % barrTranslationCachingSkip -> memory references keep on increasing as memory requirements increase
+
+
+
+% TODO Problem Statement: Are paging structures even necesarry or can virtual memory purely be realized
+%       by a simple software-defined function that refills the tlb?
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% Description of Approach
+% TODO Very short: How the TLB is used
+
 
 % Soruce: Virtual memory: issues of implementation
 
@@ -30,38 +91,22 @@ most-priviledged machine mode. This paper will explore just that.
 % Auch -> Proof of concept
 % Und: Keine Page table walks
 % Discussion: -> A look at several ...
-\cite{jacob1998look}
-
-% TODO How do inverted paging schemes compare?
-% -> virtual memory: Issues of impl
-% -> A Look at Several Memory Management Units, TLB-Refill Mechanisms, and Page Table Organizations
-
-% TODO Very short: How the TLB is used
-
-% TODO Problem Statement: Are paging structures even necesarry or can virtual memory purely be realized
-%       by a simple software-defined function that refills the tlb?
-
-% Relevanz: Virtual memory in embedded devices -> segmented design may suffice
-% -> Reference?
-
-
-% TODO Forschungsfrage
-% TODO Inhaltliche Abgrenzung und Ausschließen von Teilproblemen
-% TODO Aufbau der Arbeit
-% TODO Relevanz
-% TODO Geschichte/Einführende Zitate
-% \section{History of Virtual Memory}
-% \subsection{Atlas}
-% \subsection{Overlaying}
-
-%Quick Facts
-% Intel 5 Level Paging intelTLBsPagingStructureCaches2008
-% Sv57 RISC-V Paging RISCVInstructionSet
 
 
 % WHAT DOES THIS PAPER DO
 % -> SW TLB Handling Proof Of concept on riscv
 % -> Use that TLB handling to realize a Segmented vm design not using any page tables
+
+
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% Proof of concept
+
+
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% Description of Contents
+
 
 % Inhaltsbeschreibung
 Kapitel 2 gibt eine Übersicht über ein bisschen Historie und die Grundlagen von Virtuellen
@@ -83,12 +128,10 @@ Im siebten Kapitel werden noch Vorschläge für auf diese Arbeit aufbauende Arbe
 nehmen noch Bezug auf zuvor ausgeschlossene Themen wie Hardwareoptimierungen der Idee.\todo{future  work:
     Hardware stateless hash mmu, der meine Idee in hardware realisiert}
 Das achte und letzte Kapitel gibt eine zusammenfassende Einschätzung der Arbeit ab.\\
+% -------------------------------------------------------------------------------------------------
 
 
 
 
-Current radix page tables can get up to 5 levels deep \cite{intel5LevelPaging5Level2017}. Every level
-adds another memory access to the page table lookup.\\
-Caching structures can alleviate the cost by storing complete or partial translation results \cite{van2002memory}.
-But especially large-memory applications, virtualized environments and graph-processing applications
-suffer extensively from address translation costs \cite{zagieboylo2020cost}.
+
+

@@ -29,6 +29,7 @@ between software-managed and hardware-managed \textit{Virtual Memory} systems.\\
 Finally, some specifics of the memory system of the chosen implementation platform, \textit{RISC-V},
 are shown.
 
+% Todo Overlaying
 \section{Virtual Memory}
 \textit{Virtual Memory} was first introduced in the Atlas System \cite{fotheringham1961dynamic} to
 automate the task of swapping pages between main and secondary memory.
@@ -302,28 +303,25 @@ commonly referred to as a Translation Lookaside Buffer (TLB) \cite{jacobVirtualM
 
 % -------------------------------------------------------------------------------------------------
 
-\subsection{MMU}
+\textbf{MMU}
 The Memory Management Unit (MMU) takes on the task of address translation for the computer.
 It sits between the processor, which primarily works with virtual addresses, and the memory bus,
 which is accessed with physical addresses.\\ When the processor accesses a certain virtual address,
 the MMU performs a page table walk to determine the physical address corresponding to the virtual
 address. During this process, the processor is effectively frozen \cite{jacobVirtualMemoryContemporary1998}.
 
-\subsection{TLB}
+\textbf{TLB}
 Since it would be very costly to traverse the page table in hardware for every load or store memory access,
 there is a cache for the translations, the Translation Lookaside Buffer (TLB). This cache contains
 the most recent translations from virtual to physical addresses.\\
 The MMU can first check the TLB, which can be searched in parallel and thus extremely quickly \cite{drepper2007every,jacobVirtualMemoryContemporary1998}.\\
 
 
-
-% Gute quelle für alles hier : [jacob2010memory]
-\cite{}
-% \subsection{A typical Page Table Walk}
+% CONTINUE HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 % -------------------------------------------------------------------------------------------------
-\subsection{Address Space Identifies}
+\textbf{Address Space Identifies}
 % \cite{jacobSoftwaremanagedAddressTranslation1997}
 %TODO in the vm requirements , ASIDs are presented as HW-support for address space protection
 With Address Space Identifiers (ASIDs), RISC-V provides a way to more efficiently utilize virtual memory:
