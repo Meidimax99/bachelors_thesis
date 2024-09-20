@@ -220,7 +220,7 @@ The page table design also has the advantage that, in the best case, significant
 accesses are required. In the simple design shown in figure \ref{fig:fund:inverted}, the corresponding
 page table entry can be found with just two memory lookups \cite{skarlatos2020elastic}.
 
-
+\todo{this is a lot of text with no image an no emphasize/fat}
 % How can it use so little memory
 To get a deterministic mapping from virtual to physical address, \emph{Inverted Page Tables} are indexed
 using a hash calculated from the VPN.\\
@@ -252,34 +252,25 @@ But resizing the whole page table is very expensive and should be avoided\cite{s
     \label{fig:fund:inverted}
 \end{figure*}
 
-%% CONTINUE HERE -------------------------------------------------------------------------------------------
 
 % Conclusion -> Disadvantages of inverted page tables [see also hash don’t cache!]
 Inverted page tables significantly reduce the average access time to the PTEs, but they make it
 more difficult to support other features like superpages and memory sharing.
 The Power Architecture, for example, supports this through a two-stage translation process \cite{yaniv2016hash}.
-% [hash dont cache] -> Hashed paging performs better
 
-
-% [hash dont cache] -> superpages are harder
-
-% [issues of impl] ->
-
-% [ A look at several] ->
 
 % -> Most commonly used in today's hardware -> Multi level page tables
-There is no clear winner in the debate between hashed vs. radix \todo{still need to introduce the term "radix"}
-and commercial hardware supports a variety of designs that are not standardized and, in some cases,
+There is no clear winner in the debate between hashed vs. multi-level page tables.\\
+Superiority of one design of the other also appears to depend on the computer architecture \cite{barrTranslationCachingSkip}
+and the specific implementation of the design \cite{yaniv2016hash}.\\
+Commercial hardware supports a variety of designs that are not standardized and, in some cases,
 differ significantly \cite{jacob1998look}.
 
 
 Modern Intel processors now support radix designs with a depth of up to 5 levels,
 which still use 4KB pages to maintain compatibility.
 
-% Todo, aber größere pages erhöhen tlb reach usw
-% Fazit -> Hauptproblem von VM sind teure Hauptspeicherzugriffe im kritischen Pfade von allen Memory Operations
 
-\todo{discussion: Sind die aktuellen VM systeme (vor allem hierachical) noch Zeitgemäß oder nur noch altlast???}
 % -------------------------------------------------------------------------------------------------
 %                                  END SECTION - VM IMPLEMENTATION
 % -------------------------------------------------------------------------------------------------
@@ -311,31 +302,25 @@ commonly referred to as a Translation Lookaside Buffer (TLB) \cite{jacobVirtualM
 
 % -------------------------------------------------------------------------------------------------
 
-% Davor sollte der Page Table walk bekannt sein
 \subsection{MMU}
 The Memory Management Unit (MMU) takes on the task of address translation for the computer.
 It sits between the processor, which primarily works with virtual addresses, and the memory bus,
-which is accessed with physical addresses. When the processor accesses a certain virtual address,
+which is accessed with physical addresses.\\ When the processor accesses a certain virtual address,
 the MMU performs a page table walk to determine the physical address corresponding to the virtual
-address. During this process, the processor is effectively frozen \cite{jacobVirtualMemoryContemporary1998}
-\todo{more fine-grained citation? -> Probably not, these are only fundamentals, should however quote overarching works}
+address. During this process, the processor is effectively frozen \cite{jacobVirtualMemoryContemporary1998}.
 
 \subsection{TLB}
 Since it would be very costly to traverse the page table in hardware for every load or store memory access,
 there is a cache for the translations, the Translation Lookaside Buffer (TLB). This cache contains
 the most recent translations from virtual to physical addresses.\\
-The MMU can first check the TLB, which can be searched in parallel and thus extremely quickly \cite{drepper2007every}.
+The MMU can first check the TLB, which can be searched in parallel and thus extremely quickly \cite{drepper2007every,jacobVirtualMemoryContemporary1998}.\\
 
 
 
 % Gute quelle für alles hier : [jacob2010memory]
-\cite{jacobVirtualMemoryContemporary1998}
+\cite{}
 % \subsection{A typical Page Table Walk}
 
-% -------------------------------------------------------------------------------------------------
-\subsection{PWCs}
-\cite{barrTranslationCachingSkip}
-\cite{yaniv2016hash}
 
 % -------------------------------------------------------------------------------------------------
 \subsection{Address Space Identifies}
