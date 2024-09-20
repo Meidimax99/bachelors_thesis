@@ -1,5 +1,73 @@
 % Appendix A
 
-\chapter{Appendix about something}
+\chapter{Unused paragraph dump}
 \label{appendixa}
+
+
+% Calling a function instead of doing a page table walk
+The design presented here is based on the idea that virtual memory can be realized with a
+mapping functions instead of the costly page table walks.\\
+It may thus get rid of any state the memory system needs to keep book of mappings. The design
+function that is to realize the mapping will only be based on its inputs. These inputs
+should be found in the registers of the processor to avoid memory accesses as much as possible.
+
+% How can software modify TLBs?
+Running a function to generate mappings needs a computer with software-managed Virtual Memory.
+MIPS provides some inspiration on how this can be done:\\
+TLB misses throw a exception, the exception will be serviced by a kernel routine and the routine
+uses specific instructions for writing to the TLB, thus resolving the TLB miss.
+
+
+% Platform choice
+The design will not be based on the MIPS platform, even though it already provides the hardware
+features required to implement it.\\
+Another requirement to the platform is simplicity and the availability of an easily comprehensible
+and modifyable system running on top of it.\\
+The xv6 is exactly such a system and there is a RISC-V implementation available.
+
+% Why run on an emulator?
+No real hardware is used to run the system, because the hardware needs to be extended to provide
+the functionality of TLB miss exception throwing and TLB writing in order for the \emph{SoftTLB}
+design to work.\\
+The operating system will be run on the QEMU RISC-V emulator, which will be extended to satisfy
+the extra functionality.
+
+
+% About page table lookups
+Figure \ref{fig:theory:mapping_fx} depicts the usual lookup approach of hierarchical page tables.
+When the TLB misses, the MMU will perform a page table walk through the page table to retrieve the mapping
+for the given virtual address.\\
+
+% Inflexibility of HW VM
+The specification of the MMU binds the software to a specific interface and page table structure. This restricts
+the flexibilty of the software.
+
+% MIPS SW Managed tlbs
+To provide more flexibility, systems like MIPS allow for TLBs to be managed in software \cite{heiserAnatomyHighPerformanceMicrokernel}.
+This still binds the operating system to adhere to the TLB structure, but leaves freedom on how the actual
+entry is determined.\\
+
+% Liedtke GPT
+Virtual memory systems like Jochen Liedtkes Guarded Page Tables \cite{liedtkeGPT} use a table like structure
+in combination with the flexible access to TLBs.\\
+
+% Flexible tlb access enables alternative approaches
+This flexibility also enables the implementation of alternative approaches that are not based on page tables,
+but rather on mapping functions.\\
+
+% Mapping function architecture
+Figure \ref{fig:theory:mapping_fx} shows what the architecture of a system using a mapping function for
+filling the TLB may look like.
+
+% About mapping functions
+In this paper, we want to take a closer look at such mapping functions and if a virtual memory system
+can be realized without the usual bookkeeping cost of page tables.\\
+Good candidates for such functions are non-cryptographic hash functions\todo{elaboration on hash functions}
+to create a virtual to physical mapping.
+
+
+
+
+%
+With these changes, we implemented a system where TLB entries are populated using hash functions during TLB miss exceptions. This allows the virtual memory system to dynamically compute or retrieve the corresponding physical address without relying on multi-level page table walks, thus demonstrating a proof of concept for this alternative virtual memory approach.
 

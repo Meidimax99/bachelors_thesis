@@ -52,7 +52,7 @@
 % Überblick über die Idee schaffen -> Virtueller Speicher durch funktion möglich
 
 
-This chapter presents the theoretical foundation of the the implementation presented in the next chapter.
+This chapter presents the theoretical foundation of the the implementation presented in the next chapter.\\
 It will start with a short elaboration on the general idea followed by a description of the
 programming platform.\\
 It then presents the theory behind the different components of the implementation.
@@ -66,66 +66,30 @@ It then presents the theory behind the different components of the implementatio
 
 
 
-% Conclusion on previous Work -> Still need a memory access
-
-% The Idea -> Getting rid of any memory access in favor of simple arithmetic operation (eg. hash functions)
-% statefull -> stateless
-
-\todo{start - reuse this}
-% Previous approaches aimed to reduce the memory footprint or optimize cache accesses, or reduce page table
-% walks to a minimum, this approach aims to eliminate paging structures completely
-While previous work tried to either reduce the number of memory accesses \todo{CITE Lidtke ,Skip no walk, single hit uppsala paper},
-decrease the occurrence of a TLB miss and decrease the latency of handling a TLB Miss, this paper
-presents an approach to create a virtual memory scheme not requiring paging structures at all.\\
-
-Not unlike the software-managed address translation design presented by Jacob and Mudge \cite{jacobSoftwaremanagedAddressTranslation1997},
-the \textit{softtlb} approach utilizes a exception triggered by a cache miss to invoke a software-defined
-exception handler.\\
-Unlike the \textit{softvm} design, this approach will be based on handling an exception that is triggered
-when die TLB misses \todo{TLB and its role explained?}.
-The handler code for this \textit{TLB\_Miss} exception will from now on be called \textit{TLB Manager}.
-
-The \textit{TLB Manager}s job is then to resolve the exception by filling the TLB for the failing address
-that triggered the exception.
-
-\todo{end - reuse this}
-
-\section{The Idea}
+\section{General idea of stateless Virtual Memory}
 % Idea Description
 
+% The implementation is not only about the mapping functiion but also about the  platform modifications to create mapping functions
 
-Current hardware-supported virtual memory systems suffer from inflexibility and costly memory accesses.\\
-Software-based approaches are a lot more flexible, but are based on page table lookups as well.
+The goal of this work is to provide a proof of concept of an alternative approach
+to virtual memory management that reduces the overhead associated with traditional page tables walks.\\
+Instead of suffering the penalty of up to five memory accesses on a TLB miss,
+we want to explore using simple functions for the mapping.
 
-This paper is to based on the idea that virtual memory can be realized with a
-mapping functions instead of the costly page table walks \cite{van2002memory}.\\
+Figure \ref{fig:theory:normal_tlb_miss} shows the usual architecture of a system
+with a hierarchical page table.\\
+This architecture provides only limited flexibility in interacting with the TLB, especially when it comes to TLB writes.\\
+Architectures like MIPS allow direct manipulation of TLB structures and thus provide a good framework for implementing new approches for virtual memory management.\\
 
+The architecture is only one half of the design. To test the ideas for mapping
+functions, a system utilizing the memory system and defining the functions is also necessarry.\\
+The xv6 educational operating system provides a good platform for experimentation as it is very lightweight and provides a Unix-like interface and structures.\\
 
-% About the software management
-Figure \ref{fig:theory:mapping_fx} depicts the usual lookup approach of hierarchical page tables.
-When the TLB misses, the MMU will perform a page table walk through the page table to retrieve the mapping
-for the given virtual address.\\
-The specification of the MMU binds the software to a specific interface and page table structure. This restricts
-the flexibilty of the software.
-
-To provide more flexibility, systems like MIPS allow for TLBs to be managed in software \cite{heiserAnatomyHighPerformanceMicrokernel}.
-This still binds the operating system to adhere to the TLB structure, but leaves freedom on how the actual
-entry is determined.\\
-Virtual memory systems like Jochen Liedtkes Guarded Page Tables \cite{liedtkeGPT} use a table like structure
-in combination with the flexible access to TLBs.\\
-This flexibility also enables the implementation of alternative approaches that are not based on page tables,
-but rather on mapping functions.\\
-Figure \ref{fig:theory:mapping_fx} shows what the architecture of a system using a mapping function for
-filling the TLB may look like.
-
-% About mapping functions
-In this paper, we want to take a closer look at such mapping functions and if a virtual memory system
-can be realized without the usual bookkeeping cost of page tables.\\
-Good candidates for such functions are non-cryptographic hash functions\todo{elaboration on hash functions}
-to create a virtual to physical mapping.
-
-
-
+xv6 is designed for RISC-V, but RISC-V does not allow for flexible software-management of the TLB structure.\\
+Thus part of this chapter will describe the theoretical foundations for modifying
+the QEMU/RISC-V emulator to transform the memory system architecture to something
+more similar to MIPS.\\
+The final architecture for the memory sytem will look like depicted in figure \ref{fig:theory:mapping_fx}
 % TODO der Zwischenschritt mit dem Software Page Table walk wird dann in der Impl
 % eingeführt
 

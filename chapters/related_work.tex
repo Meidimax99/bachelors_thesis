@@ -114,3 +114,16 @@ whatsoever. % How? -> Theory!
 
 
 \cite{zagieboylo2020cost}
+
+
+
+\todo{still need this?}
+Not unlike the software-managed address translation design presented by Jacob and Mudge \cite{jacobSoftwaremanagedAddressTranslation1997},
+the \textit{softtlb} approach utilizes a exception triggered by a cache miss to invoke a software-defined
+exception handler.\\
+Unlike the \textit{softvm} design, this approach will be based on handling an exception that is triggered
+when die TLB misses \todo{TLB and its role explained?}.
+The handler code for this \textit{TLB\_Miss} exception will from now on be called \textit{TLB Manager}.
+
+The \textit{TLB Manager}s job is then to resolve the exception by filling the TLB for the failing address
+that triggered the exception.

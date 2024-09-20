@@ -64,18 +64,39 @@ suffer extensively from address translation costs \cite{zagieboylo2020cost}.
 % -------------------------------------------------------------------------------------------------
 % Problems with VM
 
+% SOME NUMBERS PLEASE -> [ A look at several ...] abstract
+% Previous approaches aimed to reduce the memory footprint or optimize cache accesses, or reduce page table
+% walks to a minimum, this approach aims to eliminate paging structures completely
+
 % Very short summarization of the way page-based virtual memory works, ending with the amount of memory references
 % barrTranslationCachingSkip -> memory references keep on increasing as memory requirements increase
 
+While previous work tried to either reduce the number of memory accesses \todo{CITE Lidtke ,Skip no walk, single hit uppsala paper},
+decrease the occurrence of a TLB miss and decrease the latency of handling a TLB Miss, this paper
+presents an approach to create a virtual memory scheme not requiring paging structures at all.\\
 
 
 % TODO Problem Statement: Are paging structures even necesarry or can virtual memory purely be realized
 %       by a simple software-defined function that refills the tlb?
+%
+
+% Conclusion on previous Work -> Still need a memory access
+
+% The Idea -> Getting rid of any memory access in favor of simple arithmetic operation (eg. hash functions)
+% statefull -> stateless
+
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
 % Description of Approach
 % TODO Very short: How the TLB is used
 
+% The approach is not directly the TLB filling, thats just one
+% implementation of the process.
+
+% The main idea is to replace page table walks with simple function calls
+
+Current hardware-supported virtual memory systems suffer from inflexibility and costly memory accesses \cite{jacob1998look}.\\
+Software-based approaches are a lot more flexible, but are, so far, based on page table lookups as well.
 
 % Soruce: Virtual memory: issues of implementation
 

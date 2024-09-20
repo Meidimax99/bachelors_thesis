@@ -311,6 +311,8 @@ the MMU performs a page table walk to determine the physical address correspondi
 address. During this process, the processor is effectively frozen \cite{jacobVirtualMemoryContemporary1998}.
 
 \textbf{TLB}
+%TODO TLB as interface for VM
+
 Since it would be very costly to traverse the page table in hardware for every load or store memory access,
 there is a cache for the translations, the Translation Lookaside Buffer (TLB). This cache contains
 the most recent translations from virtual to physical addresses.\\
