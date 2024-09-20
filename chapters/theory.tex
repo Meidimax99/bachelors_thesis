@@ -333,24 +333,24 @@ The physical address could still be shortened to only have enough bits to cover 
 space used by xv6.\\
 But this would still end up taking more than 64 bit and thus more than one CSR.
 
-So instead of trying to save as much space as possible, two CSRs are used.\\
+So instead of trying to save as much space as possible, two CSRs are used.
+This also leaves enough room for more experimentation with the format.\\
 They are called \texttt{tlbwh} (TLB Write High) and \texttt{tlbwl} (TLB Write Low).
 The emulator will expect the physical address \ref{fig:theory:sv39pa} in \texttt{tlbwh} and a the virtual address in form
 of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
 % Fixed TLB format, but flexibilty of CSR format
 
 
-\todo{TLB CSR Format bitfields}
-
 % TLBH
 \begin{figure*}[t]
     \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/39,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{39}
-        \bitheader[endianness=big]{38,30,29,21,20,12,11,0} \\
+    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
+        \bitheader[endianness=big]{63,38,11,0} \\
+        \bitbox{25}{Unused}&
         \bitbox{27}{VPN}&
         \bitbox{12}{Page Offset}\\
     \end{bytefield}
-    \caption[TLBH CSR Format]{TLBH CSR Format}
+    \caption[TLBH CSR Format]{\textbf{TLBH CSR Format} The format is derived from the format of Sv39 virtual addresses and also works for Sv48 and Sv57 virtuall addresses by keeping the most significant bits unused}
     \label{fig:theory:tlbh}
 \end{figure*}
 
@@ -358,13 +358,9 @@ of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
 \begin{figure*}[h!]
     \centering
     \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
-        \bitheader[endianness=big]{63,62,61,60,54,53,28,27,19,18,10,9,8,7,6,5,4,3,2,1,0} \\
-        \bitbox{1}{N} &
-        \bitbox{2}{\rotatebox{90}{PBMT}} &
-        \bitbox{7}{Reserved} &
-        \bitbox{26}{PPN[2]} &
-        \bitbox{9}{PPN[1]} &
-        \bitbox{9}{PPN[0]} &
+        \bitheader[endianness=big]{63,53,9,8,7,6,5,4,3,2,1,0} \\
+        \bitbox{10}{Unused} &
+        \bitbox{44}{PPN} &
         \bitbox{2}{\rotatebox{90}{RSW}} &
         \bitbox{1}{D} &
         \bitbox{1}{A} &
@@ -375,10 +371,9 @@ of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
         \bitbox{1}{R} &
         \bitbox{1}{V}
     \end{bytefield}
-    \caption[TLBL CSR Format]{TLBL CSR Format}
+    \caption[TLBL CSR Format]{\textbf{TLBL CSR Format} The format is derived from the Sv39 PTEs. Reserved bits at the top are omitted. Access rights are retained to be set in the TLB}
     \label{fig:theory:tlbl}
 \end{figure*}
-\todo{Hardware dependenc -> still dependent on the TLB structure of RISCV Sv39, VAs and PAs remain, as do PTEs}
 
 
 
@@ -389,45 +384,17 @@ of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
 % -------------------------------------------------------------------------------------------------
 \subsection{Segmented Mapping}
 
-\cite{tanenbaumOS}
 The first attempt at a stateless \todo{Begriff an sinnvoller stelle einführen} paging design
-uses a design that determines memory allocation at compile time.
-% Assumptions
-%Design of Segmented VM softtlb -> Assumption: Process Memory allocation Model -> Only growing upwards
-% Segmentation -> ASIDs -> HW support for Address Space Protection
-% -> [jacob1998virtualissues]
+uses a design that determines memory allocation at compile time.\\
+The resulting mapping is similar to a segmented memory design.
 
+% Elaboration on segmented memory design
+\textbf{Segmeneted Memory
+\todo{segmented memory in general}}
+\cite{tanenbaumOS}
 
-% A look at input and output data
-% Calculation of addresses
-
-% xv6 Perspective and specifcs (but still theory!) -> Into Impl?
-%   Special mappings -> special case in tlb manager (e.g. Trampoline)
-
-% End of Theory: A simple mapping function - TLB Manager
-%   TODO What does the reader need to know at this point, e.g. what does need to be decided
-%   in theory to create a TLB Miss Handler design??
-
-% xv6 Process Memory Model
-The new memory system needs to be compatible with the existing one. Otherwise the way xv6
-user processes are built and structures needs to be changed.\\
-The program memory model of xv6 programs is shown in figure \ref{impl:xv6layout}
-
-\begin{figure*}[t!]
-    \centering
-    \includegraphics[scale=.5]{figures/prog_vm.pdf}
-    \caption[xv6 memory layout]{Virtual memory layout of xv6 processes. Taken from the xv6 book \cite{cox2011xv6}.}
-    \label{impl:proclayout}
-\end{figure*}
-
-Xv6 processes have their data and text segment and the stack at the very bottom of the virtual
-address space \cite{cox2011xv6}.\\
-A peak into the implementation of the \texttt{sbrk()} system call also shows us, that the heap
-address space grows linearily from low to high addresses.\\
-None of the xv6 programs differ from this memory model. There are no pages mapped in the
-middle of the address space.\\
-The only special cases are the \textit{trampoline} and \textit{trapframe} pages.
-\todo{trampoline and trapframe already explained?}
+% Elaboration on this specific design
+\todo{segmented memory in this design}}
 
 % Segmented memory layout
 
@@ -437,6 +404,53 @@ The only special cases are the \textit{trampoline} and \textit{trapframe} pages.
     \caption[Segmented Memory Layout]{\textbf{Segmented Memory Layout}}
     \label{fig:theory:segLayout}
 \end{figure*}
+
+% Assumptions
+\textbf{Program Layout} The segmented memory design assumes that programs place their data at the low end of their address
+space and grow upwards.\\
+Placement of memory pages at higher addresses than the maximum per-address space memory size do not work. This is a serious restriction to the flexibility of the programmer.
+
+xv6 processes satisfy this restrictions however. Figure \ref{impl:proclayout} shows the memory layout
+of an xv6 process.
+
+\begin{marginfigure}
+    \centering
+    \includegraphics[scale=.8]{figures/prog_vm.pdf}
+    \caption[xv6 memory layout]{Virtual memory layout of xv6 processes. Taken from the xv6 book \cite{cox2011xv6}.}
+    \label{impl:proclayout}
+\end{marginfigure}
+
+
+\textbf{Trapframe and Trampoline} xv6 pins to special pages to the top end of a processes address space: The trampoline and trapframe pages.\\
+The trampoline page contains code for context switches and kernel entry and needs to be mapped
+into every processes address space.\\
+The trapframe is used for saving the state of the process on context switch and is thus also essential to be present for every process.
+
+In xv6's original memory system, both of these pages would be pinned to the maximum virtual address.
+With the segmented design, the address space only comprises the range of [
+    0 - MEM_START+ASID*MAX_AS_SIZE
+]
+with \texttt{MEM_START} being the start of the \texttt{RAM}, \texttt{ASID} being the \emph{Address Space Identifier} of the process and \texttt{MAX_AS_SIZE} being the maximum size of one address space.\\
+\texttt{MAX_AS_SIZE} is determined by the size of available physical memory devided by the maximum
+number of processes that can simultaneously run.
+
+The address space of a process would thus not be big enough to include the usual addresses for the
+trapframe and trampoline pages.\\
+To not change the memory layout of xv6 processes, a special rule is put into the mapping function
+to explicitly check for the usual addresses of trapframe and trampoline and then map them to appropiate physical addresses.\\
+The trampoline page can be the same for every process, but the trapframe needs to be unique per
+process and is thus pinned to the very top of the physical segment of each process.
+
+
+% A look at input and output data
+% Calculation of addresses
+
+\textbf{Address Calculation}
+
+% xv6 Perspective and specifcs (but still theory!) -> Into Impl?
+%   Special mappings -> special case in tlb manager (e.g. Trampoline)
+
+
 
 
 % -------------------------------------------------------------------------------------------------
