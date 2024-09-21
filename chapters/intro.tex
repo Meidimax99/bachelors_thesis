@@ -13,9 +13,11 @@
 
 
 % Motivation for VM
-
+% Importance of vm
+% Functional requirements
 % Description of Problems with VM
-
+% Unclear interfaces
+% Performance -> Applications with poor spatial locality
 % Description of Approach
 
 % Proof of concept
@@ -38,6 +40,16 @@
 
 % THIS SECTION may primarily be about some facts about VM
 
+Virtual memory provides a multitude of features to applications that vastly simplify the life of application programmers \cite{jacob1998virtualissues}. Computer systems of all scales, ranging from small embedded devices to huge data centers use virtual memory \cite{bhattacharjee2017architectural}.\\
+While originally being used to automate the task of swapping pages of processes between main memory and secondary storage transparently to the processes \cite{jacob1998virtualissues}, it now is the foundation for security, reliability, process isolation and flexibility \cite{wales1999virtual,jacobVirtualMemoryContemporary1998}.
+
+With ever increasing memory sizes of systems and memory requirements of applications, the overhead of virtual memory systems, being developed for systems that only had scarce resources available \cite{halbuer2023morsels}, is degrading performance and increase power consumption significantly \cite{zagieboylo2020cost}.\\
+Orthodox hierarchical page table organizations \cite{tanenbaumOS} can get as deep as 5 levels in commodity hardware \cite{intel5LevelPaging5Level2017}. Not only does this add a level of indirection for each page table walk, this penalty is even higher in virtualized systems, potentially accounting for up to 5\% - 90\% of the runtime \cite{yaniv2016hash}.
+
+Alternative designs like inverted page tables realize page table mappings using hash functions \cite{tanenbaumOS}. While reducing the number of additional memory references, these approaches have problems on their own: Some features of virtual memory systems become harder to implement, exacting additional performance penalties \cite{yaniv2016hash} and page table lookups can get a lot more expense when following collision chains \cite{jacob1998look}.
+
+The Related Work chapter \ref{chap:related} will show, that there are a lot of different angels to optimize the virtual memory system.\\
+This shows that there is little agreement on how the virtual memory system is best implemented \cite{jacob1998look}.\\
 %Quick Facts
 % Intel 5 Level Paging intelTLBsPagingStructureCaches2008
 % Sv57 RISC-V Paging RISCVInstructionSet
@@ -64,6 +76,8 @@ suffer extensively from address translation costs \cite{zagieboylo2020cost}.
 % -------------------------------------------------------------------------------------------------
 % Problems with VM
 
+% Many different interfaces
+\cite{jacobVirtualMemoryContemporary1998,jacob1998virtualissues}
 % SOME NUMBERS PLEASE -> [ A look at several ...] abstract
 % Previous approaches aimed to reduce the memory footprint or optimize cache accesses, or reduce page table
 % walks to a minimum, this approach aims to eliminate paging structures completely
@@ -130,25 +144,28 @@ most-priviledged machine mode. This paper will explore just that.
 
 
 % Inhaltsbeschreibung
-Kapitel 2 gibt eine Übersicht über ein bisschen Historie und die Grundlagen von Virtuellen
-Speichersystemen. Das dort zusammengefasste Wissen stellt die Grundlage für den restlichen Teil der
-Arbeit dar.\\
-Kapitel 3 beschäftigt sich mit verwandten Arbeiten die sich auch mit der Optimierung des VM Systems
-beschäftigen.\\
-Kapitel 4 beschreibt die Theoretische Ausarbeitung der \textit{softtlb} Idee und stellt so mit die
-Grundlage für die Implementierung da.\\
-Die Implementierung wird in Kapitel 5 beschrieben. Dort wird näher auf die Eigenheiten der
-Programmierplattformen eingegangen und der Implementationsprozess schrittweiße dargestellt.
-Dort findet sich auch eine Übersicht der Debuggingtechniken die zur Verifikation und Fehlersuche
-verwendet wurden.\\
-Das sechste Kapitel setzt sich kritisch mit dem erziehlten Stand der theoretischen Ausarbeitung und
-der Implementation außeinander und beleuchtet das Ergebnis im lichte typischer Requirements an
-andere Virtuelle Speichersysteme. Dort schließt sich noch eine Diskussion über eine weitere
-Vertiefung des Ansatzes an.\\
-Im siebten Kapitel werden noch Vorschläge für auf diese Arbeit aufbauende Arbeiten gemacht. Diese
-nehmen noch Bezug auf zuvor ausgeschlossene Themen wie Hardwareoptimierungen der Idee.\todo{future  work:
-    Hardware stateless hash mmu, der meine Idee in hardware realisiert}
-Das achte und letzte Kapitel gibt eine zusammenfassende Einschätzung der Arbeit ab.\\
+Chapter 2 provides an overview of the fundamentals of virtual memory systems, software-managed virtual memory systems and some basics of the virtual memory system of the RISC-V ISA.\\
+This forms the fundament for the following chapters.
+
+Chapter 3 takes a look at previous work that also approaches the topic of optimizing virtual memory systems.
+
+Chapter 4 describes the theoretical development of the idea presented in this paper and thus provides
+the foundation for the implementation.\\
+
+The implementation is described in Chapter 5. It delves into the specifics of the programming platforms
+and outlines the implementation process step by step. This chapter also includes an overview of the debugging
+techniques used for verification and troubleshooting of the implementation.\\
+
+Chapter 6 critically examines the current state of the theoretical development and implementation,
+analyzing the results in light of typical requirements for other virtual memory systems.
+It also includes a discussion on further deepening the approach.\\
+\todo{future work yes or no?}
+In Chapter 7, suggestions are made for future work building upon this thesis. These suggestions refer
+to previously excluded topics, such as hardware optimizations of the idea.
+
+The eighth and final chapter provides a summary of the paper and its results.\\
+
+
 % -------------------------------------------------------------------------------------------------
 
 
@@ -157,3 +174,8 @@ Das achte und letzte Kapitel gibt eine zusammenfassende Einschätzung der Arbeit
 
 
 \cite{zagieboylo2020cost} has nice numbers in introduction for cost of VM
+
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------
+% -------------------------------------------------------------------------------------------------

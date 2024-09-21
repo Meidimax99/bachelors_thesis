@@ -409,7 +409,7 @@ Similar to the Ultrix design, there are two handlers to also handle nested cache
 
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
-\section{HW VM vs SW VM}
+\section{Hardware Virtual Memory vs Software Virtual Memory}
 % related work will then come in to discuss approaches close to my approach
 % With only software ptw process would have to context switch to the kernel -> Very expensive
 % With an MMU the processor essentially just freezes until the memory operation has completed
@@ -436,11 +436,9 @@ to be saved. During this, the reorder buffer is flushed, and the pipeline is hea
 Switching to the kernel can also lead to further data and instruction misses in the long term,
 as the kernel entry likely overwrites some cache lines that the running process needed. \todo{Cite}
 
-\paragraph{Embedded} Using virtual memory is becoming increasingly relevant for embedded systems.
-They would certainly benefit from more flexible designs. Additionally, saving on chip size by
-eliminating the MMU would also reduce production costs \cite{jacob1998look}. \todo{not sure about this}
-
-
+\paragraph{Complexity} Choosing between hardware and software virtual memory is choosing where to shift the complexity.\\
+Systems that do only support software managed virtual memory are simpler on the hardware side, because the burden of managing the memory is shifted to the software, which in turn will be more complex.\\
+This goes in both directions \cite{jacob1998virtualissues}.
 
 % Conclusion of HW vs SW
 \cite{jacob1998look} concludes in a comparative study of various HW and SW memory designs
