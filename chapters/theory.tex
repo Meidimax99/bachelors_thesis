@@ -327,9 +327,9 @@ of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
 \begin{figure*}[t]
     \centering
     \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
-        \bitheader[endianness=big]{63,38,11,0}
-        \bitbox{25}{Unused}& \\
-        \bitbox{27}{VPN}& \\
+        \bitheader[endianness=big]{63,38,11,0} \\
+        \bitbox{25}{Unused}&
+        \bitbox{27}{VPN}&
         \bitbox{12}{Page Offset}
     \end{bytefield}
     \caption[TLBH CSR Format]{\textbf{TLBH CSR Format} The format is derived from the format of Sv39 virtual addresses and also works for Sv48 and Sv57 virtuall addresses by keeping the most significant bits unused}
@@ -340,17 +340,17 @@ of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
 \begin{figure*}[h!]
     \centering
     \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
-        \bitheader[endianness=big]{63,53,9,8,7,6,5,4,3,2,1,0}
-        \bitbox{10}{Unused} & \\
-        \bitbox{44}{PPN} & \\
-        \bitbox{2}{\rotatebox{90}{RSW}} & \\
-        \bitbox{1}{D} & \\
-        \bitbox{1}{A} & \\
-        \bitbox{1}{G} & \\
-        \bitbox{1}{U} & \\
-        \bitbox{1}{X} & \\
-        \bitbox{1}{W} & \\
-        \bitbox{1}{R} & \\
+        \bitheader[endianness=big]{63,53,9,8,7,6,5,4,3,2,1,0} \\
+        \bitbox{10}{Unused} &
+        \bitbox{44}{PPN} &
+        \bitbox{2}{\rotatebox{90}{RSW}} &
+        \bitbox{1}{D} &
+        \bitbox{1}{A} &
+        \bitbox{1}{G} &
+        \bitbox{1}{U} &
+        \bitbox{1}{X} &
+        \bitbox{1}{W} &
+        \bitbox{1}{R} &
         \bitbox{1}{V}
     \end{bytefield}
     \caption[TLBL CSR Format]{\textbf{TLBL CSR Format} The format is derived from the Sv39 PTEs. Reserved bits at the top are omitted. Access rights are retained to be set in the TLB}
