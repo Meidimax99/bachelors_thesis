@@ -1,21 +1,18 @@
 \chapter{Related Work}
 
 \label{chap:related}
-Diese Arbeit lässt sich grob in den Raum von Virtual Memory Optimierung einordnen.
-Es gibt eine große Menge an Literatur die sich mit der der Optimierung des Virtual Memory Systems
-beschäftigt. Dieses liegt schließlich auf dem kritischen Pfad jeder Memory Operation.\\
-Dabei gibt es verschiedene Ansätze oder Winkel um das System anzugehen:
-\todo{Diese Punkte müssen noch zusammengefasst werden}
+This work can be broadly classified to be in the field of Virtual Memory optimization. There is a large body of literature that deals with optimizing the Virtual Memory system, as it lies on the critical path of every memory operation.
+
+There are different approaches or perspectives to addressing the system (this is not an exhaustive list):
+
 \begin{itemize}
-    \item Die Pagetablestruktur, z.B. invertiert oder hierarchisch
-    \item Caching von Seiten, PTEs im TLB und indizierung von Caches
-    \item Replacementstrategien der Caches
-    \item Cachegrößen, Assoziativität
-    \item translation caches in MMU (not TLB), Page Walk caching
-    \item TODO weitere Aspekte
-    \item software optimizations
-    \item Hardware optimazations, hardware support, flexibility
+    \item page table structures and their optimization, e.g., inverted or hierarchical
+    \item caching of pages, PTEs in the TLB, and cache indexing
+    \item cache replacement strategies
+    \item cache sizes, associativity of caches
+    \item Page Walk Caches (PWCs) to store partial translation results
 \end{itemize}
+
 
 % -------------------------------------------------------------------------------------------------
 
@@ -50,81 +47,55 @@ memory allocation.\\
 % -------------------------------------------------------------------------------------------------
 
 % Translation Caching skip dont walk -> Translation Caches
-\textbf{\cite{barrTranslationCachingSkip}}betrachtet den Design Space der Translation Caches in MMUs. Diese Caches sind nicht mit den TLBs
-vergleichbar, die ganze übersetzungen von virtuellen zu PTEs enthalten. Die Translation Caches
-die hier betrachtet werden enthalten partielle Übersetzungen, die es bei einem Cache Hit möglich
-machen einzelne Schritte beim durchschreiten des Page Table Baumes zu überspringen und somit
-einen oder mehrere Speicherzugriffe einzusparen. Sonst würde die Übersetzung pro Level eine
-Speicherreferenz benötigen. Diese Caches werden auch Page Walk Caches (PWC) \cite{yaniv2016hash} genannt.\\
-Betrachtet wird das konkrete Translation Cache Design von AMD und Intel plattformen und vergleichend
-mit 3 weiteren von den Authoren vorgeschlagenen Designs präsentiert. Barr et al. schließen,
-dass die Radix Page tables durch cachen von Einträgen auf hohen Page Table levels invertierte Page
-Table designs autperformen können.\\
-Diese Arbeit beschäftigt sich mit der Optimierung des Memory Pfades durch abschaffen der Page Tables
-und durch einen Software-Kontrollierten TLB und zieht Caches, abgesehen von dem TLB nicht weiter in
-betracht.
+\textbf{\cite{barrTranslationCachingSkip}} examines the design space of translation caches in MMUs. These caches are not the same as TLBs: TLBs contain full translation results, while the translation caches considered here contain partial translations. In the case of a cache hit, these partial translations allow the system to skip individual steps when traversing the page table tree, thereby saving one or more memory accesses. Otherwise, each level of translation would require a memory reference. These caches are also referred to as Page Walk Caches (PWC) \cite{yaniv2016hash}.
+
+The specific translation cache designs of AMD and Intel platforms are examined and compared with three other designs proposed by the authors. Barr et al. conclude that radix page tables, by caching entries at higher page table levels, can outperform inverted page table designs.
+
+This work focuses on optimizing the memory path by eliminating page tables and using a software-controlled TLB, and it does not further consider caches aside from the TLB.
+
+
 
 % -------------------------------------------------------------------------------------------------
 
-% Hash dont Cache
-\textbf{\cite{yaniv2016hash}}fordert die Ergebnise von \cite{barrTranslationCachingSkip} heraus und argumentiert, dass die erzielten
-Ergebnisse auf einer subobtimalen implementation der invertierten Page table basieren.\\
-Sie schließen, dass eine gut optimierte Invertierte Page Table auch eine mit PWCs ausgestattete
-Radix Page Table outperformed. Sie gehen jedoch auch auf die conceptuellen nachteile von Invertierten
-Page tables ein, z.B. ist es schwieriger Super Pages zu implementieren.\\
-Die Arbeit beschäftigt sich näher mir den unterschieden verschiedener Page Table designs und auch mit
-den Requirements an ein Memory system (wie zum Beispiel superpages oder page sharing). Diese Requirements sind auch
-für das hier vorgestellte Design wichtig. Sonst zielt diese Arbeit aber eher darauf ab keine
-Page Table strukturen zu verwenden.
+% Hash don't Cache
+\textbf{\cite{yaniv2016hash}} challenges the results of \cite{barrTranslationCachingSkip} and argues that the obtained results are based on a suboptimal implementation of the inverted page table.
 
+They conclude that a well-optimized inverted page table can outperform a radix page table equipped with PWCs. However, they also address the conceptual disadvantages of inverted page tables. For example, it is more difficult to implement superpages.
+
+The work takes a closer look at the differences between various page table designs and the requirements of a memory system (such as superpages or page sharing). These requirements are also important for the design presented here. However, this work aims to avoid using page table structures altogether.
 
 
 % -------------------------------------------------------------------------------------------------
 
 % Every walk’s a hit: making page walks single-access cache hits
-\textbf{\cite{park2022every}} idenzifiziert, dass die heutigen Speicherkapazitäten die TLB Coverage weiter und weiter übertreffen
-und somit speicherhungrige Applikationen unter vielen Page Table Walks (PTWs) leiden.\\
-Es werden zwei Ansätze vorgestellt um die damit verbundenen Kosten zu reduzieren:
-Der erste Ansatz zielt darauf ab die anzahl der Speicherreferenzen pro PTW zu reduzieren. Dabei werden
-zwei Level der Page Table in ein Level verbunden.
-Der zweite Ansatz ändert die Cache replacement policy so ab, dass Cache Einträge die PTEs enthalten
-bei Perioden mit vielen TLB misses eher im Cache behalten werden, so dass die PTWs direkt über
-den Cache laufen können und nicht erst aus dem Hauptspeicher geladen werden müssen.\\
-Sie zeigen eine 2.3\% performance Verbesserung mit dem der abflachung des Page Table Trees,
-6.2\% durch die Cache Priorisierung und combiniert eine verbesserung der Performance um 9.2\%.
-Beide Ansätze zielen auf eine Optimierung des Zugriffes auf die Page Table Strukturen hin und sind
-damit getrennt von dieser Arbeit zu sehen, da diese Arbeit darauf abzielt, ohne diese Strukturen
-auszukommen.
+\textbf{\cite{park2022every}} identifies that today’s memory capacities far exceed the coverage of TLBs, causing memory-hungry applications to suffer from frequent page table walks (PTWs).
+
+Two approaches are presented to reduce the associated costs: The first approach aims to reduce the number of memory references per PTW by combining two levels of the page table into one. The second approach modifies the cache replacement policy so that cache entries containing PTEs are more likely to remain in the cache during periods with many TLB misses, allowing PTWs to run directly from the cache instead of being loaded from main memory.
+
+They show a 2.3\% performance improvement from flattening the page table tree, 6.2\% through cache prioritization, and a combined performance improvement of 9.2\%. Both approaches focus on optimizing access to page table structures and are separate from this work, as this work aims to eliminate these structures entirely.
 
 
 % -------------------------------------------------------------------------------------------------
 
 % Elastic Cuckoo Page Table
-\textbf{\cite{skarlatos2020elastic}} presents a novel page table design called \textit{Elastic Cuckoo Page
-    Tables}. Das Design nutzt den Memory-level Parallelismus aus um Page Tabel lookups komplett parallelisiert
-anstellen zu können. At the core of the design lies the Elastic Cuckoo Hashing algorithm witch allows
-multiple hashing locations for a given element and also allows the hash table to be efficitenly gradually
-resized. Skarlatos et all. show an application execution speed up of 3-18\% using the Elastic Cuckoo
-Page Table design.\\
+\textbf{\cite{skarlatos2020elastic}} presents a novel page table design called \textit{Elastic Cuckoo Page Tables}. The design exploits memory-level parallelism to enable fully parallel page table lookups. At the core of the design is the Elastic Cuckoo Hashing algorithm, which allows multiple hashing locations for a given element and also enables efficient, gradual resizing of the hash table. Skarlatos et al. demonstrate an application execution speedup of 3-18\% using the Elastic Cuckoo Page Table design.
+
+% -------------------------------------------------------------------------------------------------
 
 
 
-The related work presented here focuses on optimizing current page table designs and their hardware
-support. This work will explore the feasibility of implementing virtual memory without any page table
-whatsoever. % How? -> Theory!
-
+% -------------------------------------------------------------------------------------------------
 
 \cite{zagieboylo2020cost}
 
+% -------------------------------------------------------------------------------------------------
+
+\cite{halbuer2023morsels}
 
 
-\todo{still need this?}
-Not unlike the software-managed address translation design presented by Jacob and Mudge \cite{jacobSoftwaremanagedAddressTranslation1997},
-the \textit{softtlb} approach utilizes a exception triggered by a cache miss to invoke a software-defined
-exception handler.\\
-Unlike the \textit{softvm} design, this approach will be based on handling an exception that is triggered
-when die TLB misses \todo{TLB and its role explained?}.
-The handler code for this \textit{TLB\_Miss} exception will from now on be called \textit{TLB Manager}.
+% -------------------------------------------------------------------------------------------------
 
-The \textit{TLB Manager}s job is then to resolve the exception by filling the TLB for the failing address
-that triggered the exception.
+The related work presented here focuses on optimizing current page table designs and their hardware
+support. This work will explore the feasibility of implementing virtual memory without any page table whatsoever using a specialized mapping function to generate virtual to physical mappings.\\
+This promises to reduce the overhead of TLB misses caused by expensive main memory access.
+
