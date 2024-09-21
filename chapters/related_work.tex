@@ -47,7 +47,7 @@ memory allocation.\\
 % -------------------------------------------------------------------------------------------------
 
 % Translation Caching skip dont walk -> Translation Caches
-\textbf{\cite{barrTranslationCachingSkip}} examines the design space of translation caches in MMUs. These caches are not the same as TLBs: TLBs contain full translation results, while the translation caches considered here contain partial translations. In the case of a cache hit, these partial translations allow the system to skip individual steps when traversing the page table tree, thereby saving one or more memory accesses. Otherwise, each level of translation would require a memory reference. These caches are also referred to as Page Walk Caches (PWC) \cite{yaniv2016hash}.
+\textbf{\cite{barrTranslationCachingSkip}} examines the design space of translation caches in MMUs. These caches are not the same as TLBs: TLBs contain full translation results, while the translation caches considered here contain partial translations. In the case of a cache hit, these partial translations allow the system to skip individual steps when traversing the page table tree, thereby saving one or more memory accesses. Otherwise, each level of translation requires a memory reference. These caches are also referred to as Page Walk Caches (PWC) \cite{yaniv2016hash}.
 
 The specific translation cache designs of AMD and Intel platforms are examined and compared with three other designs proposed by the authors. Barr et al. conclude that radix page tables, by caching entries at higher page table levels, can outperform inverted page table designs.
 
@@ -84,7 +84,14 @@ They show a 2.3\% performance improvement from flattening the page table tree, 6
 
 % -------------------------------------------------------------------------------------------------
 
-\cite{zagieboylo2020cost}
+\cite{zagieboylo2020cost} proposes an approach that shifts responsibilities of memory management in
+parts back to the applications: Every applications get a fixed-size chunks of physical memory and then have to manage allocations across these blocks.\\
+Thus the task of memory management with the chunks falls to compilers, language runtimes and the applications themselves.\\
+This approach does not require any address translation and thus gets completely rid of the overhead associated with the virtual memory system.\\
+Common features of virtual memory, like memory space protection can still be implemented with physical memory protection mechanisms present on commodity hardware.\\
+Overall, this approach trades a reduction for complexity of the hardware with increased complexity on the software side.
+
+The design presented in this paper also resorts to bigger segments per process, but generally aims to keep the memory management responsibilities with the operating system.\\ It tries to get rid of the page table structure in favor of mapping functions.
 
 % -------------------------------------------------------------------------------------------------
 
