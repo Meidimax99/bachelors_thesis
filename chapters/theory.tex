@@ -389,12 +389,32 @@ uses a design that determines memory allocation at compile time.\\
 The resulting mapping is similar to a segmented memory design.
 
 % Elaboration on segmented memory design
-\textbf{Segmeneted Memory
-\todo{segmented memory in general}}
-\cite{tanenbaumOS}
+\textbf{Segmeneted Memory}
+\textit{Memory Segmentation} splits available memory into logical segments following the structure of a program. Thus there may be a segement for the programs code, the data, stack and so on.\\
+For bookkeeping, there is a segmenttable keeping track of the base address of the segment
+and the size of the segment.\\
+The operating system uses the base address to calculate the physical address from the logical
+address consisting of segment number and offset. The segment size is used to ensure that
+accesses beyond the segment result in an error \cite{tanenbaumOS}.
+
+The main advantages of this memory design are, that the memory layout follows the logical structure of the programs and that the segments are protected from undesired access (like writing to the code segment).\\
+Typical segmented memory designs also allow for dynamic segment sizes \cite{tanenbaumOS}.
+
+
 
 % Elaboration on this specific design
-\todo{segmented memory in this design}}
+\textbf{Tableless Segmented Virtual Memory}
+As a typical segmented memory design splits the programs memory into logical units, this design uses segmentation to split the whole physical memory into logical parts.\\
+These logical parts do however not reflect the structure of a program, but distinct process address spaces: Each segment of main memory can hold one process.\\
+To keep the design as light-weight as possible, each segments has a fixed size, which is determined at compile time of the operating system.\\
+This is less flexible but ommits the need of storing the segment size for each segment, as they are all the same size.\\
+For calculating a physical address from a virtual one, all the mapping function needs is the ASID (segment number) and the offset into the address space.\\
+For checking whether accesses reach over the the segment, only the static segment size is necessary.
+
+This approach also protect logical units (process address spaces) from each other. This is made sure
+by flushing the TLB on context switch.
+
+\todo{figure to visualize this?}
 
 % Segmented memory layout
 
@@ -428,10 +448,10 @@ The trapframe is used for saving the state of the process on context switch and 
 
 In xv6's original memory system, both of these pages would be pinned to the maximum virtual address.
 With the segmented design, the address space only comprises the range of [
-    0 - MEM_START+ASID*MAX_AS_SIZE
+    0 - MEM\_START+ASID*MAX\_AS\_SIZE
 ]
-with \texttt{MEM_START} being the start of the \texttt{RAM}, \texttt{ASID} being the \emph{Address Space Identifier} of the process and \texttt{MAX_AS_SIZE} being the maximum size of one address space.\\
-\texttt{MAX_AS_SIZE} is determined by the size of available physical memory devided by the maximum
+with \texttt{MEM\_START} being the start of the \texttt{RAM}, \texttt{ASID} being the \emph{Address Space Identifier} of the process and \texttt{MAX\_AS\_SIZE} being the maximum size of one address space.\\
+\texttt{MAX\_AS\_SIZE} is determined by the size of available physical memory devided by the maximum
 number of processes that can simultaneously run.
 
 The address space of a process would thus not be big enough to include the usual addresses for the
@@ -442,10 +462,26 @@ The trampoline page can be the same for every process, but the trapframe needs t
 process and is thus pinned to the very top of the physical segment of each process.
 
 
+% Flush not precicse anymore if using more ASs than ASIDs in satp field
+
+
 % A look at input and output data
 % Calculation of addresses
 
 \textbf{Address Calculation}
+
+The calculation of physical addresses from physical ones is very straight forward. All that is required is the processes ASID and the offset into the address space.\\
+The ASID is saved in the process control block (PCB). But because accessing it may be expensive when frequent TLB misses occur, the ASID is encoded into the \texttt{satp} register.\\
+\texttt{satp} is normally used to provide the base address of the root page table to the memory management hardware, but since there is not page table to be used in the memory manager, the register is free to be used for additional context info in the exception handler.
+
+Looking back at figure \ref{satp figure} shows that there is a ASID field in \texttt{satp} anyways,
+so the \todo{satp base address field name} field does not have to be touched.\\
+But the implementation may chose to use a different number of address spaces than there are supported by the \texttt{ASID} field to allow more processes to be run at the same time.\\
+But with 16 bit, $2^16 = 65536$ address spaces can be supported, which should be more than enough \todo{that like my opinion dude}.
+
+% Assumption: TLB more often than context switch
+This optimization is based on the assumption, that TLB misses (and thus calls to the exception handler) occur more frequently than context switches, which should be granted when processes use more than one page and have all of their TLB entries flushed at context switch.\\
+So the access of the ASID is moved from the frequent TLB miss exception handler to the infrequent context switch. % Heißer 20 year or liedtke homage?
 
 % xv6 Perspective and specifcs (but still theory!) -> Into Impl?
 %   Special mappings -> special case in tlb manager (e.g. Trampoline)
