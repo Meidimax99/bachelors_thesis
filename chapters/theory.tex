@@ -104,7 +104,7 @@ The final architecture for the memory sytem will look like depicted in figure \r
     \label{fig:theory:normal_tlb_miss}
 \end{figure*}
 % Virtual Memory using a Mapping Function
-\begin{figure*}[ht!]
+\begin{figure*}[t]
     \centering
     \includegraphics[scale=1.5]{figures/theory_mapping_fx.pdf}
     \caption[Virtual Memory using a mapping function]{Instead of emulating a hardware page table walk in software on
@@ -429,9 +429,9 @@ into every processes address space.\\
 The trapframe is used for saving the state of the process on context switch and is thus also essential to be present for every process.
 
 In xv6's original memory system, both of these pages would be pinned to the maximum virtual address.
-With the segmented design, the address space only comprises the range of [
-        0 - MEM\_START+ASID*MAX\_AS\_SIZE
-    ]
+With the segmented design, the address space only comprises the range of \[
+    0 - MEM\_START+ASID*MAX\_AS\_SIZE
+\]
 with \texttt{MEM\_START} being the start of the \texttt{RAM}, \texttt{ASID} being the \emph{Address Space Identifier} of the process and \texttt{MAX\_AS\_SIZE} being the maximum size of one address space.\\
 \texttt{MAX\_AS\_SIZE} is determined by the size of available physical memory devided by the maximum
 number of processes that can simultaneously run.
