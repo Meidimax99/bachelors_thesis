@@ -20,12 +20,13 @@ Dabei gibt es verschiedene Ansätze oder Winkel um das System anzugehen:
 % -------------------------------------------------------------------------------------------------
 
 % Guarded Page Tables
-\textbf{\cite{liedtkeGPT}}
+\textbf{\cite{liedtkeGPT}} shows a innovative design leveraging the flexibility of software-managed
+address translation.\\
+The design of Guarded Page Tables (GPTs) uses a design based on hierarchical page tables, but allows skipping over levels of the table to reach translation results faster.\\
+This proves to be very effective for increasing the performance of virtual memory systems, as the biggest penalty comes from page tables walks needing to reference memory for every level in the page table.\\
+Gernot Heiser showcases a practical implementation of GPTs in the L4/MIPS system \cite{heiserAnatomyHighPerformanceMicrokernel}.
 
-% -------------------------------------------------------------------------------------------------
 
-% MIPS GPT Impl
-\textbf{\cite{heiserAnatomyHighPerformanceMicrokernel}}
 
 % -------------------------------------------------------------------------------------------------
 
