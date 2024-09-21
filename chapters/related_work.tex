@@ -18,9 +18,9 @@ There are different approaches or perspectives to addressing the system (this is
 
 % Guarded Page Tables
 \textbf{\cite{liedtkeGPT}} shows a innovative design leveraging the flexibility of software-managed
-address translation.\\
-The design of Guarded Page Tables (GPTs) uses a design based on hierarchical page tables, but allows skipping over levels of the table to reach translation results faster.\\
-This proves to be very effective for increasing the performance of virtual memory systems, as the biggest penalty comes from page tables walks needing to reference memory for every level in the page table.\\
+address translation.
+The design of Guarded Page Tables (GPTs) uses a design based on hierarchical page tables, but allows skipping over levels of the table to reach translation results faster.
+This proves to be very effective for increasing the performance of virtual memory systems, as the biggest penalty comes from page tables walks needing to reference memory for every level in the page table.
 Gernot Heiser showcases a practical implementation of GPTs in the L4/MIPS system \cite{heiserAnatomyHighPerformanceMicrokernel}.
 
 
@@ -32,7 +32,7 @@ Gernot Heiser showcases a practical implementation of GPTs in the L4/MIPS system
 of the presented design they call \textit{softvm}. They show that
 software-managed address translation can achieve better performance and
 at the same time simplify hardware by dispensing with translation caches and
-the hardware state-machine for walking the page table.\\
+the hardware state-machine for walking the page table.
 The approach is based on handling virtually indexed and tagged cache misses in
 software.
 With sufficiently-sized virtual caches the system can go for long periods
@@ -41,7 +41,7 @@ Not unlike this paper, they extend the PowerPC architecture by two new instructi
 to write entries to the cache. However, their design uses software page table
 walks to find translations on cache-miss, while the approach presented in this
 paper presents a software-based TLB fill mechanism with segmented
-memory allocation.\\
+memory allocation.
 % TODO Further elaboration on the Background chapter of jacobSoftwaremanagedAddressTranslation1997
 
 % -------------------------------------------------------------------------------------------------
@@ -85,24 +85,24 @@ They show a 2.3\% performance improvement from flattening the page table tree, 6
 % -------------------------------------------------------------------------------------------------
 
 \cite{zagieboylo2020cost} proposes an approach that shifts responsibilities of memory management in
-parts back to the applications: Every applications get a fixed-size chunks of physical memory and then have to manage allocations across these blocks.\\
-Thus the task of memory management with the chunks falls to compilers, language runtimes and the applications themselves.\\
-This approach does not require any address translation and thus gets completely rid of the overhead associated with the virtual memory system.\\
-Common features of virtual memory, like memory space protection can still be implemented with physical memory protection mechanisms present on commodity hardware.\\
+parts back to the applications: Every applications get a fixed-size chunks of physical memory and then have to manage allocations across these blocks.
+Thus the task of memory management with the chunks falls to compilers, language runtimes and the applications themselves.
+This approach does not require any address translation and thus gets completely rid of the overhead associated with the virtual memory system.
+Common features of virtual memory, like memory space protection can still be implemented with physical memory protection mechanisms present on commodity hardware.
 Overall, this approach trades a reduction for complexity of the hardware with increased complexity on the software side.
 
-The design presented in this paper also resorts to bigger segments per process, but generally aims to keep the memory management responsibilities with the operating system.\\ It tries to get rid of the page table structure in favor of mapping functions.
+The design presented in this paper also resorts to bigger segments per process, but generally aims to keep the memory management responsibilities with the operating system. It tries to get rid of the page table structure in favor of mapping functions.
 
 % -------------------------------------------------------------------------------------------------
 
-\cite{halbuer2023morsels} argues that prevailing memory management system designs are getting increasingly inefficient given modern systems that have very big main memories and workloads that require large in-memory data sets.\\
-The paper presents a novel approach addressing the limitations of current methods with \emph{Morsels}.\\
-These Morsels are self contained memory object, spanning entire page table sub-trees, thus allowing efficient remapping, sharing and reduced memory overhead.\\
+\cite{halbuer2023morsels} argues that prevailing memory management system designs are getting increasingly inefficient given modern systems that have very big main memories and workloads that require large in-memory data sets.
+The paper presents a novel approach addressing the limitations of current methods with \emph{Morsels}.
+These Morsels are self contained memory object, spanning entire page table sub-trees, thus allowing efficient remapping, sharing and reduced memory overhead.
 They reuse existing interfaces and work on top of existing page table structures to provide a supplementary layer to improve the efficiency of memory-intensive applications.
 
 % -------------------------------------------------------------------------------------------------
 
 The related work presented here focuses on optimizing current page table designs and their hardware
-support. This work will explore the feasibility of implementing virtual memory without any page table whatsoever using a specialized mapping function to generate virtual to physical mappings.\\
+support. This work will explore the feasibility of implementing virtual memory without any page table whatsoever using a specialized mapping function to generate virtual to physical mappings.
 This promises to reduce the overhead of TLB misses caused by expensive main memory access.
 

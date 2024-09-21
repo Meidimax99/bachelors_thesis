@@ -49,7 +49,7 @@ Orthodox hierarchical page table organizations \cite{tanenbaumOS} can get as dee
 \textbf{Alternative designs} like inverted page tables realize page table mappings using hash functions \cite{tanenbaumOS}. While reducing the number of additional memory references, these approaches have problems on their own: Some features of virtual memory systems become harder to implement, exacting additional performance penalties \cite{yaniv2016hash} and page table lookups can get a lot more expense when following collision chains \cite{jacob1998look}.
 
 Chapter \ref{chap:related} will show, that there are a lot of different \textbf{approaches to optimize} the virtual memory system.
-This shows that there is little agreement on how the virtual memory system is best implemented \cite{jacob1998look}.\\
+This shows that there is little agreement on how the virtual memory system is best implemented \cite{jacob1998look}.
 However, most of the optimization approaches still relied on page table structures to do the bookkeeping of the mappings.
 
 \textbf{This thesis} explores the idea of getting rid of page table structures all together and base the mapping of virtual to physical addresses on specially crafted functions (for example non-cryptographic hash functions \cite{mittelbach2021non}).

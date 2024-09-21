@@ -482,20 +482,20 @@ The format of a PTE is shown in figure \ref{fig:theory:sv39pte}.
     \centering
     \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
         \bitheader[endianness=big]{63,62,61,60,54,53,28,27,19,18,10,9,8,7,6,5,4,3,2,1,0}
-        \bitbox{1}{N} &
-        \bitbox{2}{\rotatebox{90}{PBMT}} &
-        \bitbox{7}{Reserved} &
-        \bitbox{26}{PPN[2]} &
-        \bitbox{9}{PPN[1]} &
-        \bitbox{9}{PPN[0]} &
-        \bitbox{2}{\rotatebox{90}{RSW}} &
-        \bitbox{1}{D} &
-        \bitbox{1}{A} &
-        \bitbox{1}{G} &
-        \bitbox{1}{U} &
-        \bitbox{1}{X} &
-        \bitbox{1}{W} &
-        \bitbox{1}{R} &
+        \bitbox{1}{N} & \\
+        \bitbox{2}{\rotatebox{90}{PBMT}} & \\
+        \bitbox{7}{Reserved} & \\
+        \bitbox{26}{PPN[2]} & \\
+        \bitbox{9}{PPN[1]} & \\
+        \bitbox{9}{PPN[0]} & \\
+        \bitbox{2}{\rotatebox{90}{RSW}} & \\
+        \bitbox{1}{D} & \\
+        \bitbox{1}{A} & \\
+        \bitbox{1}{G} & \\
+        \bitbox{1}{U} & \\
+        \bitbox{1}{X} & \\
+        \bitbox{1}{W} & \\
+        \bitbox{1}{R} & \\
         \bitbox{1}{V}
     \end{bytefield}
     \caption[RISC-V Sv39 Page Table Entry]{\textbf{RISC-V Sv39 Page Table Entry} }
@@ -512,9 +512,9 @@ If the page table walk succeeds, the last PTE will contain a Physical Page Numbe
     \centering
     \begin{bytefield}[bitwidth=\widefigurewidth/56,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{56}
         \bitheader[endianness=big]{55,30,29,21,20,12,11,0}
-        \bitbox{26}{PPN[2]} &
-        \bitbox{9}{PPN[1]} &
-        \bitbox{9}{PPN[0]} &
+        \bitbox{26}{PPN[2]} & \\
+        \bitbox{9}{PPN[1]} & \\
+        \bitbox{9}{PPN[0]} & \\
         \bitbox{12}{Page Offset}
     \end{bytefield}
     \caption[RISC-V Sv39 Physical Address]{RISC-V Sv39 Physical Address}
@@ -525,9 +525,9 @@ If the page table walk succeeds, the last PTE will contain a Physical Page Numbe
     \centering
     \begin{bytefield}[bitwidth=\widefigurewidth/39,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{39}
         \bitheader[endianness=big]{38,30,29,21,20,12,11,0}
-        \bitbox{9}{VPN[2]} &
-        \bitbox{9}{VPN[1]} &
-        \bitbox{9}{VPN[0]} &
+        \bitbox{9}{VPN[2]} & \\
+        \bitbox{9}{VPN[1]} & \\
+        \bitbox{9}{VPN[0]} & \\
         \bitbox{12}{Page Offset}
     \end{bytefield}
     \caption[RISC-V Sv39 Virtual Address]{RISC-V Sv39 Virtual Address}
@@ -543,8 +543,8 @@ Beyond the configuration of the virtual memory system, it contains the base addr
     \centering
     \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
         \bitheader[endianness=big]{63,60,59,44,43,0}
-        \bitbox{4}{Mode} &
-        \bitbox{16}{ASID} &
+        \bitbox{4}{Mode} & \\
+        \bitbox{16}{ASID} & \\
         \bitbox{44}{PPN}
     \end{bytefield}
     \caption[RISC-V Sv39 \texttt{satp} CSR]{RISC-V Sv39 \texttt{satp} CSR}
@@ -633,9 +633,9 @@ of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
     \centering
     \begin{bytefield}[bitwidth={2em}, bitformatting={\bfseries}, boxformatting={\centering}]{12}
         \bitheader[endianness=big]{11,10,9,8,7,4,3,0}
-        \bitbox{2}{RW/RO} &
-        \bitbox{2}{Priv} &
-        \bitbox{4}{Usage} &
+        \bitbox{2}{RW/RO} & \\
+        \bitbox{2}{Priv} & \\
+        \bitbox{4}{Usage} & \\
         \bitbox{4}{Index}
     \end{bytefield}
     \caption[RISC-V CSR address format]{RISC-V CSR address format}
