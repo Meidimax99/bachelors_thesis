@@ -50,97 +50,12 @@ Alternative designs like inverted page tables realize page table mappings using 
 
 The Related Work chapter \ref{chap:related} will show, that there are a lot of different angels to optimize the virtual memory system.\\
 This shows that there is little agreement on how the virtual memory system is best implemented \cite{jacob1998look}.\\
-%Quick Facts
-% Intel 5 Level Paging intelTLBsPagingStructureCaches2008
-% Sv57 RISC-V Paging RISCVInstructionSet
+However, most of the optimization approaches still relied on page table structures to do the bookkeeping of the mappings.
 
+This paper explores the idea of getting rid of page table structures all together and base the mapping of virtual to physical addresses on specially crafted functions (for example non-cryptographic hash functions \cite{mittelbach2021non}).\\
+Hash functions implemented by simple arithmetic instructions are orders of magnitude faster than the multiple memory accesses required by a page table walk \cite{tanenbaumOS} and allowing them to be defined in software gives the operating system a lot of flexibility to fit the implementation of the mapping function to the custom needs of the use case.
 
-% Plethora of interfaces suggesting performance problems
-
-% [ A look at several ]
-% implemented on either the hardware or software side of the interface. The myriad of design choices and incompatible hardware mechanisms suggests potential performance problems, especially since increasing numbers of systems (even embedded systems) are using memory management. A comparative study of the implementation choices in virtual memory should therefore aid system-level designers.
-\label{Intro}
-
-\todo{CITE Architectural and operating system support for virtual memory}
-Virtual memory is used by computer systems at all scales. Everything from systems running in huge data
-centers to embedded computers rely on virtual memory.
-
-% Relevance: Most computers today use a page-based virtual memory approach
-Current radix page tables can get up to 5 levels deep \cite{intel5LevelPaging5Level2017}. Every level
-adds another memory access to the page table lookup.\\
-Caching structures can alleviate the cost by storing complete or partial translation results \cite{van2002memory}.
-But especially large-memory applications, virtualized environments and graph-processing applications
-suffer extensively from address translation costs \cite{zagieboylo2020cost}.
-
-
-% -------------------------------------------------------------------------------------------------
-% Problems with VM
-
-% Many different interfaces
-\cite{jacobVirtualMemoryContemporary1998,jacob1998virtualissues}
-% SOME NUMBERS PLEASE -> [ A look at several ...] abstract
-% Previous approaches aimed to reduce the memory footprint or optimize cache accesses, or reduce page table
-% walks to a minimum, this approach aims to eliminate paging structures completely
-
-% Very short summarization of the way page-based virtual memory works, ending with the amount of memory references
-% barrTranslationCachingSkip -> memory references keep on increasing as memory requirements increase
-
-While previous work tried to either reduce the number of memory accesses \todo{CITE Lidtke ,Skip no walk, single hit uppsala paper},
-decrease the occurrence of a TLB miss and decrease the latency of handling a TLB Miss, this paper
-presents an approach to create a virtual memory scheme not requiring paging structures at all.\\
-
-
-% TODO Problem Statement: Are paging structures even necesarry or can virtual memory purely be realized
-%       by a simple software-defined function that refills the tlb?
-%
-
-% Conclusion on previous Work -> Still need a memory access
-
-% The Idea -> Getting rid of any memory access in favor of simple arithmetic operation (eg. hash functions)
-% statefull -> stateless
-
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-% Description of Approach
-% TODO Very short: How the TLB is used
-
-% The approach is not directly the TLB filling, thats just one
-% implementation of the process.
-
-% The main idea is to replace page table walks with simple function calls
-
-Current hardware-supported virtual memory systems suffer from inflexibility and costly memory accesses \cite{jacob1998look}.\\
-Software-based approaches are a lot more flexible, but are, so far, based on page table lookups as well.
-
-% Soruce: Virtual memory: issues of implementation
-
-\begin{itemize}
-    \item Software Managed TLB
-    \item Not based on page tables but a simple function to reduce memory accesses to a minimum
-\end{itemize}
-
-
-The RISC-V Instruction Set manual warns that ''[...]Software TLB refills are a performance bottleneck[...]''\cite{RISCVInstructionSet},
-but also suggests that they may be realized by implementing a machine-mode trap handler as an extension to the
-most-priviledged machine mode. This paper will explore just that.
-% Auch -> Proof of concept
-% Und: Keine Page table walks
-% Discussion: -> A look at several ...
-
-
-% WHAT DOES THIS PAPER DO
-% -> SW TLB Handling Proof Of concept on riscv
-% -> Use that TLB handling to realize a Segmented vm design not using any page tables
-
-
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-% Proof of concept
-
-
-% -------------------------------------------------------------------------------------------------
-% -------------------------------------------------------------------------------------------------
-% Description of Contents
+This thesis will describe the theory and implementation of a platform that facilitates the definition and the experimentation with such mapping functions and also shows a first simple mapping function that realizes a simplified virtual memory system without any page tables.
 
 
 % Inhaltsbeschreibung
@@ -173,7 +88,6 @@ The eighth and final chapter provides a summary of the paper and its results.\\
 
 
 
-\cite{zagieboylo2020cost} has nice numbers in introduction for cost of VM
 
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
