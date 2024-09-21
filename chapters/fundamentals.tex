@@ -467,15 +467,25 @@ as the VM system can be fully defined by the operating system.
 The implementation presented in this work runs on a RISC-V platform. Therefore, it is necessary
 to go over some basic concepts of the RISC-V platform. Particularly relevant here are the virtual
 memory system, the exception/trap mechanism, and the control and status registers (CSRs), which
-form the foundation for extending RISC-V.
+form the foundation for extending RISC-V.\\
+The information presented in the following section is taken from both the RISC-V Reader \cite{riscvreader} and the RISC-V ISA Specification \cite{RISCVInstructionSet}.
 
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Sv39 Virtual Memory}
 \label{fund:sv39}
 
+The RISC-V ISA specifies a simple, modular and scalable page-based virtual memory system \cite{riscvreader}.\\
+It supports different page sizes and also different addressing modes:\\
+Sv32 for 32-bit systems; Sv39 for 64-bit systems with a 3-level page table.\\
+For bigger memory needs, there are also the Sv48 and Sv57 addressing modes, adding one and two levels to the page table and supporting 256 TB and 128 PB respectively.\\
+The following will only look at specifics for the Sv39 addressing mode.
+
+The page table is an orthodox hierarchical multi-level page table, where each Page Table Entry (PTE) points to a PTE in the next level.\\
+Each level of the page table contains 512 PTEs with 64-bit in size, bringing a page table to exactly 4 KB in size.\\
+The format of a PTE is shown in figure \ref{fig:theory:sv39pte}.
 \todo{explain why the top bits in PTE are all zero (with leichten Bezug zu xv6 impl)}
-\begin{figure*}[h!]
+\begin{figure*}[h]
     \centering
     \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
         \bitheader[endianness=big]{63,62,61,60,54,53,28,27,19,18,10,9,8,7,6,5,4,3,2,1,0} \\
@@ -495,9 +505,59 @@ form the foundation for extending RISC-V.
         \bitbox{1}{R} &
         \bitbox{1}{V}
     \end{bytefield}
-    \caption[RISC-V Sv39 Page Table Entry]{RISC-V Sv39 Page Table Entry}
+    \caption[RISC-V Sv39 Page Table Entry]{\textbf{RISC-V Sv39 Page Table Entry} }
     \label{fig:theory:sv39pte}
 \end{figure*}
+
+\todo{describe format}
+The translation process (which was already shown in Figure \ref{fig:fund:pagetree}) splits the virtual address (See figure \ref{fig:theory:sv39va}) into 4 logical parts:\\
+Three parts are parts of the Virtual Page Number (VPN), which are used to index the different page tables that are being traversed.\\
+If the page table walk succeeds, the last PTE will contain a Physical Page Number (PPN), which will then be combined with the offset to create a physical address (See figure \ref{fig:theory:sv39pa}).
+
+
+\begin{figure*}[h]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/56,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{56}
+        \bitheader[endianness=big]{55,30,29,21,20,12,11,0} \\
+        \bitbox{26}{PPN[2]} &
+        \bitbox{9}{PPN[1]} &
+        \bitbox{9}{PPN[0]} &
+        \bitbox{12}{Page Offset}\\
+    \end{bytefield}
+    \caption[RISC-V Sv39 Physical Address]{RISC-V Sv39 Physical Address}
+    \label{fig:theory:sv39pa}
+\end{figure*}
+
+\begin{figure*}[h]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/39,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{39}
+        \bitheader[endianness=big]{38,30,29,21,20,12,11,0} \\
+        \bitbox{9}{VPN[2]} &
+        \bitbox{9}{VPN[1]} &
+        \bitbox{9}{VPN[0]} &
+        \bitbox{12}{Page Offset}\\
+    \end{bytefield}
+    \caption[RISC-V Sv39 Virtual Address]{RISC-V Sv39 Virtual Address}
+    \label{fig:theory:sv39va}
+\end{figure*}
+
+
+Essential for the configuration of the virtual memory system in RISC-V is the \texttt{satp} register (See figure \ref{fig:theory:sv39satp}).\\
+It configures whether virtual memory is enabled at all or if direct mapping is used for all addresses. It is also used to set the addressing mode.\\
+Beyond the configuration of the virtual memory system, it contains the base address pointing to the root page table used for translations.
+
+\begin{figure*}[t]
+    \centering
+    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
+        \bitheader[endianness=big]{63,60,59,44,43,0} \\
+        \bitbox{4}{Mode} &
+        \bitbox{16}{ASID} &
+        \bitbox{44}{PPN} \\
+    \end{bytefield}
+    \caption[RISC-V Sv39 \texttt{satp} CSR]{RISC-V Sv39 \texttt{satp} CSR}
+    \label{fig:theory:sv39satp}
+\end{figure*}
+
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Traps}
@@ -614,41 +674,4 @@ this data is best communicated via the CSRs to the computer.\\
 % [ a look at severeal ] -> conlsion
 
 
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/56,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{56}
-        \bitheader[endianness=big]{55,30,29,21,20,12,11,0} \\
-        \bitbox{26}{PPN[2]} &
-        \bitbox{9}{PPN[1]} &
-        \bitbox{9}{PPN[0]} &
-        \bitbox{12}{Page Offset}\\
-    \end{bytefield}
-    \caption[RISC-V Sv39 Physical Address]{RISC-V Sv39 Physical Address}
-    \label{fig:theory:sv39pa}
-\end{figure*}
 
-
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
-        \bitheader[endianness=big]{63,60,59,44,43,0} \\
-        \bitbox{4}{Mode} &
-        \bitbox{16}{ASID} &
-        \bitbox{44}{PPN} \\
-    \end{bytefield}
-    \caption[RISC-V Sv39 \texttt{satp} CSR]{RISC-V Sv39 \texttt{satp} CSR}
-    \label{fig:theory:sv39satp}
-\end{figure*}
-
-\begin{figure*}[t]
-    \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/39,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{39}
-        \bitheader[endianness=big]{38,30,29,21,20,12,11,0} \\
-        \bitbox{9}{VPN[2]} &
-        \bitbox{9}{VPN[1]} &
-        \bitbox{9}{VPN[0]} &
-        \bitbox{12}{Page Offset}\\
-    \end{bytefield}
-    \caption[RISC-V Sv39 Virtual Address]{RISC-V Sv39 Virtual Address}
-    \label{fig:theory:sv39va}
-\end{figure*}
