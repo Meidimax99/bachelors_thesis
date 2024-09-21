@@ -128,7 +128,7 @@ To adapt the RISC-V emulator to fit the architectural design, a number of change
 % Answers: Welche Platform wird verwendet? Warum?  Was provided die Platform, was nicht?
 \section{Platform}
 The chosen platform is the xv6 operating system \cite{xv6source}. It is a teaching operating system
-used by some MIT courses.\\
+used by MIT operating systems courses to teach the basics of operating systems.\\
 xv6 implements the basic Unix Version 6 interfaces, but does so in a very simplified fashion.\\
 There is a x86 version and a RISC-V version. For this project, the RISC-V version was chosen.\\
 xv6's simplicity and the accompanying handbook \cite{cox2011xv6} make it a good choice for a first
@@ -137,26 +137,8 @@ proof of concept.
 xv6 will be run on the QEMU \cite{QEMUSource2024} emulator. The QEMU RISC-V emulator implements
 all the RISC-V features and extensions that xv6 needs.
 
-Running the operating system on an emulator is a necessity, because the requires the hardware to
-throw a TLB Miss exception.\\ The RISC-V ISA does not provide such functionality by default, so
-part of the theory and implementation chapters will be dedicated to extending the RISC-V ISA and
-the QEMU emulation to support TLB Miss exceptions.
-%Implementation Platform
-Diese Kapitel betrachtet zwar nur die Theorie des softtlb desings, allerdings muss diese in Kontext
-der gewählten Platform gestellt werden und wird daher an manchen Stellen in tieferes Detail der konkreten
-Platform eintauchen als man für eine theoretische Ausarbeitung des Designs erwarten würde.
-Das ist wichtig um dem späteren Implementierungskapitel den nötigen Kontext zu liefern.\\
-Als Platform für die Implementierung wurde der Einfachkeit halber das xv6-riscv educational operating
-system \cite{cox2011xv6} gewählt.\\
-\textit{Xv6} wird am MIT genutzt um Operating Systems Kurse zu bieten und bietet mit dem Handbuch eine
-einfache und verständliche Platform die ein vereinfachtes Unix Version 6 Interface implementiert.\\
-Xv6 gibt es in einer x86 version und in einer RISC-V version, es wurde hier die RISC-V version verwendet.
-\\
-Da im Rahme der Implementierung einer neuen Exception das nutzen echter RISC-V Hardware nicht möglich
-ist, muss ein Emulator benutzt werden um die nötigen Änderungen an der ISA zu implementieren und zu nutzen.
-Dafür wurde der Qemu Emulator gewählt, da dieser sehr Umfassend und performant ist und außerdem einen
-TLB emuliert.
-% Zukünftige Idee -> Configurierbarer "stateless" physical frame calculator hw baustein
+Since using actual RISC-V hardware is not possible within the scope of implementing a new exception, an emulator is used to implement and utilize the necessary changes to the ISA. The QEMU emulator was chosen for this purpose, as it is very comprehensive and performant, and also emulates a TLB.
+
 
 % Was provided die Platform noch nicht, was muss noch gemacht werden um das Design zu realisieren?
 % Implications of programming platform on implementation -> needing to implement TLB Miss
@@ -173,7 +155,7 @@ TLB emuliert.
 % -------------------------------------------------------------------------------------------------
 \section{TLB Miss Exception}
 Operating system running on RISC-V hardware are not directly notified of TLB misses.
-A TLB miss can only be infered when a page fault occurs. Otherwise, TLB misses will be handled
+A TLB miss can only be inferred when a page fault occurs. Otherwise, TLB misses will be handled
 by the MMU.\\
 To manage a TLB in software the operating system needs to be made aware that a TLB miss occured.\\
 The natural mechanism to do this is the exception mechanism.
@@ -448,8 +430,8 @@ The trapframe is used for saving the state of the process on context switch and 
 
 In xv6's original memory system, both of these pages would be pinned to the maximum virtual address.
 With the segmented design, the address space only comprises the range of [
-    0 - MEM\_START+ASID*MAX\_AS\_SIZE
-]
+        0 - MEM\_START+ASID*MAX\_AS\_SIZE
+    ]
 with \texttt{MEM\_START} being the start of the \texttt{RAM}, \texttt{ASID} being the \emph{Address Space Identifier} of the process and \texttt{MAX\_AS\_SIZE} being the maximum size of one address space.\\
 \texttt{MAX\_AS\_SIZE} is determined by the size of available physical memory devided by the maximum
 number of processes that can simultaneously run.
