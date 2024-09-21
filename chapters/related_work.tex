@@ -80,8 +80,6 @@ They show a 2.3\% performance improvement from flattening the page table tree, 6
 % Elastic Cuckoo Page Table
 \textbf{\cite{skarlatos2020elastic}} presents a novel page table design called \textit{Elastic Cuckoo Page Tables}. The design exploits memory-level parallelism to enable fully parallel page table lookups. At the core of the design is the Elastic Cuckoo Hashing algorithm, which allows multiple hashing locations for a given element and also enables efficient, gradual resizing of the hash table. Skarlatos et al. demonstrate an application execution speedup of 3-18\% using the Elastic Cuckoo Page Table design.
 
-% -------------------------------------------------------------------------------------------------
-
 
 
 % -------------------------------------------------------------------------------------------------
@@ -90,8 +88,10 @@ They show a 2.3\% performance improvement from flattening the page table tree, 6
 
 % -------------------------------------------------------------------------------------------------
 
-\cite{halbuer2023morsels}
-
+\cite{halbuer2023morsels} argues that prevailing memory management system designs are getting increasingly inefficient given modern systems that have very big main memories and workloads that require large in-memory data sets.\\
+The paper presents a novel approach addressing the limitations of current methods with \emph{Morsels}.\\
+These Morsels are self contained memory object, spanning entire page table sub-trees, thus allowing efficient remapping, sharing and reduced memory overhead.\\
+They reuse existing interfaces and work on top of existing page table structures to provide a supplementary layer to improve the efficiency of memory-intensive applications.
 
 % -------------------------------------------------------------------------------------------------
 
