@@ -33,7 +33,7 @@ are shown.
 \section{Virtual Memory}
 \textit{Virtual Memory} was first introduced in the Atlas System \cite{fotheringham1961dynamic} to
 automate the task of swapping pages between main and secondary memory.
-The idea was to make the programms completely unaware of of the real, physical memory by providing
+The idea was to make the programs completely unaware of of the real, physical memory by providing
 an abstraction layer called virtual memory \cite{denning1996virtual}.\\
 With virtual memory, programs appear to have the whole memory space of the machine at their disposal. It also
 hides all the other processes and their memory from them.\\
@@ -362,6 +362,45 @@ memory system performance \cite{RISCVInstructionSet}.
 %   [ A look at several...]
 % Software managed address translation
 % \subsection{Guarded Page Tables}
+
+Software-based Virtual Memory Systems are generally more flexible than hardware-based systems
+as the mapping can be controlled in software and structures (such as the PTE) are not bound
+to the hardware \cite{jacob1998virtualissues}.\\
+However, all of the approaches listed here still use a page table structure to keep track of mappings.\\
+Main differences are in the details of the implemented page table structure and in the way to software has to create the mappings. This freedom allows adjusting the virtual memory system to fit more specific use cases, as hardware-based systems are design to service a wide range of different applications\cite{citation needed}.\\
+In the following, a number of software-based Virtual Memory Systems are presented.
+% A look at several
+% MIPS -Ultrix
+% Software managed tlbs
+\subsection{MIPS}
+MIPS \cite{MIPSArchitectureProgrammers2016} allows software-management of TLBs by raising an exception on TLB miss and by providing instructions to write TLB entries from software.
+
+\textbf{Ultrix} The Ultrix page table is a two-tiered page table with two exception handlers for the TLB miss exception.\\
+One of the handlers services user-level misses, the other one handles kernel-level misses.\\
+Kernel level misses may occur when the page containing a PTE is not loaded and causes a
+TLB miss \cite{jacob1998look}.
+
+\textbf{Guarded Page Tables} In his dissertation, Jochen Liedtke presented a innovative approach
+to handeling virtual memory \cite{liedtkeGPT}.\\
+The approach is based on hierarchical page tables, and is shown to provide an efficient solution particularly in systems with large, sparse address spaces.\\
+The design allows skipping over PTE entries to reach valid PTEs faster, without having to traverse every single level of the tree.\\
+Gernot Heißer showcased a implementation of that design in \cite{heiserAnatomyHighPerformanceMicrokernel}.
+
+% PA-RISCV VM System
+\subsection{PA-RISC}
+PA-RISC uses a inverted page table design. Similar to Ultrix, the inverted page table is searched in the TLB miss handler wenn a TLB miss occurs.\\
+The TLB miss handler will calculate the hash from the virtual address to locate the head of the hash collision chain and then search linearily through the chain to find the mapping \cite{jacob1998look}.
+
+\subsection{NOTLB}
+A comparative study conducted by Jacob et al. \cite{jacob1998look} also looks at a software-managed Virtual Memory Design that uses no TLB at all.\\
+The design uses a two-level page table structure similar to the ULTRIX/MIPS design and organizes its address space into disjunct segments.\\
+Instead of a TLB miss handler, there is a Cache-Miss handler, that services misses in the virtual L2 cache.\\
+Similar to the Ultrix design, there are two handlers to also handle nested cache misses.
+
+
+% What was the paper about software managed chaches?
+
+
 
 
 

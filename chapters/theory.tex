@@ -475,7 +475,7 @@ The ASID is saved in the process control block (PCB). But because accessing it m
 \texttt{satp} is normally used to provide the base address of the root page table to the memory management hardware, but since there is not page table to be used in the memory manager, the register is free to be used for additional context info in the exception handler.
 
 Looking back at figure \ref{satp figure} shows that there is a ASID field in \texttt{satp} anyways,
-so the \todo{satp base address field name} field does not have to be touched.\\
+so the \texttt{PPN} field does not have to be touched.\\
 But the implementation may chose to use a different number of address spaces than there are supported by the \texttt{ASID} field to allow more processes to be run at the same time.\\
 But with 16 bit, $2^16 = 65536$ address spaces can be supported, which should be more than enough \todo{that like my opinion dude}.
 
