@@ -33,7 +33,14 @@
 % - Smoothing out the implementation
 % - handler inlining
 % - Better control using MIPS TLB instructions
+% -------------------------------------------------------------------------------------------------
+%                                             Intro
+% -------------------------------------------------------------------------------------------------
 
+% Successful poc
+The previous chapters show the successful and transparent replacement of the xv6 virtual memory system with a mapping function based TLB miss handler. The design and implementation do however come with several shortcomings.
+This chapter will discuss these shortcomings of the presented mapping function in light of typical requirements to virtual memory systems. It will also attempt to qualitatively analyze the cost of the exception handler implementing the mapping function and compare it to conventional page table based schemes. The chapter will also discuss some shortcomings of the implementation and give some ideas on how to alleviate the problems.
+% The points will also shortly address some improvement ideas
 
 % -------------------------------------------------------------------------------------------------
 %                                             Software-Managed TLBs
@@ -158,7 +165,7 @@ In the implementation, the cost introduced by memory accesses are very high, bec
 
 To omit all memory accesses from the handler, some registers may be reserved to be only used by kernel code, as MIPS does it with two registers. However, compilers would have to be made aware of that. Depending on the application, reserving registers may still result in a loss of performance because the availability of registers is imperative to the compilers ability to optimize code \cite{elphinstone2013l3}.
 
-Even when all memory references can be eliminated from the handler code, it would still impact both the pipeline and the reorder buffer \cite{jacobSoftwaremanagedAddressTranslation1997}.
+Even when all memory references are eliminated from the handler code, it still impacts both the pipeline and the reorder buffer \cite{jacobSoftwaremanagedAddressTranslation1997}. This can not happen with a hardware-based TLB mechanism, as it would typically freeze the pipeline and not touch the reorder buffer \cite{bhattacharjee2017architectural}.
 
 % TODO CONT here
 
@@ -171,14 +178,6 @@ Even when all memory references can be eliminated from the handler code, it woul
 
 % Passt das in eine Cache line -> code localität
 
-
-% Theoretische Kostenanalyse -> context switch in sw (ausblick inline?)
-% -> Optimization -> Reserve Registers for kernel handler, but this wont be good
-% -> l4 20 year paper -> registeres important for optiization
-
-% \section{Other operating system features in light of the segmented design}
-% TODO discussion (extra chapter?) about whether fork makes sense with
-% this segmented allokation approach
 
 % Instruction Count, Software Page Walk vs TLB manager
 
