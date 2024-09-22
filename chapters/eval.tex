@@ -161,37 +161,45 @@ The stateless design requires no tables to store the bookkeeping for the mapping
 %                                             Cost Analysis
 % -------------------------------------------------------------------------------------------------
 \section{Cost Analysis}
+
+% A naive approach to performance measurement?
+A naive approach to measuring the performance of the virtual memory system is to implement a xv6 user-level program that will result in a number of TLB misses and thus prompt the triggering of the TLB refill mechanism. The execution time of that program can be measured and the run first with the QEMU-emulated MMU, the software page table walker in the TLB miss handler, and the mapping function.
+It would however be hard % TODO SOURCES
+
+% Memory access cost
 In the implementation, the cost introduced by memory accesses are very high, because the whole state of the register file is saved to memory. That is an unacceptable cost for a operation that is on the critical path of every TLB miss. It is however possible to omit most of these memory accesses in favor of a light-weight TLB miss handler similar to the fast TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel}. The main difference being that the TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel} performs a page table walk and has thus access main memory. An optimized implementation of the mapping function can work with only a small number of register.
 
+% Reserving registers
 To omit all memory accesses from the handler, some registers may be reserved to be only used by kernel code, as MIPS does it with two registers. However, compilers would have to be made aware of that. Depending on the application, reserving registers may still result in a loss of performance because the availability of registers is imperative to the compilers ability to optimize code \cite{elphinstone2013l3}.
 
-Even when all memory references are eliminated from the handler code, it still impacts both the pipeline and the reorder buffer \cite{jacobSoftwaremanagedAddressTranslation1997}. This can not happen with a hardware-based TLB mechanism, as it would typically freeze the pipeline and not touch the reorder buffer \cite{bhattacharjee2017architectural}.
+% Impact on pipeline
+Even when all memory references are eliminated from the handler code, it still impacts both the pipeline and the reorder buffer \cite{jacobSoftwaremanagedAddressTranslation1997}. This can not happen with a hardware-based TLB refill mechanism, as it would typically freeze the pipeline and not touch the reorder buffer \cite{bhattacharjee2017architectural}. Instructions independent from the memory access could still continue execution while the TLB miss is being serviced \cite{jacob1998virtualissues}.
 
-% TODO CONT here
-
-
-% Context Switch
-% -> Inline Handler + Vergleich mit größe de Heiser fast TLB miss handlers
-% Annahme: Mein TLB miss handler/mapping function könnte sehr klein sein wenn sie
-% nur sehr gut optimiert wird und dann könnte man sie eventuell inlinen!
-% Hardware Freeze on HW MMU Walk (but independent instruktions can go on -> issues of impl)
-
-% Passt das in eine Cache line -> code localität
+% Inline interrupt handling
+\cite{jaleel2001line} proposes a solution that promises to alleviate the cost related to the calling of software interrupt handlers that disturb the pipeline. The paper describes a method to integrate exception handlers directly into the reorder buffer, avoiding the need to flush the pipeline when handling a precise interrupt. The exception handler for TLB misses using a mapping function can be very small and may thus benefit from the idea.
 
 
-% Instruction Count, Software Page Walk vs TLB manager
-
-% switching to kernel evicts other cache entries for kernel in real hardware
 
 % Warum geht quantitativ  nicht -> Emuliert
 
 % Ohne caches -> Emualtion vs Real Hardware -> Warum keine quantitaive analyse
+
+
 
 % -------------------------------------------------------------------------------------------------
 %                                        Implementation Shortcommings
 % -------------------------------------------------------------------------------------------------
 
 \section{Potential Implementation Improvements}
+
+% Flushing not all mappings
+\paragraph{TLB Flushing} xv6 always flushes the complete TLB on process switch \cite{cox2011xv6}. However, when switching from a process with ASID n to a process with ASID m, it suffices to flush the TLB entries belonging to ASID n only. The \texttt{sfence.vma} instruction already allows for such fine-grained control of the TLB. The memory fencing effect of the instruction would also not change that way \cite{RISCVInstructionSet}.
+% Finer TLB Control
+
+\paragraph{Finer TLB Control} As shown in chapter \ref{chap:theory}, MIPS \cite{MIPSArchitectureProgrammers2016} provides a very fine control of its TLB entries. Such fine control would allow the TLB handler to implement custom replacement policies which could adapt the system to current work loads and biasing cache replacement \cite{park2022every}.
+
+
+%
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
