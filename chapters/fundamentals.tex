@@ -20,9 +20,9 @@
 % -------------------------------------------------------------------------------------------------
 
 This chapter introduces some essential concepts and mechanisms which form the basis of the following
-chapters. It first gives an overview of \textit{Virtual Memory}, its core requirements,
+chapters. It first gives an overview of \textit{Virtual Memory (VM)}, its core requirements,
 tradeoffs and implementations.
-Then the hardware components and caches used to accelerate \textit[Virtual Memory] systems are
+Then the hardware components and caches used to accelerate VM systems are
 presented.
 An overview of purely software-managed systems follows with a comparison of the general trade-offs
 between software-managed and hardware-managed \textit{Virtual Memory} systems.
@@ -81,7 +81,7 @@ a shared data structure \cite{tanenbaumOS}.
 
 \begin{marginfigure}
     \includegraphics*[width=1\marginparwidth]{figures/fund_share.pdf}
-    \caption{\textbf{Page Sharing}}
+    \caption{\textbf{Page Sharing} VM systems allow for the same physical page to be mapped into different virtual address spaces}
 \end{marginfigure}
 
 % -------------------------------------------------------------------------------------------------
@@ -541,8 +541,8 @@ Beyond the configuration of the virtual memory system, it contains the base addr
 
 \begin{figure*}[t]
     \centering
-    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64} \\
-        \bitheader[endianness=big]{63,60,59,44,43,0}
+    \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
+        \bitheader[endianness=big]{63,60,59,44,43,0}\\
         \bitbox{4}{Mode} &
         \bitbox{16}{ASID} &
         \bitbox{44}{PPN}
@@ -620,7 +620,6 @@ This can be found in the \texttt{mcause} register when handling the exception.
 
 \subsection{Contol and Status Registers}
 % Section describing RISC-V CSRs -> Originally in theory
-\todo{table of csr space in appendix?}
 The RISC-V ISA provides a 12-bit encoding space for 4096 CSRs. A CSR address is logically split
 into four parts: The top two bits \texttt{csr[11:10]} specify whether the CSR is read/write or read-only;
 \texttt{csr[9:8]} encode the minimum priviledge level that is allowed to access the CSR; \texttt{csr[7:4]}
@@ -632,23 +631,22 @@ of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
 \begin{figure*}[h!]
     \centering
     \begin{bytefield}[bitwidth={2em}, bitformatting={\bfseries}, boxformatting={\centering}]{12}
-        \bitheader[endianness=big]{11,10,9,8,7,4,3,0}
+        \bitheader[endianness=big]{11,10,9,8,7,4,3,0}\\
         \bitbox{2}{RW/RO} &
         \bitbox{2}{Priv} &
         \bitbox{4}{Usage} &
         \bitbox{4}{Index}
     \end{bytefield}
-    \caption[RISC-V CSR address format]{RISC-V CSR address format}
+    \caption[RISC-V CSR address format]{\textbf{RISC-V CSR address format} \texttt{csr[11:10]} define whether the CSR is read-write or write-only; \texttt{csr[9:8]} defines the minimum priviledge level that is allowed to access the CSR; \texttt{csr[7:4]} sets a directory within the CSR space for the usage of the CSR; \texttt{csr[3:0]} define a index}
     \label{fig:theory:csr}
 \end{figure*}
 
 Each legal CSR address identifies a CSR. The size of the CSRs identified by the CSR address depends
 on the values of the SXLEN and UXLEN fields in the \textbf{mstatus} register. Currently, the
-specification \cite{RISCVInstructionSet} allows for 32 bit, 64 bit and 128 bit. \todo{disclaimer which we will be using here?}
+specification \cite{RISCVInstructionSet} allows for 32 bit, 64 bit and 128 bit.
 % Short elaboration on using the csr to write TLB entries -> in the end its on the hardware implementor
 RISC-V provides dedicated instructions for read/write and bit manipulation with both register values
 and immediates.
-\todo{ hardware overhead for writing TLB with CSRs -> future work, is it worth it??}
 
 % What format, how big, how many csrs?
 Now with CSRs we have a mechanism to add custom behaviour to the ISA. That answers the ''How?''
