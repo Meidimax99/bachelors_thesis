@@ -154,6 +154,15 @@ The stateless design requires no tables to store the bookkeeping for the mapping
 %                                             Cost Analysis
 % -------------------------------------------------------------------------------------------------
 \section{Cost Analysis}
+In the implementation, the cost introduced by memory accesses are very high, because the whole state of the register file is saved to memory. That is an unacceptable cost for a operation that is on the critical path of every TLB miss. It is however possible to omit most of these memory accesses in favor of a light-weight TLB miss handler similar to the fast TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel}. The main difference being that the TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel} performs a page table walk and has thus access main memory. An optimized implementation of the mapping function can work with only a small number of register.
+
+To omit all memory accesses from the handler, some registers may be reserved to be only used by kernel code, as MIPS does it with two registers. However, compilers would have to be made aware of that. Depending on the application, reserving registers may still result in a loss of performance because the availability of registers is imperative to the compilers ability to optimize code \cite{elphinstone2013l3}.
+
+Even when all memory references can be eliminated from the handler code, it would still impact both the pipeline and the reorder buffer \cite{jacobSoftwaremanagedAddressTranslation1997}.
+
+% TODO CONT here
+
+
 % Context Switch
 % -> Inline Handler + Vergleich mit größe de Heiser fast TLB miss handlers
 % Annahme: Mein TLB miss handler/mapping function könnte sehr klein sein wenn sie
