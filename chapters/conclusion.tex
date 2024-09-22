@@ -8,4 +8,4 @@
 % CONCLUSION: IT WORKS
 This paper presents the theory behind and the modifications of the xv6 operating system running on the QEMU/RISC-V platform to transform the fundamental control flow of the virtual memory path. The result is a simple platform is a foundation to start experimenting with mapping functions that replace the typical page table structure used by commodity hardware.
 
-The paper also presents a mapping function implemented on that platform, realizing a ( quite restricted ) virtual memory system, that works completely without orthodox paging bookkeeping structures. The changes are completely transparent  to the system call interface of the operating system and do thus not require changes to programs running on the xv6 operating system.
+The paper also presents a mapping function implemented on that platform, realizing a ( quite restricted ) virtual memory system, that works completely without using any bookkeeping of mappings. The changes are completely transparent to the system call interface of the operating system and do thus not require changes to programs running on the xv6 operating system.

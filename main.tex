@@ -250,13 +250,11 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 %----------------------------------------------------------------------------------------
 
 \begin{abstract}
-  %\addchaptertocentry{\abstractname}
-  % uncomment to add the abstract to the table of contents (not recommended)
-  Hier sind alle todos die für das ganze paper gelten:
-  \begin{itemize}
-    \item formatting single page or double page
-    \item call it faulting, failing, missing address?
-  \end{itemize}
+  \emph{Virtual memory} (VM) is a fundamental component of modern computer systems, widely adopted across various computing environments, from embedded devices to large-scale data centers. While it initially served to automate memory management by transparently swapping pages between main memory and secondary storage, it now plays a crucial role in ensuring system security, process isolation, and overall flexibility. However, the increasing overhead associated with traditional VM systems — originally designed for resource-constrained environments — has led to performance bottlenecks, particularly in systems with growing memory demands and applications with poor spatial locality. The ever-increasing depth of conventional hierarchical page tables further exacerbates these challenges.
+
+  To address these limitations, alternative approaches like inverted page tables are used, but they have their own set of problems. The plethora of different designs and approaches to optimizing these designs suggest general performance problems. This thesis proposes a approach that aims to eliminate the need for page tables and main memory accesses altogether by using specialized mapping functions instead of costly page table walks. These mappings promise faster address translation, as they omit the cost associated with the page table accesses, while providing flexibility to system designers by defining them in software. This allows tailoring the virtual memory system to specific use cases.
+
+  The thesis details the theoretical foundations and practical implementation of a platform designed to facilitate the exploration and experimentation with such mapping functions. It also presents an initial simplified VM system prototype that demonstrates the feasibility of the approach.
 \end{abstract}
 
 
@@ -332,7 +330,7 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 \input{chapters/theory.tex}
 \input{chapters/impl.tex}
 \input{chapters/eval.tex}
-\input{chapters/future_work.tex}
+% \input{chapters/future_work.tex}
 \input{chapters/conclusion.tex}
 
 
