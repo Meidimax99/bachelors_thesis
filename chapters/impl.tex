@@ -50,17 +50,17 @@ This chapter summarizes the implementation of the softtlb page-table-less virtua
 The ordering of the sections in this chapter reflect the implementation process and will thus
 be comprised of following steps:
 \begin{enumerate}
-    \item \textbf{TLB Miss Exception and Exception Triggerer} The first step is about
+    \item \paragraph{TLB Miss Exception and Exception Triggerer} The first step is about
           the implementation of the TLB Miss Exception in the QEMU RISC-V emulator. On the xv6-side,
           a user-mode program is added to trigger a TLB Miss exception from the shell.
-    \item \textbf{Exception Handling and TLB Writing} The second step implements the
+    \item \paragraph{Exception Handling and TLB Writing} The second step implements the
           handling of the TLB Miss Exception, by implementing a machine mode exception handler.
           The RISC-V emulation is extended by two new CSRs that facilitate writing TLB from the
           software-side of things.
-    \item \textbf{Software Page Table Walk for all Addresses} This step removes the restriction
+    \item \paragraph{Software Page Table Walk for all Addresses} This step removes the restriction
           in the QEMU emulator to only throw exeptions for a specific address. In the exception handler,
           a page table walk is implemented to now create virtual to physical mappings for all addresses.
-    \item \textbf{Segmented Memory Design using software-defined TLB Filling} In this step, the xv6 virtual memory system is completely
+    \item \paragraph{Segmented Memory Design using software-defined TLB Filling} In this step, the xv6 virtual memory system is completely
           replaced. The new design gets rid of the page table and only uses information present in
           registers to create virtual-to-physical mappings and to fill the tlb.
 \end{enumerate}
@@ -426,7 +426,7 @@ This is all that needs to be done to add CSRs for TLB filling to the QEMU RISC-V
 % Changes -> Vectored mode to keep timer interrupt as is, just need to move it
 With capabilities to write TLB entries in place, an effective exception handler can be implemented.
 
-\textbf{xv6 Machine-Mode Trap Handler} The xv6 machine-mode trap handler only deals
+\paragraph{xv6 Machine-Mode Trap Handler} The xv6 machine-mode trap handler only deals
 with the timer interrupt. All other interrupts and exceptions are delegated to the supervisor
 mode. This allows the trap handler to be very small and very specific to the timer interrupt \cite{cox2011xv6}.
 It thus only needs to store two registers two memory to make enough room in the register file
@@ -496,7 +496,7 @@ to the address of the \texttt{mtvec\_vector\_table} label. The next jump brings 
 the default exception handler.
 The timer interrupt will jump directly to the \texttt{IRQ\_7} label.
 
-\textbf{Store/Load Sandwich} The idea behind the \textit{softtlb} design is to not use as many of the five
+\paragraph{Store/Load Sandwich} The idea behind the \textit{softtlb} design is to not use as many of the five
 memory references modern architectures need for a page table walk \cite{intel5LevelPaging5Level2017}. But
 for a first proof of concept, it is helpful to not have to think about which registers to use and to not optimize
 away all unnecesarry memory references before the design even works.
@@ -897,20 +897,21 @@ The handler takes the same approach for the \texttt{TRAPFRAME} page set just bel
 \subsection{Further Changes to the OS}
 Other than the exception handler, other parts of the OS need to be changed to fit the new memory managment scheme.
 
-\textbf{Physical Memory Allocator} % Rewrite below version in new context
+\paragraph{Physical Memory Allocator} % Rewrite below version in new context
 Demand paging of the virtual memory system was the main customer of the physical memory allocator.
 But some modules like the virtio disk and pipes also rely on being able to get physical pages. So it is not
 possible to get rid of the physical allocator completely.
 Here, its managed memory is merely reduced by assigning it the memory area of the Address Space with index 0.
 
-\textbf{\texttt{copyin() copyout()}} The copyin() and copyout() functions are used to copy data between
+\paragraph{\texttt{copyin() copyout()}} The copyin() and copyout() functions are used to copy data between
 user space and kernel. They traverse the page table tree to acquire the physical location for the data
 to be either copied in or copied out.
 Both of those function rely on the \texttt{walkaddr()} function to do the walking for them.
 The implementation can be changed to call the \texttt{tlb\_manager.c:walk\_addr()} function instead.
 
-\textbf{Process Loading} % No page table creation, asid allocation, also no destruction, % Parsing elf directly into AS
-\textbf{sbrk()}The \texttt{sbrk()} system call is used by the program to increase the size
+\paragraph{Process Loading} % No page table creation, asid allocation, also no destruction, % Parsing elf directly into AS
+\todo{write}
+\paragraph{sbrk()}The \texttt{sbrk()} system call is used by the program to increase the size
 of the programs data segment. Typically, this call would demand a new page from the physical memory allocator
 and then add a new PTE to the page table.
 This system call normally returns the previous program break if it was successful (so basically a pointer to
@@ -950,7 +951,7 @@ zum gdbstub herstellen.
 Ein Kommentar im makefile legt zwar nahe, dass die Makefile rule zum Debuggen vom user mode
 gedacht ist, aber tatsächlich hält einen nichts auf auch den kernel zu debuggen. Das ist
 für Änderungen am Memory system auch sehr nützlich.
-\textbf{Debugging user mode} Für das debuggen eines user mode programms will man oft bei
+\paragraph{Debugging user mode} Für das debuggen eines user mode programms will man oft bei
 der main Funktion anfangen. Breakt man auf die Funktion wird ein Breakpoint auf eine eine recht
 niedrige virtuelle Addresse gesetzt. Hat man den Breakpoint schon gesetzt bevor man überhaupt
 den Kernel gestartet hat kann es dann beim start sein, dass man direkt wieder stoppt.
@@ -960,7 +961,7 @@ Der debugger unterscheidet hier nicht zwischen virtuellen und physischen Address
 schaut lediglich was im PC steht.
 \todo{das satp PPN field könnte noch für weitere infos benutzt werden (Konfiguration der vm für den process)}
 
-\textbf{Debugging the kernel} Nach dem ersetzen des virtuellen Memorysystems hat sich beim
+\paragraph{Debugging the kernel} Nach dem ersetzen des virtuellen Memorysystems hat sich beim
 debuggen des Kernels ein interessanter effekt bemerktbar gemacht: Sobald in der
 \texttt{kvminithart()} funktion das \texttt{satp} register gesetzt wird kann GDB den code zu der
 aktuellen addresse (und allen folgenden) anzeigen.
@@ -994,7 +995,7 @@ Setzt man diesen Top-level page table entry als valide, so wird der Speicher
 an dieser Stelle 1 GB Superpage behandelt. Das reicht aus um den Kernelcode
 abzudecken und der Code kann beim Debuggen wieder wie gehabt gesehen werden.
 
-\textbf{Verifying Addresses in Binaries} Implementing the vectored trap vectoring mode
+\paragraph{Verifying Addresses in Binaries} Implementing the vectored trap vectoring mode
 required moving the interrupt handler code for the timer interrupt to a specific offset
 from the address specified in the \texttt{mtvec} \texttt{BASE} field.
 To verify the correct placment of the label, the unix \texttt{nm} tool is very useful:

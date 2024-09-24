@@ -25,7 +25,7 @@ tradeoffs and implementations.
 Then the hardware components and caches used to accelerate VM systems are
 presented.
 An overview of purely software-managed systems follows with a comparison of the general trade-offs
-between software-managed and hardware-managed \textit{Virtual Memory} systems.
+between software-managed and hardware-managed Virtual Memory systems.
 Finally, some specifics of the memory system of the chosen implementation platform, \textit{RISC-V},
 are shown.
 
@@ -33,28 +33,28 @@ are shown.
 \section{Virtual Memory}
 \textit{Virtual Memory} was first introduced in the Atlas System \cite{fotheringham1961dynamic} to
 automate the task of swapping pages between main and secondary memory.
-The idea was to make the programs completely unaware of of the real, physical memory by providing
+The idea was to make programs completely unaware of real, physical memory by providing
 an abstraction layer called virtual memory \cite{denning1996virtual}.
 With virtual memory, programs appear to have the whole memory space of the machine at their disposal. It also
 hides all the other processes and their memory from them.
 The task of managing a programs memory, no matter where in its virtual address space it is, and putting it somewhere
 in physical memory now falls to the operating system \cite{denning1970virtual}.
-This was not only a nice-to-have, but a necessity. The size of programs was increasing faster than the size of main
-memory did; while single programs
-still fit in memory, operating systems allowed running multiple programs at once, collectively exceeding
+This change to the operating systems role in managing program memory was not only useful but also necessary. The size of programs was increasing faster than the size of main
+memory; while single programs
+still fit in memory, operating systems made it possible to run multiple programs at once, collectively exceeding
 the available physical memory \cite{tanenbaumOS}.
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Virtual and physical addresses}
-The terms of \textit{Virtual} and \textit{Physical} addresses will be coming up a lot in the course of this paper.
-Virtual addresses refer to the addresses that are used by the program to reference memory object in its address
-space. They are only valid in the programs own address space. Thus, it is possible programs to use the same
+The terms of \textit{Virtual} and \textit{Physical} addresses are used a lot in the course of this thesis.
+Virtual addresses refer to those that are used by the program to reference memory object in its address
+space. They are only valid in the programs own address space. Thus, it is possible for programs to use the same
 virtual addresses, that point to different physical addresses.
 Virtual addresses are translated to physical addresses, which are actual addresses to memory locations
-on main memory. The \textit{Virtual Memory System} is tasked with performing this translation, creating mappings
+on main memory. The \textit{Virtual Memory System} is tasked with performing this translation, the creation of mappings,
 and keeping book of those mappings \cite{denning1996virtual}.
 
-Some memory systems using an inverted page tables also use the notion of \textit{effective} addresses.
+Some memory systems which use inverted page tables also use the notion of \textit{effective} addresses.
 These form an addition layer of indirection that allows the sharing of pages \cite{jacob1998virtualissues}.
 Effective addresses will not be discussed here any further.
 % -------------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ Effective addresses will not be discussed here any further.
 \subsection{Memory System Requirements}
 In modern systems, \textit{Virtual Memory} does a lot more than swapping pages between main memory and secondary
 storage and providing new pages of memory on-demand to programs.
-It is the foundation for a number of requirements to the memory system that are taken for granted
+It is the foundation of a number of requirements to the memory system that are taken for granted
 \cite{jacobSoftwaremanagedAddressTranslation1997}.
 These requirements are as follows:
 
@@ -94,7 +94,7 @@ use bigger addresses to support programs that require a lot of memory
 
 % -------------------------------------------------------------------------------------------------
 
-\paragraph{Fine-grained Protection} From a security perspective, it is often not desirable to i.g. allow the code segment
+\paragraph{Fine-grained Protection} From a security perspective, it is often not desirable to e.g. allow the code segment
 of a program to be writeable and the data section to be exectuable.\textit{Virtual Memory Systems} provide read-only,
 read-write and exectue-only protection on a page granularity\cite{jacobSoftwaremanagedAddressTranslation1997}.
 Illegal references may trigger exceptions, which allow the operating system to deal with the program \cite{jacobVirtualMemoryContemporary1998}.
@@ -164,20 +164,20 @@ this requirement.
 The naive approache is to simply have a big array in main memory. This array can be indexed
 using the virtual addresses, at which the physical address to that virtual address is placed.
 In a 32 bit address space with 4 KB pages, this requires 20 bits per page table entry. This
-adds up to \[ 20 * 2^{20} bit = 20971520 / 8 Byte = 2.5 MB \].
+adds up to \[ 20 * 2^{20} bit = 20971520 / 8 Byte = 2.5 MB \]
 To properly isolate the processes from each other, every process needs to have one of those arrays.
 To realize fine-grained protection of pages, there would also need to be some bits per array entry
 for read/write/execute rights.
-With 64 bit computer, the space requirements for such page tables would be even higher.
+With 64-bit computers, the space requirements for such page tables would be even higher.
 
 % Hierarchical
 \subsubsection{Hierarchical/radix/multi-level page tables}
 To reduce the memory cost of managing pages, most \todo{cite?} virtual memory systems use a
-multi-level page table, also known as a hierarchical page table. However, its structure is less like a
+multi-level page table, also known as a hierarchical page table. However, its structure
 is less like a table and more like a tree, where the nodes are tables of page table entries (PTEs) \cite{tanenbaumOS}.
 Here the virtual page number is divided into several parts. Each part of the Virtual Page Number (VPN)
 is used to index a smaller table. The indexed PTE then points to the next smaller page table,
-which in turn is indexed by the next part of the VPN.Depending on the implementation
+which in turn is indexed by the next part of the VPN. Depending on the implementation
 this can involve up to 5 further indirections.
 RISC-V, the architecture the implementation of this paper is based on, offers a 3-level page table
 design \cite{riscvreader}.
@@ -210,11 +210,11 @@ scheme) just to find the mapping for a single memory access.
 An alternative paging scheme approaches the problem from the opposite direction and provides a PTE
 for each physical frame instead of one entry per virtual page.
 A physical page frame is a page-aligned space in physical memory for a page.
-So the number of physical frames is determined by the size of main memory divided by the page size.
+The number of physical frames is determined by the size of main memory divided by the page size.
 This has the enormous advantage that the bookkeeping only needs to keep record of as many pages
 as the physical memory can support.
 In contrast, hierarchical page tables need to keep track of as many pages as there can be in the virtual
-address space of all processes combined. That is a huge memory overhead as compared to inverted page tables
+address space of all processes combined. That is a huge memory overhead compared to inverted page tables
 \cite{jacob1998look}.
 The page table design also has the advantage that, in the best case, significantly fewer main memory
 accesses are required. In the simple design shown in figure \ref{fig:fund:inverted}, the corresponding
@@ -246,7 +246,7 @@ But resizing the whole page table is very expensive and should be avoided\cite{s
 \begin{figure*}[t]
     \centering
     \includegraphics[scale=1]{figures/inverted_pt.pdf}
-    \caption[Simple Inverted Page Table Design]{A inverted page table has an entry for every physical
+    \caption[Simple Inverted Page Table Design]{An inverted page table has an entry for every physical
         page frame, reducing memory accesses to a minimum of one. Collisions in the hash table (red arrows) can
         make the access much more expensive. }
     \label{fig:fund:inverted}
@@ -260,12 +260,11 @@ The Power Architecture, for example, supports this through a two-stage translati
 
 
 % -> Most commonly used in today's hardware -> Multi level page tables
-There is no clear winner in the debate between hashed vs. multi-level page tables.
-Superiority of one design of the other also appears to depend on the computer architecture \cite{barrTranslationCachingSkip}
+There is no clear winner in the debate between hashed and multi-level page tables.
+Superiority of one design over the other also appears to depend on the computer architecture \cite{barrTranslationCachingSkip}
 and the specific implementation of the design \cite{yaniv2016hash}.
 Commercial hardware supports a variety of designs that are not standardized and, in some cases,
 differ significantly \cite{jacob1998look}.
-
 
 Modern Intel processors now support radix designs with a depth of up to 5 levels,
 which still use 4KB pages to maintain compatibility.
@@ -280,10 +279,9 @@ which still use 4KB pages to maintain compatibility.
 % -------------------------------------------------------------------------------------------------
 %                                            VM HARDWARE
 % -------------------------------------------------------------------------------------------------
-\cite{denning1970virtual} % Hardware support source
 \section{Memory Management Hardware}
 To further accelerate the translation of virtual to physical addresses, most modern computers use additional
-hardware components. These consist of a hardware page table walker (MMU) and a translation cache,
+\cite{denning1970virtual} hardware components . These consist of a hardware page table walker (MMU) and a translation cache,
 commonly referred to as a Translation Lookaside Buffer (TLB) \cite{jacobVirtualMemoryContemporary1998}.
 
 % Frage: Besteht das MMU aus TLB + State Walker oder ist MMU der State Walker und TLB einfach extra?
@@ -302,7 +300,7 @@ commonly referred to as a Translation Lookaside Buffer (TLB) \cite{jacobVirtualM
 
 % -------------------------------------------------------------------------------------------------
 
-\textbf{MMU}
+\paragraph{MMU}
 The Memory Management Unit (MMU) takes on the task of address translation for the computer.
 It sits between the processor, which primarily works with virtual addresses, and the memory bus,
 which is accessed with physical addresses. When the processor accesses a certain virtual address,
@@ -311,28 +309,28 @@ address. During this process, the processor is effectively frozen \cite{jacobVir
 
 %TODO TLB as interface for VM
 
-\textbf{TLB} Since it would be very costly to traverse the page table in hardware for every load or store memory access, there is a cache for the translations, the Translation Lookaside Buffer (TLB). This cache contains the most recent translations from virtual to physical addresses. The MMU can first check the TLB, which can be searched in parallel and thus extremely quickly \cite{drepper2007every,jacobVirtualMemoryContemporary1998}.
+\paragraph{TLB} Since it would be very costly to traverse the page table in hardware for every load or store memory access, there is a cache for the translations, the Translation Lookaside Buffer (TLB). This cache contains the most recent translations from virtual to physical addresses. The MMU can first check the TLB, which can be searched in parallel and thus extremely quickly \cite{drepper2007every,jacobVirtualMemoryContemporary1998}.
 
 
 % CONTINUE HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 % -------------------------------------------------------------------------------------------------
-\textbf{Address Space Identifies}
+\paragraph{Address Space Identifies}
 % \cite{jacobSoftwaremanagedAddressTranslation1997}
 %TODO in the vm requirements , ASIDs are presented as HW-support for address space protection
-With Address Space Identifiers (ASIDs), RISC-V provides a way to more efficiently utilize virtual memory:
+With Address Space Identifiers (ASIDs), RISC-V provides a way to utilize virtual memory more efficiently:
 Since every process has its own virtual address space, translations that are still present in the
 TLB may not be valid after a context switch.
 
-\textbf{SFENCE.VMA} RISC-V provides one instruction that acts primarily as a memory barrier:
+\paragraph{SFENCE.VMA} RISC-V provides one instruction that acts primarily as a memory barrier:
 It prevents reordering of instructions accessing memory accross the \texttt{sfence.vma} instruction.
 This is important when the page tables are switched, e.g. when the kernel is entered from user mode,
 because the translations will change.
-The instruction also acts as a flushing operation for TLB entries. With both of the optional registers
+The instruction also acts as a flushing operation for TLB entries. With both of the optional register
 arguments set to zero, the instruction will flush all entries.
 Setting the first register to a specific address will only flush translations containing that address.
-The second register specifies the address space that should be flushed, given a ASID.
+The second register specifies the address space that is supposed to be flushed, given an ASID.
 
 This mechanism allows for a precise control over flushing of TLB entries, which can improve the
 memory system performance \cite{RISCVInstructionSet}.
@@ -362,7 +360,7 @@ Software-based Virtual Memory Systems are generally more flexible than hardware-
 as the mapping can be controlled in software and structures (such as the PTE) are not bound
 to the hardware \cite{jacob1998virtualissues}.
 However, all of the approaches listed here still use a page table structure to keep track of mappings.
-Main differences are in the details of the implemented page table structure and in the way to software has to create the mappings. This freedom allows adjusting the virtual memory system to fit more specific use cases, as hardware-based systems are design to service a wide range of different applications\cite{citation needed}.
+Main differences are in the details of the implemented page table structure and in the way the software has to create the mappings. This freedom allows adjusting the virtual memory system to fit more specific use cases, as hardware-based systems are design to service a wide range of different applications\cite{citation needed}.
 In the following, a number of software-based Virtual Memory Systems are presented.
 % A look at several
 % MIPS -Ultrix
@@ -370,27 +368,27 @@ In the following, a number of software-based Virtual Memory Systems are presente
 \subsection{MIPS}
 MIPS \cite{MIPSArchitectureProgrammers2016} allows software-management of TLBs by raising an exception on TLB miss and by providing instructions to write TLB entries from software.
 
-\textbf{Ultrix} The Ultrix page table is a two-tiered page table with two exception handlers for the TLB miss exception.
+\paragraph{Ultrix} The Ultrix page table is a two-tiered page table with two exception handlers for the TLB miss exception.
 One of the handlers services user-level misses, the other one handles kernel-level misses.
 Kernel level misses may occur when the page containing a PTE is not loaded and causes a
 TLB miss \cite{jacob1998look}.
 
-\textbf{Guarded Page Tables} In his dissertation, Jochen Liedtke presented a innovative approach
+\paragraph{Guarded Page Tables} In his dissertation, Jochen Liedtke presented an innovative approach
 to handeling virtual memory \cite{liedtkeGPT}.
 The approach is based on hierarchical page tables, and is shown to provide an efficient solution particularly in systems with large, sparse address spaces.
 The design allows skipping over PTE entries to reach valid PTEs faster, without having to traverse every single level of the tree.
 Gernot Heißer showcased a implementation of that design in \cite{heiserAnatomyHighPerformanceMicrokernel}.
 
 % PA-RISCV VM System
-\subsection{PA-RISC}
-PA-RISC uses a inverted page table design. Similar to Ultrix, the inverted page table is searched in the TLB miss handler wenn a TLB miss occurs.
-The TLB miss handler will calculate the hash from the virtual address to locate the head of the hash collision chain and then search linearily through the chain to find the mapping \cite{jacob1998look}.
+\paragraph{PA-RISC}
+PA-RISC uses a inverted page table design. Similar to Ultrix, the inverted page table is searched in the TLB miss handler when a TLB miss occurs.
+The TLB miss handler calculates the hash from the virtual address to locate the head of the hash collision chain and then searches linearily through the chain to find the mapping \cite{jacob1998look}.
 
-\subsection{NOTLB}
-A comparative study conducted by Jacob et al. \cite{jacob1998look} also looks at a software-managed Virtual Memory Design that uses no TLB at all.
+\paragraph{NOTLB}
+A comparative study conducted by Jacob et al. \cite{jacob1998look} looks at a software-managed Virtual Memory Design that uses no TLB at all.
 The design uses a two-level page table structure similar to the ULTRIX/MIPS design and organizes its address space into disjunct segments.
-Instead of a TLB miss handler, there is a Cache-Miss handler, that services misses in the virtual L2 cache.
-Similar to the Ultrix design, there are two handlers to also handle nested cache misses.
+Instead of a TLB miss handler, there is a Cache-Miss handler that services misses in the virtual L2 cache.
+Similar to the Ultrix design, there are two handlers to handle nested cache misses.
 
 
 % What was the paper about software managed chaches?
@@ -422,21 +420,21 @@ This also complicates the portability of system software, as there is no standar
 structures. Despite there being no significant performance differences among the various designs,
 there is no standardization \cite{jacob1998look}.
 
-\paragraph{Pipeline Freezing / Flushing} On a TLB miss \todo{already defined?},
+\paragraph{Pipeline Freezing / Flushing} On a TLB miss\todo{already defined?},
 with a hardware-managed TLB, only the pipeline freezes (at least for instructions dependent on
 the memory access). However, with a software-managed TLB, control is handed back to the operating system
 via an exception, which notes that the required address is not in the TLB (TLB miss exception).
 The jump back to the operating system causes a context switch, requiring the state of the current process
 to be saved. During this, the reorder buffer is flushed, and the pipeline is heavily disrupted.
-Switching to the kernel can also lead to further data and instruction misses in the long term,
+Switching to the kernel can also lead to further data and instruction misses in the long term
 as the kernel entry likely overwrites some cache lines that the running process needed. \todo{Cite}
 
 \paragraph{Complexity} Choosing between hardware and software virtual memory is choosing where to shift the complexity.
 Systems that do only support software managed virtual memory are simpler on the hardware side, because the burden of managing the memory is shifted to the software, which in turn will be more complex.
-This goes in both directions \cite{issue}.
+This goes in both directions \cite{jacob1998virtualissues}.
 
 % Conclusion of HW vs SW
-\cite{jacob1998look} concludes in a comparative study of various HW and SW memory designs
+\cite{jacob1998look} concludes in a comparative study of various hardware and software memory designs
 that hardware-based approaches are generally more performant, but software-based designs are certainly
 viable if the caches are large enough to reduce the number of cache misses.
 Especially in terms of flexibility, software-based approaches have a significant advantage,
@@ -469,9 +467,9 @@ The information presented in the following section is taken from both the RISC-V
 \label{fund:sv39}
 
 The RISC-V ISA specifies a simple, modular and scalable page-based virtual memory system \cite{riscvreader}.
-It supports different page sizes and also different addressing modes:
+It supports different page sizes as well as different addressing modes:
 Sv32 for 32-bit systems; Sv39 for 64-bit systems with a 3-level page table.
-For bigger memory needs, there are also the Sv48 and Sv57 addressing modes, adding one and two levels to the page table and supporting 256 TB and 128 PB respectively.
+For bigger memory needs, there are the Sv48 and Sv57 addressing modes, adding one and two levels to the page table and supporting 256 TB and 128 PB respectively.
 The following will only look at specifics for the Sv39 addressing mode.
 
 The page table is an orthodox hierarchical multi-level page table, where each Page Table Entry (PTE) points to a PTE in the next level.
@@ -535,7 +533,7 @@ If the page table walk succeeds, the last PTE will contain a Physical Page Numbe
 \end{figure*}
 
 
-Essential for the configuration of the virtual memory system in RISC-V is the \texttt{satp} register (See figure \ref{fig:theory:sv39satp}).
+Essential to the configuration of the virtual memory system in RISC-V is the \texttt{satp} register (See figure \ref{fig:theory:sv39satp}).
 It configures whether virtual memory is enabled at all or if direct mapping is used for all addresses. It is also used to set the addressing mode.
 Beyond the configuration of the virtual memory system, it contains the base address pointing to the root page table used for translations.
 
@@ -560,7 +558,7 @@ external events and unusual runtime events, known as exceptions \cite{riscvreade
 The term "trap" is an umbrella term that is further divided into interrupts — asynchronous events —
 and exceptions — synchronous events.
 Exceptions are particularly of interest here, as a TLB miss occurs during the execution of an instruction,
-meaning it happens synchronously with the processor's clock. However, it is also important to keep interrupts
+meaning it happens synchronously with the processor's clock. However, it is important to keep interrupts
 in mind when working with Qemu and xv6 source code, because on one hand, the Qemu code handles exceptions
 and interrupts within the same functions, and on the other hand, xv6, or RISC-V in general, uses a unified
 vector for handling both interrupts and exceptions \cite{RISCVInstructionSet}.
@@ -577,7 +575,7 @@ M-Mode prefix only \todo{Has M-Mode as an abbreviation for Machine Mode been int
 % TODO: sorting of registers by role?
 
 % Vector -> mtvec
-\textbf{Exception Vector} The hart \todo{Has the term "hart" been introduced?} experiencing
+\paragraph{Exception Vector} The hardware thread (hart) \todo{Has the term "hart" been introduced?} experiencing
 an exceptional state must know where the kernel routine is located to handle the exception.
 The \texttt{BASE} field of the register contains a 4-byte aligned physical address to which
 the program counter is set in the case of an exception.
@@ -588,33 +586,33 @@ the PC is set to $BASE+4*CAUSE$ for asynchronous interrupts.
 % Delegation -> medeleg
 
 % Data for exception handling -> mcause, mtval, mepc, mscratch
-\textbf{Context Information} To properly handle the exception, some context information is required.
+\paragraph{Context Information} To properly handle the exception, some context information is required.
 The \textbf{mcause} register contains the exception code of the exception; \textbf{mepc} contains
 the program counter of the instruction that triggered the exception; and \textbf{mtval} holds
 exception-specific information, such as the virtual address that triggered a page fault exception.
 \textbf{mstatus} contains general information about the current hardware state.
 
-\textbf{Delegation} Normally, all exceptions are handled in machine mode; however, in some cases,
+\paragraph{Delegation} Normally, all exceptions are handled in machine mode; however, in some cases,
 it may be useful to handle the exception in a lower privilege mode. With the bitfield in the
 \textbf{medeleg} register, individual exceptions can be chosen to be delegated to the next-lower
 privilege mode.
 
 % Exception number
-\textbf{Exception Code} Each exception is assigned a unique number, the exception code \cite{riscvreader}.
+\paragraph{Exception Code} Each exception is assigned a unique number, the exception code \cite{riscvreader}.
 This can be found in the \texttt{mcause} register when handling the exception.
 
 
 % Zusammenspiel der Register im Exception Fall -> xv6 Book Exception Machinery
 
-\textbf{What the Hardware does} Wenn eine Exception getriggert wird macht die Hardware folgendes:
+\paragraph{Hardware Trap Mechanisms} When a trap is risen, the hardware does the following: \cite{cox2011xv6}
 \begin{enumerate}
-    \item Interrupts are disabled by clearing the MIE bit in \textbf{mstatus}
-    \item PC is copied to mepc
-    \item the current mode is saved to the MPP field in mstatus
-    \item mcause is set to the proper exception code
+    \item interrupts are disabled by clearing the \texttt{MIE} bit i    \textbf{mstatus}
+    \item \texttt{pc} is copied to \texttt{mepc}
+    \item the current mode is saved to the \texttt{MPP} field in mstatus
+    \item \texttt{mcause} is set to the proper exception code
     \item the mode is set to the machine mode
-    \item Pc is set to stvec
-    \item execution continues at the new pc
+    \item \texttt{pc} is set to stvec
+    \item execution continues at the new \texttt{pc}
 \end{enumerate}
 % -------------------------------------------------------------------------------------------------
 
@@ -624,7 +622,7 @@ The RISC-V ISA provides a 12-bit encoding space for 4096 CSRs. A CSR address is 
 into four parts: The top two bits \texttt{csr[11:10]} specify whether the CSR is read/write or read-only;
 \texttt{csr[9:8]} encode the minimum priviledge level that is allowed to access the CSR; \texttt{csr[7:4]}
 may be partially used to define a specific use for a range of CSRs. E.g. CSRs with an address
-between \texttt{0x7B0} and \texttt{0x7BF} shall be used for Debug-mode-only CSRs. The format
+between \texttt{0x7B0} and \texttt{0x7BF} shall be used for Debug-mode-only CSRs \cite{RISCVInstructionSet}. The format
 of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
 
 % RISC-V CSR address bytefield
@@ -642,17 +640,12 @@ of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
 \end{figure*}
 
 Each legal CSR address identifies a CSR. The size of the CSRs identified by the CSR address depends
-on the values of the SXLEN and UXLEN fields in the \textbf{mstatus} register. Currently, the
-specification \cite{RISCVInstructionSet} allows for 32 bit, 64 bit and 128 bit.
+on the values of the SXLEN and UXLEN fields in the \texttt{mstatus} register. Currently, the
+specification \cite{RISCVInstructionSet} allows for 32-bit, 64-bit and 128-bit.
 % Short elaboration on using the csr to write TLB entries -> in the end its on the hardware implementor
 RISC-V provides dedicated instructions for read/write and bit manipulation with both register values
 and immediates.
 
-% What format, how big, how many csrs?
-Now with CSRs we have a mechanism to add custom behaviour to the ISA. That answers the ''How?''
-of writing TLB entries in software.
-The next step is to figure out what data is required to create a TLB entry and in what format
-this data is best communicated via the CSRs to the computer.
 % -------------------------------------------------------------------------------------------------
 
 

@@ -161,7 +161,7 @@ To manage a TLB in software the operating system needs to be made aware that a T
 The natural mechanism to do this is the exception mechanism.
 
 % -------------------------------------------------------------------------------------------------
-\textbf{RISC-V Exceptions}
+\paragraph{RISC-V Exceptions}
 Unlike MIPS \cite{heiserAnatomyHighPerformanceMicrokernel}, RISC-V does not raise a TLB miss exception on TLB miss.
 Instead, the \emph{Virtual Address Translation Process} is initiated: The MMU will walk through
 the page table tree and may, depending on the PTEs, either throw different kinds of page faults, or
@@ -177,7 +177,7 @@ not necessary.
 
 
 % -------------------------------------------------------------------------------------------------
-\textbf{Adding a new Exception to RISC-V}
+\paragraph{Adding a new Exception to RISC-V}
 Extending the emulator to throw a new exception is explained in the Implementation chapter.
 On the theoretical side, it is important to chose a exception code from the code ranges designated
 for custom use. These are $24-31$ and $48-63$ \cite{RISCVInstructionSet}. For the implementation we chose $24$ or $0x18$.
@@ -193,7 +193,7 @@ for custom use. These are $24-31$ and $48-63$ \cite{RISCVInstructionSet}. For th
 Throwing a exception is only one half of the puzzle. The operating system also has to handle the exception
 properly.
 % -------------------------------------------------------------------------------------------------
-\textbf{L4/MIPS TLB Exception Handling}
+\paragraph{L4/MIPS TLB Exception Handling}
 MIPS vectors its exception vectors in a continuous area in memory, starting at a base address.
 That gives the TLB miss handler 32 instructions to server the TLB Miss. Otherwise it has to jump
 somewhere with more space.
@@ -202,18 +202,18 @@ registers \texttt{k0} and \texttt{k1} and another register, which has to be save
 Thus the memory footprint of handler is really low.
 
 % -------------------------------------------------------------------------------------------------
-\textbf{xv6 Exception Handler}
+\paragraph{xv6 Exception Handler}
 xv6's exception handler does not actually handle most of the exceptions. For most of the exceptions,
 but notably also the different page fault exceptions, xv6 will simply kill the offending process \cite{cox2011xv6}.
 
 % -------------------------------------------------------------------------------------------------
-\textbf{TLB Miss Exception Handler}
+\paragraph{TLB Miss Exception Handler}
 To simplify things, we will let the TLB Miss exception handler run in machine mode only.
 The usual mode for a operating system kernel would be the supervisor mode. However, this
 mode also uses address translation. This could create a situation in which we would have
 to deal with nested exception.
 
-\textbf{Catching the Exception} M-mode exceptions will set the program counter to the address
+\paragraph{Catching the Exception} M-mode exceptions will set the program counter to the address
 specified in the \texttt{mtvec} register. Originally, xv6 only serviced the asynchronous
 timer interrupt in machine mode. Every other trap is forwarded to supervisor mode.
 The trap vectoring mode can also be changed by setting the \texttt{MODE} field of the
@@ -276,7 +276,7 @@ with the \texttt{sfence.vma} instruction \cite{riscvreader}.
 
 % Replacement policy
 %   MIPS -> Indexed writes
-\textbf{Replacement Strategies} A advantage of software-managed TLBs is, that the operating system can implement custom
+\paragraph{Replacement Strategies} A advantage of software-managed TLBs is, that the operating system can implement custom
 TLB replacement policies, that may even change depending on workload, programs running
 and other circumstances.
 The default replacement strategy for the MIPS \texttt{tlbwr} instruction is to simply
@@ -295,7 +295,7 @@ This is useful to keep some mappings in the TLB that are valid all the time.
 Having a protected space of TLB entries can especially be useful for global mappings. xv6 employs such a global
 mapping for every process and the kernel with the trampoline page.\todo{trampoline page should be explained in fundamentals/platform}
 
-\textbf{MIPS - TLBWR} The arguments for the instruction need to be written in some
+\paragraph{MIPS - TLBWR} The arguments for the instruction need to be written in some
 other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \texttt{PageMask}.
 The contents of those registers directly correspont to the TLB entry, which creates quite large
 TLB entries \cite{heiserAnatomyHighPerformanceMicrokernel}.
@@ -371,7 +371,7 @@ uses a design that determines memory allocation at compile time.
 The resulting mapping is similar to a segmented memory design.
 
 % Elaboration on segmented memory design
-\textbf{Segmeneted Memory}
+\paragraph{Segmeneted Memory}
 \textit{Memory Segmentation} splits available memory into logical segments following the structure of a program. Thus there may be a segement for the programs code, the data, stack and so on.
 For bookkeeping, there is a segmenttable keeping track of the base address of the segment
 and the size of the segment.
@@ -385,7 +385,7 @@ Typical segmented memory designs also allow for dynamic segment sizes \cite{tane
 
 
 % Elaboration on this specific design
-\textbf{Tableless Segmented Virtual Memory}
+\paragraph{Tableless Segmented Virtual Memory}
 As a typical segmented memory design splits the programs memory into logical units, this design uses segmentation to split the whole physical memory into logical parts.
 These logical parts do however not reflect the structure of a program, but distinct process address spaces: Each segment of main memory can hold one process.
 To keep the design as light-weight as possible, each segments has a fixed size, which is determined at compile time of the operating system.
@@ -408,7 +408,7 @@ by flushing the TLB on context switch.
 \end{figure*}
 
 % Assumptions
-\textbf{Program Layout} The segmented memory design assumes that programs place their data at the low end of their address
+\paragraph{Program Layout} The segmented memory design assumes that programs place their data at the low end of their address
 space and grow upwards.
 Placement of memory pages at higher addresses than the maximum per-address space memory size do not work. This is a serious restriction to the flexibility of the programmer.
 
@@ -423,7 +423,7 @@ of an xv6 process.
 \end{marginfigure}
 
 
-\textbf{Trapframe and Trampoline} xv6 pins to special pages to the top end of a processes address space: The trampoline and trapframe pages.
+\paragraph{Trapframe and Trampoline} xv6 pins to special pages to the top end of a processes address space: The trampoline and trapframe pages.
 The trampoline page contains code for context switches and kernel entry and needs to be mapped
 into every processes address space.
 The trapframe is used for saving the state of the process on context switch and is thus also essential to be present for every process.
@@ -450,8 +450,7 @@ process and is thus pinned to the very top of the physical segment of each proce
 % A look at input and output data
 % Calculation of addresses
 
-\textbf{Address Calculation}
-
+\paragraph{Address Calculation}
 The calculation of physical addresses from physical ones is very straight forward. All that is required is the processes ASID and the offset into the address space.
 The ASID is saved in the process control block (PCB). But because accessing it may be expensive when frequent TLB misses occur, the ASID is encoded into the \texttt{satp} register.
 \texttt{satp} is normally used to provide the base address of the root page table to the memory management hardware, but since there is not page table to be used in the memory manager, the register is free to be used for additional context info in the exception handler.
