@@ -38,7 +38,7 @@
 % -------------------------------------------------------------------------------------------------
 
 % Successful poc
-The previous chapters show the successful and transparent replacement of the xv6 virtual memory system with a mapping function based TLB miss handler. The design and implementation do however come with several shortcomings.
+The previous chapters show the successful and transparent replacement of the xv6 virtual memory system with a mapping function based TLB miss handler. However, the design and implementation have a number of shortcomings.
 This chapter will discuss these shortcomings of the presented mapping function in light of typical requirements to virtual memory systems. It will also attempt to qualitatively analyze the cost of the exception handler implementing the mapping function and compare it to conventional page table based schemes. The chapter will also discuss some shortcomings of the implementation and give some ideas on how to alleviate the problems.
 % The points will also shortly address some improvement ideas
 
@@ -59,9 +59,9 @@ for the state of the kernel.
 
 This implementation performs a complete save of the processor state, including most of the
 32 registers that RISC-V offers.
-This allows running C code from the exception handler without having the think about what
+This allows running C code from the exception handler without having to think about what
 registers are mangled by the code, which is very useful for trying different implementations.
-The tradeoff here lies between ease of programmability and performance.
+The trade-off here lies between ease of programmability and performance.
 
 \subsection{Pipeline Flush} Exception handlers not only change the state of the processor that is
 exposed to the programmer, they also disturb the transparent state consisting of the
@@ -75,7 +75,7 @@ imposing extra cost on the software handler \cite{jacob1998look}.
 \subsection{Exception Handler} The key difference of this exception handler and exception handlers
 of other software-based virtual memory designs is that this one does not need to access
 memory to generate mappings (apart from the register state save).
-Looking back at listing \ref{Final Handler Code} it is apparent that there still are some
+Looking back at listing \ref{lst:handler} it is apparent that there still are some
 memory references:
 Mostly the function call of the \texttt{get\_mapping()} function would generate code that
 writes to the stack. But the function call is only for readability of the code and could also
@@ -137,14 +137,14 @@ For a quantitative assessment of the design, the functional requirements to virt
 Synchronization on the data structure managing ASIDs makes sure that no two processes can have the same ASID while both are alive.
 
 \paragraph{Large Address Space} Segmentation restricts the maximum size each process can have. One could implement dynamic resizing of address spaces or allow processes to hold multiple ASIDs to allow processes to increase their memory over the statically determined maximum limit.
-That would however increase the complexity of the mapping function. Another idea would be to have address spaces with different (predetermined) sizes that could than assigned according to a programs memory demands.
+That would however increase the complexity of the mapping function. Another idea would be to have address spaces with different (predetermined) sizes that could then be assigned according to a programs memory demands.
 
 \paragraph{Superpages} The current state of the design does not really deal in pages but rather in complete address spaces. As such, super pages are not supported.
 
 \paragraph{Flexibility} Pages in the virtual memory space can be placed anywhere as long as they are within the maximum address space size. And they must not clash with the heap space that will always be expanding from low to high addresses.
 
 \paragraph{Sparsity} Sparsity in page table based virtual memory systems is about efficiently
-supporting hugh address spaces with only a small numbers of pages being actually used. The bookkeeping should use as little additional memory as possible.
+supporting huge address spaces with only a small numbers of pages being actually used. The bookkeeping should use as little additional memory as possible.
 
 The stateless design requires no tables to store the bookkeeping for the mapping - there is no bookkeeping. However, huge address spaces are not supported and the internal fragmentation if very high.
 
@@ -167,7 +167,7 @@ A naive approach to measuring the performance of the virtual memory system is to
 It would however be hard % TODO SOURCES
 
 % Memory access cost
-In the implementation, the cost introduced by memory accesses are very high, because the whole state of the register file is saved to memory. That is an unacceptable cost for a operation that is on the critical path of every TLB miss. It is however possible to omit most of these memory accesses in favor of a light-weight TLB miss handler similar to the fast TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel}. The main difference being that the TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel} performs a page table walk and has thus access main memory. An optimized implementation of the mapping function can work with only a small number of register.
+In the implementation, the cost introduced by memory accesses is very high, because the whole state of the register file is saved to memory. That is an unacceptable cost for a operation that is on the critical path of every TLB miss. It is however possible to omit most of these memory accesses in favor of a light-weight TLB miss handler similar to the fast TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel}. The main difference being that the TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel} performs a page table walk and has thus access main memory. An optimized implementation of the mapping function can work with only a small number of register.
 
 % Reserving registers
 To omit all memory accesses from the handler, some registers may be reserved to be only used by kernel code, as MIPS does it with two registers. However, compilers would have to be made aware of that. Depending on the application, reserving registers may still result in a loss of performance because the availability of registers is imperative to the compilers ability to optimize code \cite{elphinstone2013l3}.
@@ -193,7 +193,7 @@ Even when all memory references are eliminated from the handler code, it still i
 \section{Potential Implementation Improvements}
 
 % Flushing not all mappings
-\paragraph{TLB Flushing} xv6 always flushes the complete TLB on process switch \cite{cox2011xv6}. However, when switching from a process with ASID n to a process with ASID m, it suffices to flush the TLB entries belonging to ASID n only. The \texttt{sfence.vma} instruction already allows for such fine-grained control of the TLB. The memory fencing effect of the instruction would also not change that way \cite{RISCVInstructionSet}.
+\paragraph{TLB Flushing} xv6 always flushes the complete TLB on process switch \cite{cox2011xv6}. However, when switching from a process with ASID n to a process with ASID m, it suffices to flush the TLB entries belonging to ASID n only. The \texttt{sfence.vma} instruction already allows for such fine-grained control of the TLB. The memory fencing effect of the instruction would not change that way \cite{RISCVInstructionSet}.
 % Finer TLB Control
 
 \paragraph{Finer TLB Control} As shown in chapter \ref{chap:theory}, MIPS \cite{MIPSArchitectureProgrammers2016} provides a very fine control of its TLB entries. Such fine control would allow the TLB handler to implement custom replacement policies which could adapt the system to current work loads and biasing cache replacement \cite{park2022every}.

@@ -17,9 +17,9 @@ There are different approaches or perspectives to addressing the system (this is
 % -------------------------------------------------------------------------------------------------
 
 % Guarded Page Tables
-\textbf{\cite{liedtkeGPT}} shows a innovative design leveraging the flexibility of software-managed
+\textbf{\cite{liedtkeGPT}} shows an innovative design leveraging the flexibility of software-managed
 address translation.
-The design of Guarded Page Tables (GPTs) uses a design based on hierarchical page tables, but allows skipping over levels of the table to reach translation results faster.
+The design of Guarded Page Tables (GPTs) is based on hierarchical page tables, but allows skipping over levels of the table to reach translation results faster.
 This proves to be very effective for increasing the performance of virtual memory systems, as the biggest penalty comes from page tables walks needing to reference memory for every level in the page table.
 Gernot Heiser showcases a practical implementation of GPTs in the L4/MIPS system \cite{heiserAnatomyHighPerformanceMicrokernel}.
 
@@ -28,7 +28,7 @@ Gernot Heiser showcases a practical implementation of GPTs in the L4/MIPS system
 % -------------------------------------------------------------------------------------------------
 
 % In Cache Software Managed Address Translation
-\textbf{\cite{jacobSoftwaremanagedAddressTranslation1997}}explores software-managedaddress translation and analyses the efficiency of a PowerPC implementation
+\textbf{\cite{jacobSoftwaremanagedAddressTranslation1997}} explores software-managed address translation and analyses the efficiency of a PowerPC implementation
 of the presented design they call \textit{softvm}. They show that
 software-managed address translation can achieve better performance and
 at the same time simplify hardware by dispensing with translation caches and
@@ -49,7 +49,7 @@ memory allocation.
 % Translation Caching skip dont walk -> Translation Caches
 \textbf{\cite{barrTranslationCachingSkip}} examines the design space of translation caches in MMUs. These caches are not the same as TLBs: TLBs contain full translation results, while the translation caches considered here contain partial translations. In the case of a cache hit, these partial translations allow the system to skip individual steps when traversing the page table tree, thereby saving one or more memory accesses. Otherwise, each level of translation requires a memory reference. These caches are also referred to as Page Walk Caches (PWC) \cite{yaniv2016hash}.
 
-The specific translation cache designs of AMD and Intel platforms are examined and compared with three other designs proposed by the authors. Barr et al. conclude that radix page tables, by caching entries at higher page table levels, can outperform inverted page table designs.
+The specific translation cache designs of AMD and Intel platforms are examined and compared to three other designs proposed by the authors. Barr et al. conclude that radix page tables, by caching entries at higher page table levels, can outperform inverted page table designs.
 
 This work focuses on optimizing the memory path by eliminating page tables and using a software-controlled TLB, and it does not further consider caches aside from the TLB.
 
@@ -85,19 +85,19 @@ They show a 2.3\% performance improvement from flattening the page table tree, 6
 % -------------------------------------------------------------------------------------------------
 
 \cite{zagieboylo2020cost} proposes an approach that shifts responsibilities of memory management in
-parts back to the applications: Every applications get a fixed-size chunks of physical memory and then have to manage allocations across these blocks.
+parts back to the applications: All applications get a fixed-size chunks of physical memory and then have to manage allocations across these blocks.
 Thus the task of memory management with the chunks falls to compilers, language runtimes and the applications themselves.
 This approach does not require any address translation and thus gets completely rid of the overhead associated with the virtual memory system.
 Common features of virtual memory, like memory space protection can still be implemented with physical memory protection mechanisms present on commodity hardware.
 Overall, this approach trades a reduction for complexity of the hardware with increased complexity on the software side.
 
-The design presented in this paper also resorts to bigger segments per process, but generally aims to keep the memory management responsibilities with the operating system. It tries to get rid of the page table structure in favor of mapping functions.
+The design presented in this paper resorts to bigger segments per process, but generally aims to keep the memory management responsibilities with the operating system. It tries to get rid of the page table structure in favor of mapping functions.
 
 % -------------------------------------------------------------------------------------------------
 
-\cite{halbuer2023morsels} argues that prevailing memory management system designs are getting increasingly inefficient given modern systems that have very big main memories and workloads that require large in-memory data sets.
+\cite{halbuer2023morsels} argues that prevailing memory management system designs are becoming increasingly inefficient given modern systems that have very big main memories and workloads that require large in-memory data sets.
 The paper presents a novel approach addressing the limitations of current methods with \emph{Morsels}.
-These Morsels are self contained memory object, spanning entire page table sub-trees, thus allowing efficient remapping, sharing and reduced memory overhead.
+These Morsels are self contained memory object, spanning entire page table sub-trees, thus allowing efficient remapping, sharing and reducing memory overhead.
 They reuse existing interfaces and work on top of existing page table structures to provide a supplementary layer to improve the efficiency of memory-intensive applications.
 
 % -------------------------------------------------------------------------------------------------
