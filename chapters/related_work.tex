@@ -51,7 +51,7 @@ memory allocation.
 
 The specific translation cache designs of AMD and Intel platforms are examined and compared to three other designs proposed by the authors. Barr et al. conclude that radix page tables, by caching entries at higher page table levels, can outperform inverted page table designs.
 
-This work focuses on optimizing the memory path by eliminating page tables and using a software-controlled TLB, and it does not further consider caches aside from the TLB.
+PWCs are out of scope for this thesis, but might be examined in future work with the mapping function approach. This work focuses on optimizing the memory path by eliminating page tables and using a software-controlled TLB, and it does not further consider caches aside from the TLB.
 
 
 
@@ -91,13 +91,13 @@ This approach does not require any address translation and thus gets completely 
 Common features of virtual memory, like memory space protection can still be implemented with physical memory protection mechanisms present on commodity hardware.
 Overall, this approach trades a reduction for complexity of the hardware with increased complexity on the software side.
 
-The design presented in this paper resorts to bigger segments per process, but generally aims to keep the memory management responsibilities with the operating system. It tries to get rid of the page table structure in favor of mapping functions.
+The design presented in this paper resorts to bigger segments per process, but generally aims to keep the memory management responsibilities with the operating system.
 
 % -------------------------------------------------------------------------------------------------
 
 \cite{halbuer2023morsels} argues that prevailing memory management system designs are becoming increasingly inefficient given modern systems that have very big main memories and workloads that require large in-memory data sets.
 The paper presents a novel approach addressing the limitations of current methods with \emph{Morsels}.
-These Morsels are self-contained memory object, spanning entire page table sub-trees, thus allowing efficient remapping, sharing and reducing memory overhead.
+These Morsels are self-contained memory objects, spanning entire page table sub-trees, thus allowing efficient remapping, sharing and reducing memory overhead.
 They reuse existing interfaces and work on top of existing page table structures to provide a supplementary layer to improve the efficiency of memory-intensive applications.
 
 % -------------------------------------------------------------------------------------------------

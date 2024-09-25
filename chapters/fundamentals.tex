@@ -36,33 +36,32 @@ automate the task of swapping pages between main and secondary memory.
 The idea was to make programs completely unaware of real, physical memory by providing
 an abstraction layer called virtual memory \cite{denning1996virtual}.
 With virtual memory, programs appear to have the whole memory space of the machine at their disposal. It also
-hides all the other processes and their memory from them.
-The task of managing a programs memory, no matter where in its virtual address space it is, and putting it somewhere
+hides the other processes and their memory from them.
+The task of managing the memory of a program, no matter where in its virtual address space it is, and putting it somewhere
 in physical memory now falls to the operating system \cite{denning1970virtual}.
 This change to the operating systems role in managing program memory was not only useful but also necessary. The size of programs was increasing faster than the size of main
 memory; while single programs
-still fit in memory, operating systems made it possible to run multiple programs at once, collectively exceeding
+still fit in memory, operating systems make it possible to run multiple programs at once, collectively exceeding
 the available physical memory \cite{tanenbaumOS}.
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Virtual and physical addresses}
 The terms of \textit{Virtual} and \textit{Physical} addresses are used a lot of this thesis.
-Virtual addresses refer to those that are used by the program to reference memory object in its address
-space. They are only valid in the programs own address space. Thus, it is possible for programs to use the same
-virtual addresses, that point to different physical addresses.
-Virtual addresses are translated to physical addresses, which are actual addresses to memory locations
-on main memory. The \textit{Virtual Memory System} is tasked with performing this translation, the creation of mappings,
+Virtual addresses refer to those that are used by the program to reference a memory object in its address
+space. They are only valid in the address space of the program. Thus, it is possible for programs to use the same
+virtual addresses, which point to different physical addresses.
+Virtual addresses are translated to physical addresses, which are actual addresses of memory. The \textit{Virtual Memory System} is tasked with performing this translation, the creation of mappings,
 and keeping book of those mappings \cite{denning1996virtual}.
 
 Some memory systems which use inverted page tables also use the notion of \textit{effective} addresses.
-These form an addition layer of indirection that allows the sharing of pages \cite{jacob1998virtualissues}.
+These form an additional layer of indirection that allows the sharing of pages \cite{jacob1998virtualissues}.
 Effective addresses will not be discussed here any further.
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Memory System Requirements}
 In modern systems, \textit{Virtual Memory} does a lot more than swapping pages between main memory and secondary
 storage and providing new pages of memory on-demand to programs.
-It is the foundation of a number of requirements to the memory system that are taken for granted
+It is the foundation of a number of requirements for the memory system that are taken for granted
 \cite{jacobSoftwaremanagedAddressTranslation1997}.
 These requirements are as follows:
 
@@ -109,10 +108,8 @@ superpages to provide space for bigger objects to increase the reach of cache en
 % -------------------------------------------------------------------------------------------------
 
 \paragraph{Flexibility} Programmers should not have to think about the management
-of the resources required to do their job, that is the operating systems job
-\cite{tanenbaumOS}. As such, it should be possible to place the programs code
-and data anywhere in the programs virtual address space to make the programmers
-job as easy as possible and to increase the flexibility of the programs
+of the resources required to do their job, that is the job of the operating system \cite{tanenbaumOS}. As such, it should be possible to place code and data of the program anywhere in its virtual address space to make the programmer's
+job as easy as possible and to increase the flexibility of the program
 \cite{jacob1998virtualissues}. % Simplification of the programmes job
 
 \begin{marginfigure}
@@ -141,7 +138,7 @@ Bookkeeping of smaller address spaces should be as cheap as possible.
 There are different ways how memory systems implement these requirements.
 The two most common implementations are based on hierarchical/multi-level/radix
 \cite{jacob1998virtualissues,yaniv2016hash,tanenbaumOS} page tables and inverted page tables \cite{jacob1998look,jacob1998virtualissues}.
-These implementations are summarized in the following.
+These implementations are summarized next.
 
 
 
@@ -154,9 +151,8 @@ These implementations are summarized in the following.
 %   [ A look at several...]
 %   [ Issues of implementation]
 \subsection{Implementation of Virtual Memory}
-Every virtual memory system must realize a mapping from virtual addresses of each processes
-private, virtual address space to physical addresses that index data in main memory.
-This section will provide an overview of how most commonly used virtual memory implementation satisfy
+Every virtual memory system must realize a mapping from virtual addresses of each process-private virtual address space to physical addresses that index data in main memory.
+This section will provide an overview of how the most commonly used virtual memory implementations satisfy
 this requirement.
 
 
@@ -168,7 +164,7 @@ adds up to \[ 20 * 2^{20} bit = 20971520 / 8 Byte = 2.5 MB \]
 To properly isolate the processes from each other, every process needs to have one of those arrays.
 To realize fine-grained protection of pages, there would also need to be some bits per array entry
 for read/write/execute rights.
-With 64-bit computers, the space requirements for such page tables would be even higher.
+With a 64-bit computers, the space requirements for such page tables would be even higher.
 
 % Hierarchical
 \subsubsection{Hierarchical/radix/multi-level page tables}
@@ -316,12 +312,9 @@ address. During this process, the processor is effectively frozen \cite{jacobVir
 
 
 % -------------------------------------------------------------------------------------------------
-\paragraph{Address Space Identifies}
+\paragraph{Address Space Identifiers}
 % \cite{jacobSoftwaremanagedAddressTranslation1997}
-%TODO in the vm requirements , ASIDs are presented as HW-support for address space protection
-With Address Space Identifiers (ASIDs), RISC-V provides a way to utilize virtual memory more efficiently:
-Since every process has its own virtual address space, translations that are still present in the
-TLB may not be valid after a context switch.
+Address space identifiers (ASIDs) are number assigned to a process to identify pages associated with that process. This allows a more efficient use of the virtual memory system: Normally, the TLB is flushed completely on context switch to avoid access to mappings from other processes. If ASIDs are used, only the mappings associated with the process leaving the CPU are flushed, leaving translations for globally valid mappings and shared pages in the TLB \cite{RISCVInstructionSet}.
 
 \paragraph{SFENCE.VMA} RISC-V provides one instruction that acts primarily as a memory barrier:
 It prevents reordering of instructions accessing memory accross the \texttt{sfence.vma} instruction.
@@ -332,7 +325,7 @@ arguments set to zero, the instruction will flush all entries.
 Setting the first register to a specific address will only flush translations containing that address.
 The second register specifies the address space that is supposed to be flushed, given an ASID.
 
-This mechanism allows for a precise control over flushing of TLB entries, which can improve the
+This mechanism allows for a precise control over the flushing of TLB entries, which can improve the
 memory system performance \cite{RISCVInstructionSet}.
 
 
@@ -360,13 +353,14 @@ Software-based Virtual Memory Systems are generally more flexible than hardware-
 as the mapping can be controlled in software and structures (such as the PTE) are not bound
 to the hardware \cite{jacob1998virtualissues}.
 However, all of the approaches listed here still use a page table structure to keep track of mappings.
-Main differences are in the details of the implemented page table structure and in the way the software has to create the mappings. This freedom allows adjusting the virtual memory system to fit more specific use cases, as hardware-based systems are design to service a wide range of different applications \cite{jacob1998look}.
+The main differences are in the details of the implemented page table structure and the way the software has to create the mappings. This freedom allows adjusting the virtual memory system to fit more specific use cases, as hardware-based systems are designed to service a wide range of different applications \cite{jacob1998look}.
 In the following, a number of software-based Virtual Memory Systems are presented.
 % A look at several
 % MIPS -Ultrix
 % Software managed tlbs
 \subsection{MIPS}
 MIPS \cite{MIPSArchitectureProgrammers2016} allows software-management of TLBs by raising an exception on TLB miss and by providing instructions to write TLB entries from software.
+The virtual memory management systems \textit{Ultrix} and \textit{Guarded Page Tables} are implemented on top of MIPS.
 
 \paragraph{Ultrix} The Ultrix page table is a two-tiered page table with two exception handlers for the TLB miss exception.
 One of the handlers services user-level misses, the other one handles kernel-level misses.
@@ -375,7 +369,7 @@ TLB miss \cite{jacob1998look}.
 
 \paragraph{Guarded Page Tables} In his dissertation, Jochen Liedtke presented an innovative approach
 to handling virtual memory \cite{liedtkeGPT}.
-The approach is based on hierarchical page tables, and is shown to provide an efficient solution particularly in systems with large, sparse address spaces.
+It is based on hierarchical page tables, and is shown to provide an efficient solution particularly in systems with large, sparse address spaces.
 The design allows skipping over PTE entries to reach valid PTEs faster, without having to traverse every single level of the tree.
 Gernot Heißer showcased a implementation of that design in \cite{heiserAnatomyHighPerformanceMicrokernel}.
 
@@ -456,7 +450,7 @@ as the VM system can be fully defined by the operating system.
 
 \section{RISC-V Basics}
 The implementation presented in this work runs on a RISC-V platform. Therefore, it is necessary
-to go over some basic concepts of the RISC-V platform. Particularly relevant here are the virtual
+to go over some basic concepts of this platform. Particularly relevant here are the virtual
 memory system, the exception/trap mechanism, and the control and status registers (CSRs), which
 form the foundation for extending RISC-V.
 The information presented in the following section is taken from both the RISC-V Reader \cite{riscvreader} and the RISC-V ISA Specification \cite{RISCVInstructionSet}.
@@ -473,7 +467,7 @@ For bigger memory needs, there are the Sv48 and Sv57 addressing modes, adding on
 The following will only look at specifics for the Sv39 addressing mode.
 
 The page table is an orthodox hierarchical multi-level page table, where each Page Table Entry (PTE) points to a PTE in the next level.
-Each level of the page table contains 512 PTEs with 64-bit in size, bringing a page table to exactly 4 KB in size.
+Each level of the page table contains 512 PTEs, 64-bit in size, bringing a page table to exactly 4 KB in size.
 The format of a PTE is shown in figure \ref{fig:theory:sv39pte}.
 \todo{explain why the top bits in PTE are all zero (with leichten Bezug zu xv6 impl)}
 \begin{figure*}[h]
@@ -559,8 +553,8 @@ The term "trap" is an umbrella term that is further divided into interrupts — 
 and exceptions — synchronous events.
 Exceptions are particularly of interest here, as a TLB miss occurs during the execution of an instruction,
 meaning it happens synchronously with the processor's clock. However, it is important to keep interrupts
-in mind when working with Qemu and xv6 source code, because on one hand, the Qemu code handles exceptions
-and interrupts within the same functions, and on the other hand, xv6, or RISC-V in general, uses a unified
+in mind when working with Qemu and xv6 source code, because the Qemu code handles exceptions
+and interrupts within the same functions, and xv6, or RISC-V in general, uses a unified
 vector for handling both interrupts and exceptions \cite{RISCVInstructionSet}.
 
 % Exception registers

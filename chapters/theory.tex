@@ -130,7 +130,7 @@ To adapt the RISC-V emulator to fit the architectural design, a number of change
 The chosen platform is the xv6 operating system \cite{xv6source}. It is a teaching operating system
 used by MIT operating systems courses to teach the basics of operating systems.
 xv6 implements the basic Unix Version 6 interfaces, but does so in a very simplified fashion.
-There is a x86 version and a RISC-V version. For this project, the RISC-V version was chosen.
+There is an x86 version and a RISC-V version. For this project, the RISC-V version was chosen.
 xv6's simplicity and the accompanying handbook \cite{cox2011xv6} make it a good choice for a first
 proof of concept.
 
@@ -171,7 +171,7 @@ a page fault exception will be invoked \cite{RISCVInstructionSet}. The kernel th
 of the contents of the \texttt{satp} and \texttt{mtval} (or \texttt{stval}) registers.
 
 The behavior of a TLB Miss exception should be pretty similar: If the TLB hits, the program will
-just continue as usual. If the TLB misses, a exception should be risen, providing context
+just continue as usual. If the TLB misses, an exception should be raised, providing context
 information about the miss in registers. The invocation of the hardware page table walker is
 not necessary.
 
@@ -190,20 +190,20 @@ for custom use. These are $24-31$ and $48-63$ \cite{RISCVInstructionSet}. For th
 
 % -------------------------------------------------------------------------------------------------
 \section{Exception Handling}
-Throwing a exception is only one half of the puzzle. The operating system also has to handle the exception
-properly.
+Throwing an exception is only part of the design. The operating system also has to handle the exception appropriately.
+
 % -------------------------------------------------------------------------------------------------
 \paragraph{L4/MIPS TLB Exception Handling}
 MIPS vectors its exception vectors in a continuous area in memory, starting at a base address.
-That gives the TLB miss handler 32 instructions to server the TLB Miss. Otherwise it has to jump
+That gives the TLB miss handler 32 instructions to service the TLB Miss. Otherwise it has to jump
 somewhere with more space.
 The \emph{Fast TLB Miss} handler is able to service the miss using only the two kernel-reserved
 registers \texttt{k0} and \texttt{k1} and another register, which has to be saved first \cite{heiserAnatomyHighPerformanceMicrokernel}.
-Thus the memory footprint of handler is low.
+Thus the memory footprint of the handler is low.
 
 % -------------------------------------------------------------------------------------------------
 \paragraph{xv6 Exception Handler}
-xv6's exception handler does not actually handle most of the exceptions. For most of the exceptions,
+xv6's exception handler does not actually handle most exceptions. For most exceptions,
 but notably also the different page fault exceptions, xv6 will simply kill the offending process \cite{cox2011xv6}.
 
 % -------------------------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ but notably also the different page fault exceptions, xv6 will simply kill the o
 To simplify things, we will let the TLB Miss exception handler run in machine mode only.
 The usual mode for a operating system kernel would be the supervisor mode. However, this
 mode also uses address translation. This could create a situation in which we would have
-to deal with nested exception.
+to deal with nested exceptions.
 
 \paragraph{Catching the Exception} M-mode exceptions will set the program counter to the address
 specified in the \texttt{mtvec} register. Originally, xv6 only serviced the asynchronous
@@ -263,13 +263,13 @@ CSR format that is used for the implementation.
 
 The MIPS64 instruction set manual \cite{MIPSArchitectureProgrammers2016}
 shows a number of different instructions concerned with invalidation, probing, flushing, reading
-and writing (indexed and random).
+and writing (indexed and random) of the TLB.
 The most interesting instruction for a first design would be the \texttt{TLBWR} instruction for writing a TLB
 entry at a random index. With a similar instruction in RISC-V, we can already implement a purely
 software-controlled virtual memory system.
 The other types of TLB instructions that MIPS provides are not strictly necessary,
 except for flushing. Without being able to flush existing translations from the TLB,
-user mode processes may try to access physical mappings stemming from other processes. But the RISC-V privileged Architecture already provides this functionality
+user mode processes may try to access physical mappings stemming from other processes. But the RISC-V privileged architecture already provides this functionality
 with the \texttt{sfence.vma} instruction \cite{riscvreader}.
 
 
@@ -308,7 +308,7 @@ the virtual address it maps to.
 The mapping has a granularity of 4 KB pages. Thus, the lower 12 bits of both the physical and the
 virtual address are not needed.
 This still leaves $2*(64-12)=104$ bits for the mapping.
-The virtual address cannot be easily shortened anymore. Taking some of the most significant bits
+The virtual address cannot be easily shortened further. Taking some of the most significant bits
 would shorten the virtual memory space of the programs.
 The physical address could still be shortened to only have enough bits to cover the physical address
 space used by xv6.
@@ -365,7 +365,7 @@ of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
 % -------------------------------------------------------------------------------------------------
 \subsection{Segmented Mapping}
 
-The first attempt at a stateless \todo{Begriff an sinnvoller stelle einführen} paging design
+The first attempt at a mapping function based paging design
 uses a design that determines memory allocation at compile time.
 The resulting mapping is similar to a segmented memory design.
 
@@ -378,7 +378,7 @@ The operating system uses the base address to calculate the physical address fro
 address consisting of segment number and offset. The segment size is used to ensure that
 accesses beyond the segment result in an error \cite{tanenbaumOS}.
 
-The main advantages of this memory design are, that the memory layout follows the logical structure of the programs and that the segments are protected from undesired access (like writing to the code segment).
+The main advantages of this memory design are that the memory layout follows the logical structure of the programs and that the segments are protected from undesired access (like writing to the code segment).
 Typical segmented memory designs also allow for dynamic segment sizes \cite{tanenbaumOS}.
 
 
