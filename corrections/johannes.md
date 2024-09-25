@@ -256,7 +256,7 @@ and writing (indexed and random).
 ...are not strictly necesarry, except for flushing.
 should be "necessary"
 
-...physical mappings stemming from other processes.But the RISC-V priviledged Architecture...
+...physical mappings stemming from other processes.But the RISC-V privileged Architecture...
 add whitespace after dot, should be "privileged", likely wrong capitalization of "privileged architecture"
 
 Replacement Strategies A advantage of software-managed TLBs is, that the operating system can...
@@ -356,7 +356,7 @@ should be "an enum"
 In choosing a appropiate number for a new exception, ...
 should be "an" and "appropriate"
 
-...to delegate the exception to another priviledge level by setting the appropiate bit...
+...to delegate the exception to another privilege level by setting the appropiate bit...
 should be "privilege" and "appropriate"
 
 5.1.3
@@ -413,7 +413,7 @@ should be "uses the trap vectoring..."
 ...jump to the address set in the mtvec BASE field but all interrupts are set the program counter to BASE plus four times the interrupt cause [Wat+24].
 add comma before "but", remove "are"
 
-Now any machine-mode exception (that is not delegated to a lower-priviledge mode) sets the program counter...
+Now any machine-mode exception (that is not delegated to a lower-privilege mode) sets the program counter...
 should be "privilege"
 
 The initial implementation simply calls the new tlbh and tlbl CSR instructions with and then returns.

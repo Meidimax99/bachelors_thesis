@@ -35,7 +35,7 @@ at the same time simplify hardware by dispensing with translation caches and
 the hardware state-machine for walking the page table.
 The approach is based on handling virtually indexed and tagged cache misses in
 software.
-With sufficiently-sized virtual caches the system can go for long periods
+With sufficiently sized virtual caches the system can go for long periods
 without requiring translations.
 Not unlike this paper, they extend the PowerPC architecture by two new instructions
 to write entries to the cache. However, their design uses software page table
@@ -78,7 +78,7 @@ They show a 2.3\% performance improvement from flattening the page table tree, 6
 % -------------------------------------------------------------------------------------------------
 
 % Elastic Cuckoo Page Table
-\textbf{\cite{skarlatos2020elastic}} presents a novel page table design called \textit{Elastic Cuckoo Page Tables}. The design exploits memory-level parallelism to enable fully parallel page table lookups. At the core of the design is the Elastic Cuckoo Hashing algorithm, which allows multiple hashing locations for a given element and also enables efficient, gradual resizing of the hash table. Skarlatos et al. demonstrate an application execution speedup of 3-18\% using the Elastic Cuckoo Page Table design.
+\textbf{\cite{skarlatos2020elastic}} presents a novel page table design called \textit{Elastic Cuckoo Page Tables}. The design exploits memory-level parallelism to enable fully parallel page table lookups. At the core of the design is the Elastic Cuckoo Hashing algorithm, which allows multiple hashing locations for a given element and enables efficient, gradual resizing of the hash table. Skarlatos et al. demonstrate an application execution speedup of 3-18\% using the Elastic Cuckoo Page Table design.
 
 
 
@@ -86,7 +86,7 @@ They show a 2.3\% performance improvement from flattening the page table tree, 6
 
 \cite{zagieboylo2020cost} proposes an approach that shifts responsibilities of memory management in
 parts back to the applications: All applications get a fixed-size chunks of physical memory and then have to manage allocations across these blocks.
-Thus the task of memory management with the chunks falls to compilers, language runtimes and the applications themselves.
+Thus, the task of memory management with the chunks falls to compilers, language runtimes and the applications themselves.
 This approach does not require any address translation and thus gets completely rid of the overhead associated with the virtual memory system.
 Common features of virtual memory, like memory space protection can still be implemented with physical memory protection mechanisms present on commodity hardware.
 Overall, this approach trades a reduction for complexity of the hardware with increased complexity on the software side.
@@ -97,7 +97,7 @@ The design presented in this paper resorts to bigger segments per process, but g
 
 \cite{halbuer2023morsels} argues that prevailing memory management system designs are becoming increasingly inefficient given modern systems that have very big main memories and workloads that require large in-memory data sets.
 The paper presents a novel approach addressing the limitations of current methods with \emph{Morsels}.
-These Morsels are self contained memory object, spanning entire page table sub-trees, thus allowing efficient remapping, sharing and reducing memory overhead.
+These Morsels are self-contained memory object, spanning entire page table sub-trees, thus allowing efficient remapping, sharing and reducing memory overhead.
 They reuse existing interfaces and work on top of existing page table structures to provide a supplementary layer to improve the efficiency of memory-intensive applications.
 
 % -------------------------------------------------------------------------------------------------

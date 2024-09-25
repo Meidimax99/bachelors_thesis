@@ -46,7 +46,7 @@ the available physical memory \cite{tanenbaumOS}.
 % -------------------------------------------------------------------------------------------------
 
 \subsection{Virtual and physical addresses}
-The terms of \textit{Virtual} and \textit{Physical} addresses are used a lot in the course of this thesis.
+The terms of \textit{Virtual} and \textit{Physical} addresses are used a lot of this thesis.
 Virtual addresses refer to those that are used by the program to reference memory object in its address
 space. They are only valid in the programs own address space. Thus, it is possible for programs to use the same
 virtual addresses, that point to different physical addresses.
@@ -74,7 +74,7 @@ of another process, unless explicitly shared.
 
 % -------------------------------------------------------------------------------------------------
 
-\paragraph{Shared Memory} Sharing memory allows programms to work on the same physical data with potentially
+\paragraph{Shared Memory} Sharing memory allows programs to work on the same physical data with potentially
 differing virtual addresses \cite{jacobVirtualMemoryContemporary1998}.
 Shared memory is used as a high-throughput mechanism for inter-process communication or for working on
 a shared data structure \cite{tanenbaumOS}.
@@ -95,15 +95,15 @@ use bigger addresses to support programs that require a lot of memory
 % -------------------------------------------------------------------------------------------------
 
 \paragraph{Fine-grained Protection} From a security perspective, it is often not desirable to e.g. allow the code segment
-of a program to be writeable and the data section to be exectuable.\textit{Virtual Memory Systems} provide read-only,
-read-write and exectue-only protection on a page granularity\cite{jacobSoftwaremanagedAddressTranslation1997}.
+of a program to be writeable and the data section to be executable.\textit{Virtual Memory Systems} provide read-only,
+read-write and execute-only protection on a page granularity \cite{jacobSoftwaremanagedAddressTranslation1997}.
 Illegal references may trigger exceptions, which allow the operating system to deal with the program \cite{jacobVirtualMemoryContemporary1998}.
 
 % -------------------------------------------------------------------------------------------------
 
 \paragraph{Superpages}
 Structures may be bigger than a single page and may thus occupy multiple entries of the translation caches while
-only refering to one object. To avoid displacing other caches entries, \textit{Virtual Memory Systems} use
+only referring to one object. To avoid displacing other caches entries, \textit{Virtual Memory Systems} use
 superpages to provide space for bigger objects to increase the reach of cache entries \cite{jacobSoftwaremanagedAddressTranslation1997}.
 
 % -------------------------------------------------------------------------------------------------
@@ -154,16 +154,16 @@ These implementations are summarized in the following.
 %   [ A look at several...]
 %   [ Issues of implementation]
 \subsection{Implementation of Virtual Memory}
-Every virtual memory system has to realize a mapping from virtual addresses of each processes
+Every virtual memory system must realize a mapping from virtual addresses of each processes
 private, virtual address space to physical addresses that index data in main memory.
 This section will provide an overview of how most commonly used virtual memory implementation satisfy
 this requirement.
 
 
 % Naive approache
-The naive approache is to simply have a big array in main memory. This array can be indexed
+The naive approach is to simply have a big array in main memory. This array can be indexed
 using the virtual addresses, at which the physical address to that virtual address is placed.
-In a 32 bit address space with 4 KB pages, this requires 20 bits per page table entry. This
+In a 32-bit address space with 4 KB pages, this requires 20 bits per page table entry. This
 adds up to \[ 20 * 2^{20} bit = 20971520 / 8 Byte = 2.5 MB \]
 To properly isolate the processes from each other, every process needs to have one of those arrays.
 To realize fine-grained protection of pages, there would also need to be some bits per array entry
@@ -174,7 +174,7 @@ With 64-bit computers, the space requirements for such page tables would be even
 \subsubsection{Hierarchical/radix/multi-level page tables}
 To reduce the memory cost of managing pages, most \todo{cite?} virtual memory systems use a
 multi-level page table, also known as a hierarchical page table. However, its structure
-is less like a table and more like a tree, where the nodes are tables of page table entries (PTEs) \cite{tanenbaumOS}.
+is less like a table and more like a tree, in which the nodes are tables of page table entries (PTEs) \cite{tanenbaumOS}.
 Here the virtual page number is divided into several parts. Each part of the Virtual Page Number (VPN)
 is used to index a smaller table. The indexed PTE then points to the next smaller page table,
 which in turn is indexed by the next part of the VPN. Depending on the implementation
@@ -240,7 +240,7 @@ containing the actual PTEs. If the hash anchor is twice the size
 of the page table, the average collision chain length can be halved \cite{jacob1998virtualissues}.
 However, at least one additional memory reference is required in any case \cite{jacob1998virtualissues}.
 Alternative designs for inverted page tables allow the table to be dynamically resized to avoid hash collisions.
-But resizing the whole page table is very expensive and should be avoided\cite{skarlatos2020elastic}.
+But resizing the whole page table is very expensive and should be avoided \cite{skarlatos2020elastic}.
 
 % Inverted Page Table figure
 \begin{figure*}[t]
@@ -281,7 +281,7 @@ which still use 4KB pages to maintain compatibility.
 % -------------------------------------------------------------------------------------------------
 \section{Memory Management Hardware}
 To further accelerate the translation of virtual to physical addresses, most modern computers use additional
-\cite{denning1970virtual} hardware components . These consist of a hardware page table walker (MMU) and a translation cache,
+\cite{denning1970virtual} hardware components. These consist of a hardware page table walker (MMU) and a translation cache,
 commonly referred to as a Translation Lookaside Buffer (TLB) \cite{jacobVirtualMemoryContemporary1998}.
 
 % Frage: Besteht das MMU aus TLB + State Walker oder ist MMU der State Walker und TLB einfach extra?
@@ -327,7 +327,7 @@ TLB may not be valid after a context switch.
 It prevents reordering of instructions accessing memory accross the \texttt{sfence.vma} instruction.
 This is important when the page tables are switched, e.g. when the kernel is entered from user mode,
 because the translations will change.
-The instruction also acts as a flushing operation for TLB entries. With both of the optional register
+The instruction also acts as a flushing operation for TLB entries. With both optional register
 arguments set to zero, the instruction will flush all entries.
 Setting the first register to a specific address will only flush translations containing that address.
 The second register specifies the address space that is supposed to be flushed, given an ASID.
@@ -350,7 +350,7 @@ memory system performance \cite{RISCVInstructionSet}.
 
 % -------------------------------------------------------------------------------------------------
 
-\section{Sofware-based Virtual Memory System}
+\section{Software-based Virtual Memory System}
 % VM in Software möglich mit ähnlicher Performance wie hw möglich -> Sollte ja mehr Flexibilität geben
 %   [ A look at several...]
 % Software managed address translation
@@ -360,7 +360,7 @@ Software-based Virtual Memory Systems are generally more flexible than hardware-
 as the mapping can be controlled in software and structures (such as the PTE) are not bound
 to the hardware \cite{jacob1998virtualissues}.
 However, all of the approaches listed here still use a page table structure to keep track of mappings.
-Main differences are in the details of the implemented page table structure and in the way the software has to create the mappings. This freedom allows adjusting the virtual memory system to fit more specific use cases, as hardware-based systems are design to service a wide range of different applications\cite{citation needed}.
+Main differences are in the details of the implemented page table structure and in the way the software has to create the mappings. This freedom allows adjusting the virtual memory system to fit more specific use cases, as hardware-based systems are design to service a wide range of different applications \cite{jacob1998look}.
 In the following, a number of software-based Virtual Memory Systems are presented.
 % A look at several
 % MIPS -Ultrix
@@ -374,7 +374,7 @@ Kernel level misses may occur when the page containing a PTE is not loaded and c
 TLB miss \cite{jacob1998look}.
 
 \paragraph{Guarded Page Tables} In his dissertation, Jochen Liedtke presented an innovative approach
-to handeling virtual memory \cite{liedtkeGPT}.
+to handling virtual memory \cite{liedtkeGPT}.
 The approach is based on hierarchical page tables, and is shown to provide an efficient solution particularly in systems with large, sparse address spaces.
 The design allows skipping over PTE entries to reach valid PTEs faster, without having to traverse every single level of the tree.
 Gernot Heißer showcased a implementation of that design in \cite{heiserAnatomyHighPerformanceMicrokernel}.
@@ -386,7 +386,7 @@ The TLB miss handler calculates the hash from the virtual address to locate the 
 
 \paragraph{NOTLB}
 A comparative study conducted by Jacob et al. \cite{jacob1998look} looks at a software-managed Virtual Memory Design that uses no TLB at all.
-The design uses a two-level page table structure similar to the ULTRIX/MIPS design and organizes its address space into disjunct segments.
+The design uses a two-level page table structure like the ULTRIX/MIPS design and organizes its address space into disjunct segments.
 Instead of a TLB miss handler, there is a Cache-Miss handler that services misses in the virtual L2 cache.
 Similar to the Ultrix design, there are two handlers to handle nested cache misses.
 
@@ -569,7 +569,7 @@ Supervisor Mode (prefixed with "s") and Machine Mode (prefixed with "m").
 \todo{Have privilege modes been introduced already?}
 Whether the machine mode or supervisor mode version of the register should be used for an exception depends
 on the mode in which the exception is handled. In the following, all registers are presented with the
-M-Mode prefix only \todo{Has M-Mode as an abbreviation for Machine Mode been introduced?}.
+M-Mode prefix only. \todo{Has M-Mode as an abbreviation for Machine Mode been introduced?}
 \todo{Because the exception was ultimately designed as an M-Mode exception?}
 
 % TODO: sorting of registers by role?
@@ -616,11 +616,11 @@ This can be found in the \texttt{mcause} register when handling the exception.
 \end{enumerate}
 % -------------------------------------------------------------------------------------------------
 
-\subsection{Contol and Status Registers}
+\subsection{Control and Status Registers}
 % Section describing RISC-V CSRs -> Originally in theory
 The RISC-V ISA provides a 12-bit encoding space for 4096 CSRs. A CSR address is logically split
 into four parts: The top two bits \texttt{csr[11:10]} specify whether the CSR is read/write or read-only;
-\texttt{csr[9:8]} encode the minimum priviledge level that is allowed to access the CSR; \texttt{csr[7:4]}
+\texttt{csr[9:8]} encode the minimum privilege level that is allowed to access the CSR; \texttt{csr[7:4]}
 may be partially used to define a specific use for a range of CSRs. E.g. CSRs with an address
 between \texttt{0x7B0} and \texttt{0x7BF} shall be used for Debug-mode-only CSRs \cite{RISCVInstructionSet}. The format
 of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
@@ -635,7 +635,7 @@ of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
         \bitbox{4}{Usage} &
         \bitbox{4}{Index}
     \end{bytefield}
-    \caption[RISC-V CSR address format]{\textbf{RISC-V CSR address format} \texttt{csr[11:10]} define whether the CSR is read-write or write-only; \texttt{csr[9:8]} defines the minimum priviledge level that is allowed to access the CSR; \texttt{csr[7:4]} sets a directory within the CSR space for the usage of the CSR; \texttt{csr[3:0]} define a index}
+    \caption[RISC-V CSR address format]{\textbf{RISC-V CSR address format} \texttt{csr[11:10]} define whether the CSR is read-write or write-only; \texttt{csr[9:8]} defines the minimum privilege level that is allowed to access the CSR; \texttt{csr[7:4]} sets a directory within the CSR space for the usage of the CSR; \texttt{csr[3:0]} define a index}
     \label{fig:theory:csr}
 \end{figure*}
 

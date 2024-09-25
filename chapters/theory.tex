@@ -89,7 +89,7 @@ xv6 is designed for RISC-V, but RISC-V does not allow for flexible software-mana
 Thus part of this chapter will describe the theoretical foundations for modifying
 the QEMU/RISC-V emulator to transform the memory system architecture to something
 more similar to MIPS.
-The final architecture for the memory sytem will look like depicted in figure \ref{fig:theory:mapping_fx}
+The final architecture for the memory system will look like depicted in figure \ref{fig:theory:mapping_fx}
 % TODO der Zwischenschritt mit dem Software Page Table walk wird dann in der Impl
 % eingeführt
 
@@ -172,14 +172,14 @@ of the contents of the \texttt{satp} and \texttt{mtval} (or \texttt{stval}) regi
 
 The behavior of a TLB Miss exception should be pretty similar: If the TLB hits, the program will
 just continue as usual. If the TLB misses, a exception should be risen, providing context
-information about the miss in registers. The invokation of the hardware page table walker is
+information about the miss in registers. The invocation of the hardware page table walker is
 not necessary.
 
 
 % -------------------------------------------------------------------------------------------------
 \paragraph{Adding a new Exception to RISC-V}
 Extending the emulator to throw a new exception is explained in the Implementation chapter.
-On the theoretical side, it is important to chose a exception code from the code ranges designated
+On the theoretical side, it is important to choose an exception code from the code ranges designated
 for custom use. These are $24-31$ and $48-63$ \cite{RISCVInstructionSet}. For the implementation we chose $24$ or $0x18$.
 
 
@@ -199,7 +199,7 @@ That gives the TLB miss handler 32 instructions to server the TLB Miss. Otherwis
 somewhere with more space.
 The \emph{Fast TLB Miss} handler is able to service the miss using only the two kernel-reserved
 registers \texttt{k0} and \texttt{k1} and another register, which has to be saved first \cite{heiserAnatomyHighPerformanceMicrokernel}.
-Thus the memory footprint of handler is really low.
+Thus the memory footprint of handler is low.
 
 % -------------------------------------------------------------------------------------------------
 \paragraph{xv6 Exception Handler}
@@ -227,7 +227,7 @@ register, regardless of the vectoring mode.
 The value of the \texttt{mcause} register identifies the reason for the exception.
 This value can be used in something like a switch-case statement to call specific handlers
 for the different exception causes.
-This switch-case is not really necessary in xv6, since the only exception that can enter
+This switch-case is not necessary in xv6, since the only exception that can enter
 the machine-mode exception handler is the TLB Miss exception.
 
 Before running any code that modifies general-purpose registers, the current state of the
@@ -250,7 +250,7 @@ With CSRs, it is possible to implement custom behavior, which can then be access
 of the \texttt{CSRR} instruction group.
 To make an informed decision on how the CSR format for TLB writing may look like, we will first
 look at the TLB and the TLB instructions of \emph{MIPS}. Then we will take a look at what the
-RISC-V ISA specifies about TLB, how QEMU implements TLBs and finally we will look at a the
+RISC-V ISA specifies about TLB, how QEMU implements TLBs and finally we will look at the
 CSR format that is used for the implementation.
 
 % -------------------------------------------------------------------------------------------------
@@ -267,10 +267,9 @@ and writing (indexed and random).
 The most interesting instruction for a first design would be the \texttt{TLBWR} instruction for writing a TLB
 entry at a random index. With a similar instruction in RISC-V, we can already implement a purely
 software-controlled virtual memory system.
-The other types of TLB instructions that MIPS provides are not strictly necesarry,
+The other types of TLB instructions that MIPS provides are not strictly necessary,
 except for flushing. Without being able to flush existing translations from the TLB,
-user mode processes may try to access physical mappings stemming from other processes.\todo{can this even happen? -> why else would we need to flush the tlb??}
-But the RISC-V priviledged Architecture already provides this functionality
+user mode processes may try to access physical mappings stemming from other processes. But the RISC-V privileged Architecture already provides this functionality
 with the \texttt{sfence.vma} instruction \cite{riscvreader}.
 
 
@@ -281,8 +280,8 @@ TLB replacement policies, that may even change depending on workload, programs r
 and other circumstances.
 The default replacement strategy for the MIPS \texttt{tlbwr} instruction is to simply
 use the value of the \texttt{C0\_RANDOM} register as the index for the next TLB entry
-to be replaced. The name of that register is missleading, because it is not actually a
-random value, but it is rather decremented on each instruction\cite{heiserAnatomyHighPerformanceMicrokernel}.
+to be replaced. The name of that register is misleading, because it is not actually a
+random value, but it is rather decremented on each instruction \cite{heiserAnatomyHighPerformanceMicrokernel}.
 It is not clear whether this is a sensible replacement strategy,
 but it can be used to ensure that the same TLB slot is not used for every \texttt{tlbwr} if the implementation
 does not provide for any further replacement strategy.
@@ -297,7 +296,7 @@ mapping for every process and the kernel with the trampoline page.\todo{trampoli
 
 \paragraph{MIPS - TLBWR} The arguments for the instruction need to be written in some
 other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \texttt{PageMask}.
-The contents of those registers directly correspont to the TLB entry, which creates quite large
+The contents of those registers directly correspond to the TLB entry, which creates quite large
 TLB entries \cite{heiserAnatomyHighPerformanceMicrokernel}.
 
 
@@ -306,7 +305,7 @@ TLB entries \cite{heiserAnatomyHighPerformanceMicrokernel}.
 \subsection{TLB CSRs}
 The minimum information the hardware needs to create a mapping is the faulting physical address and
 the virtual address it maps to.
-The mapping has a granularity of 4 KB pages. Thus the lower 12 bits of both the physical and the
+The mapping has a granularity of 4 KB pages. Thus, the lower 12 bits of both the physical and the
 virtual address are not needed.
 This still leaves $2*(64-12)=104$ bits for the mapping.
 The virtual address cannot be easily shortened anymore. Taking some of the most significant bits
@@ -332,7 +331,7 @@ of a PTE \ref{fig:theory:sv39pte} in the \texttt{tlbwl} CSR.
         \bitbox{27}{VPN}&
         \bitbox{12}{Page Offset}
     \end{bytefield}
-    \caption[TLBH CSR Format]{\textbf{TLBH CSR Format} The format is derived from the format of Sv39 virtual addresses and also works for Sv48 and Sv57 virtuall addresses by keeping the most significant bits unused}
+    \caption[TLBH CSR Format]{\textbf{TLBH CSR Format} The format is derived from the format of Sv39 virtual addresses and also works for Sv48 and Sv57 virtual addresses by keeping the most significant bits unused}
     \label{fig:theory:tlbh}
 \end{figure*}
 
@@ -372,7 +371,7 @@ The resulting mapping is similar to a segmented memory design.
 
 % Elaboration on segmented memory design
 \paragraph{Segmeneted Memory}
-\textit{Memory Segmentation} splits available memory into logical segments following the structure of a program. Thus there may be a segement for the programs code, the data, stack and so on.
+\textit{Memory Segmentation} splits available memory into logical segments following the structure of a program. Thus there may be a segment for the programs code, the data, stack and so on.
 For bookkeeping, there is a segment table keeping track of the base address of the segment
 and the size of the segment.
 The operating system uses the base address to calculate the physical address from the logical
@@ -388,12 +387,12 @@ Typical segmented memory designs also allow for dynamic segment sizes \cite{tane
 \paragraph{Tableless Segmented Virtual Memory}
 As a typical segmented memory design splits the programs memory into logical units, this design uses segmentation to split the whole physical memory into logical parts.
 These logical parts however do not reflect the structure of a program, but distinct process address spaces: Each segment of main memory can hold one process.
-To keep the design as light-weight as possible, each segments has a fixed size, which is determined at compile time of the operating system.
+To keep the design as lightweight as possible, each segments has a fixed size, which is determined at compile time of the operating system.
 This is less flexible but omits the need of storing the segment size for each segment, as they are all the same size.
 To calculate a physical address from a virtual one, all the mapping function needs is the ASID (segment number) and the offset into the address space.
 To check whether accesses reach over the the segment, only the static segment size is necessary.
 
-This approach also protect logical units (process address spaces) from each other. This is made sure
+This approach also protects logical units (process address spaces) from each other. This is made sure
 by flushing the TLB on context switch.
 
 \todo{figure to visualize this?}
@@ -410,7 +409,7 @@ by flushing the TLB on context switch.
 % Assumptions
 \paragraph{Program Layout} The segmented memory design assumes that programs place their data at the low end of their address
 space and grow upwards.
-Placement of memory pages at higher addresses than the maximum per-address space memory size does not work. This is a serious restriction to the flexibility of the programmer. Conventional processes load the stack segment at the very top of the virtual address space and the heap segment at the bottom to grant both of them as much space to grow as possible \cite{tanenbaumOS}. This is still possible with segmentation, but requires context information at compile time about the maximum size of a segment.
+Placement of memory pages at higher addresses than the maximum per-address space memory size does not work. This is a serious restriction to the flexibility of the programmer. Conventional processes load the stack segment at the very top of the virtual address space and the heap segment at the bottom to grant both as much space to grow as possible \cite{tanenbaumOS}. This is still possible with segmentation, but requires context information at compile time about the maximum size of a segment.
 
 xv6 processes do however satisfy these restrictions. Figure \ref{impl:proclayout} shows the memory layout
 of an xv6 process.
@@ -433,13 +432,13 @@ With the segmented design, the address space only comprises the range of \[
     [0 ; MEM\_START+ASID*MAX\_AS\_SIZE]
 \]
 with \texttt{MEM\_START} being the start of the \texttt{RAM}, \texttt{ASID} being the \emph{Address Space Identifier} of the process and \texttt{MAX\_AS\_SIZE} being the maximum size of one address space.
-\texttt{MAX\_AS\_SIZE} is determined by the size of available physical memory devided by the maximum
+\texttt{MAX\_AS\_SIZE} is determined by the size of available physical memory divided by the maximum
 number of processes that can simultaneously run.
 
 The address space of a process would thus not be big enough to include the usual addresses for the
 trapframe and trampoline pages.
 To not change the memory layout of xv6 processes, a special rule is put into the mapping function
-to explicitly check for the usual addresses of trapframe and trampoline and then map them to appropiate physical addresses.
+to explicitly check for the usual addresses of trapframe and trampoline and then map them to appropriate physical addresses.
 The trampoline page can be the same for every process, but the trapframe needs to be unique per
 process and is thus pinned to the very top of the physical segment of each process.
 
@@ -457,11 +456,11 @@ The ASID is saved in the process control block (PCB). But because accessing it m
 
 Looking back at figure \ref{fig:theory:sv39satp} shows that there is a ASID field in \texttt{satp} anyways,
 so the \texttt{PPN} field does not have to be touched.
-But the implementation may chose to use a different number of address spaces than there are supported by the \texttt{ASID} field to allow more processes to be run at the same time.
-But with 16 bit, $2^16 = 65536$ address spaces can be supported, which should be more than enough \todo{that like my opinion dude}.
+But the implementation may choose to use a different number of address spaces than there are supported by the \texttt{ASID} field to allow more processes to be run at the same time.
+But with 16 bit, $2^16 = 65536$ address spaces can be supported, which should be more than enough.
 
 % Assumption: TLB more often than context switch
-This optimization is based on the assumption, that TLB misses (and thus calls to the exception handler) occur more frequently than context switches, which should be granted when processes use more than one page and have all of their TLB entries flushed at context switch.
+This optimization is based on the assumption, that TLB misses (and thus calls to the exception handler) occur more frequently than context switches, which should be granted when processes use more than one page and have all their TLB entries flushed at context switch.
 So the access of the ASID is moved from the frequent TLB miss exception handler to the infrequent context switch. % Heißer 20 year or liedtke homage?
 
 % xv6 Perspective and specifcs (but still theory!) -> Into Impl?

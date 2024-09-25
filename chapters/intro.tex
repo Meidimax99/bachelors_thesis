@@ -40,7 +40,7 @@
 
 % THIS SECTION may primarily be about some facts about VM
 
-\textbf{Virtual memory} provides a multitude of features which vastly simplify the life of application programmers \cite{jacob1998virtualissues}. Computer systems of all scales, ranging from small embedded devices to huge data centers use virtual memory \cite{bhattacharjee2017architectural}.
+\textbf{Virtual memory} provides a multitude of features which vastly simplify the life of application programmers \cite{jacob1998virtualissues}. Computer systems of all scales, ranging from small, embedded devices to huge data centers use virtual memory \cite{bhattacharjee2017architectural}.
 While originally being used to automate the task of swapping pages of processes between main memory and secondary storage transparently to the processes \cite{jacob1998virtualissues}, it now is the foundation of security, reliability, process isolation and flexibility \cite{wales1999virtual,jacobVirtualMemoryContemporary1998}.
 
 With ever increasing memory sizes of systems and memory requirements of applications, the overhead of virtual memory systems, being developed for systems that only had scarce resources available \cite{halbuer2023morsels}, degrades performance and significantly increases power consumption \cite{zagieboylo2020cost}.
@@ -48,7 +48,7 @@ Orthodox hierarchical page table organizations \cite{tanenbaumOS} can get as dee
 
 \textbf{Alternative designs} like inverted page tables realize page table mappings using hash functions \cite{tanenbaumOS}. While reducing the number of additional memory references, these approaches have problems on their own: Some features of virtual memory systems become harder to implement, exacting additional performance penalties \cite{yaniv2016hash} and page table lookups become a lot more expensive when following collision chains \cite{jacob1998look}.
 
-Chapter \ref{chap:related} will show, that there are a lot of different approaches to optimize the virtual memory system.
+Chapter \ref{chap:related} will show that there are a lot of different approaches to optimize the virtual memory system.
 This shows that there is little agreement on how the virtual memory system is best implemented \cite{jacob1998look}.
 However, most of the optimization approaches still rely on page table structures to do the bookkeeping of the mappings.
 
@@ -61,7 +61,7 @@ This thesis will describe the theory and implementation of a platform that facil
 % Inhaltsbeschreibung
 \textbf{Chapter 2} provides an overview of the fundamentals of virtual memory systems, software-managed virtual memory systems and some basics of the virtual memory system of the RISC-V ISA.
 
-\textbf{Chapter 3} takes a look at previous work which approaches the topic of optimizing virtual memory systems as well.
+\textbf{Chapter 3} looks at previous work which approaches the topic of optimizing virtual memory systems as well.
 
 \textbf{Chapter 4} describes the theoretical development of the idea presented in this paper and thus provides the foundation for the implementation.
 
