@@ -371,11 +371,11 @@ TLB miss \cite{jacob1998look}.
 to handling virtual memory \cite{liedtkeGPT}.
 It is based on hierarchical page tables, and is shown to provide an efficient solution particularly in systems with large, sparse address spaces.
 The design allows skipping over PTE entries to reach valid PTEs faster, without having to traverse every single level of the tree.
-Gernot Heißer showcased a implementation of that design in \cite{heiserAnatomyHighPerformanceMicrokernel}.
+Gernot Heißer showcased an implementation of that design in \cite{heiserAnatomyHighPerformanceMicrokernel}.
 
 % PA-RISCV VM System
 \paragraph{PA-RISC}
-PA-RISC uses a inverted page table design. Similar to Ultrix, the inverted page table is searched in the TLB miss handler when a TLB miss occurs.
+PA-RISC uses an inverted page table design. Similar to Ultrix, the inverted page table is searched in the TLB miss handler when a TLB miss occurs.
 The TLB miss handler calculates the hash from the virtual address to locate the head of the hash collision chain and then searches linearily through the chain to find the mapping \cite{jacob1998look}.
 
 \paragraph{NOTLB}
@@ -629,7 +629,7 @@ of the CSR addresses is also depicted in figure \ref{fig:theory:csr}.
         \bitbox{4}{Usage} &
         \bitbox{4}{Index}
     \end{bytefield}
-    \caption[RISC-V CSR address format]{\textbf{RISC-V CSR address format} \texttt{csr[11:10]} define whether the CSR is read-write or write-only; \texttt{csr[9:8]} defines the minimum privilege level that is allowed to access the CSR; \texttt{csr[7:4]} sets a directory within the CSR space for the usage of the CSR; \texttt{csr[3:0]} define a index}
+    \caption[RISC-V CSR address format]{\textbf{RISC-V CSR address format} \texttt{csr[11:10]} define whether the CSR is read-write or write-only; \texttt{csr[9:8]} defines the minimum privilege level that is allowed to access the CSR; \texttt{csr[7:4]} sets a directory within the CSR space for the usage of the CSR; \texttt{csr[3:0]} define an index}
     \label{fig:theory:csr}
 \end{figure*}
 

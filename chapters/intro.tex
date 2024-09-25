@@ -45,7 +45,7 @@ While originally being used to automate the task of swapping pages of processes 
 
 As memory demands of applications and memories grow, the overhead of virtual memory systems degrades performance \cite{zagieboylo2020cost}. These systems, designed for resource-limited machines \cite{halbuer2023morsels}, or now causing significant performance cost and increased power consumption.
 
-Orthodox \textbf{hierarchical page table} organizations \cite{tanenbaumOS} can get as deep as 5 levels in commodity hardware \cite{intel5LevelPaging5Level2017}. This adds a level of indirection for each page table walk, which imposes a even higher penalty on virtualized systems, potentially taking up between 5\% - 90\% of the runtime \cite{yaniv2016hash}.
+Orthodox \textbf{hierarchical page table} organizations \cite{tanenbaumOS} can get as deep as 5 levels in commodity hardware \cite{intel5LevelPaging5Level2017}. This adds a level of indirection for each page table walk, which imposes an even higher penalty on virtualized systems, potentially taking up between 5\% - 90\% of the runtime \cite{yaniv2016hash}.
 
 Alternative designs like \textbf{inverted page tables} realize page table mappings using hash functions \cite{tanenbaumOS}. While reducing the number of additional memory references, these approaches have problems on their own: Some features of virtual memory systems become harder to implement, exacting additional performance penalties \cite{yaniv2016hash} and page table lookups become a lot more expensive when following collision chains \cite{jacob1998look}.
 

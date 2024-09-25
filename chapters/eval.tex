@@ -122,12 +122,12 @@ Finally, the memory system does isolate processes from each other, but is not ab
 % -------------------------------------------------------------------------------------------------
 \section{Memory System Requirements}
 % Shortcommings of my implementation
-For a quantitative assessment of the design, the functional requirements to virtual memory system from chapter \ref{chap:fund} are revisited.
+For a qualitative assessment of the design, the functional requirements to virtual memory system from chapter \ref{chap:fund} are revisited.
 
 \paragraph{Address Space Protection / Isolation} Since all memory accesses from virtual addresses go through the TLB, a proper isolation of processes in the TLB exception handler guarantees isolation of processes. ASIDs are used as the foundation of address calculation to provide each process with a distinct physical memory space.
 Synchronization on the data structure managing ASIDs makes sure that no two processes can have the same ASID while both are alive.
 
-\paragraph{Large Address Space} Segmentation restricts the maximum size each process can have. One could implement dynamic resizing of address spaces or allow processes to hold multiple ASIDs to allow processes to increase their memory over the statically determined maximum limit.
+\paragraph{Large Address Space} Segmentation restricts the maximum size each process can have. One could implement dynamic resizing of address spaces or allow processes to hold multiple ASIDs to increase their memory over the statically determined maximum limit.
 That would however increase the complexity of the mapping function. Another idea would be to have address spaces with different (predetermined) sizes that could then be assigned according to a programs memory demands.
 
 \paragraph{Superpages} The current state of the design does not really deal in pages but rather in complete address spaces. As such, super pages are not supported.
@@ -154,12 +154,12 @@ The stateless design requires no tables to store the bookkeeping for the mapping
 \section{Cost Analysis}
 
 % A naive approach to performance measurement?
-A \textbf{naive approach} to measuring the performance of the virtual memory system is to implement a xv6 user-level program that will result in a number of TLB misses and thus prompt the triggering of the TLB refill mechanism. The execution time of that program can be measured and the run first with the QEMU-emulated MMU, the software page table walker in the TLB miss handler, and the mapping function.
+A \textbf{naive approach} to measuring the performance of the virtual memory system is to implement a xv6 user-level program that will result in a number of TLB misses and thus trigger the TLB refill mechanism. The execution time of that program can be measured and then run first with the QEMU-emulated MMU, the software page table walker in the TLB miss handler, and the mapping function.
 
 This gives only weak indication of the memory systems actual performance, because the runtime of the operating system running on the emulator strongly depends on the current load of the system running on the host. Additionally, QEMU is an emulator build for performance but not for precise simulation of the hardware \cite{bellard2005qemu}. Especially for this work, a quantitative measurement approach would require accurate measurements of the time it takes the MMU to walk the page table. This is not possible with an emulator, as the high degree of parallelism on which hardware components run can not easily be emulated in a performant way \cite{chen2010emulator}. Thus, the following will focus on a qualitative reasoning of the performance.
 
 % Memory access cost
-In the implementation, the cost introduced by \textbf{memory accesses} is very high, because the whole state of the register file is saved to memory. That is an unacceptable cost for a operation that is on the critical path of every TLB miss. It is however possible to omit most of these memory accesses in favor of a lightweight TLB miss handler similar to the fast TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel}. The main difference being that the TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel} performs a page table walk and has thus access main memory. An optimized implementation of the mapping function can work with only a small number of registers.
+In the implementation, the cost introduced by \textbf{memory accesses} is very high, because the whole state of the register file is saved to memory. That is an unacceptable cost for an operation that is on the critical path of every TLB miss. It is however possible to omit most of these memory accesses in favor of a lightweight TLB miss handler similar to the fast TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel}. The main difference is that the TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel} performs a page table walk and thus has to access main memory. An optimized implementation of the mapping function can work with only a small number of registers.
 
 % Reserving registers
 To omit all memory accesses from the handler, some registers may be reserved to be only used by kernel code, as MIPS does it with two registers. However, compiler would have to be made aware of that. Depending on the application, reserving registers may still result in a loss of performance because the availability of registers is imperative to the compiler's ability to optimize code \cite{elphinstone2013l3}.
@@ -180,7 +180,7 @@ Even when all memory references are eliminated from the handler code, it still i
 \section{Potential Implementation Improvements}
 
 % Flushing not all mappings
-\paragraph{TLB Flushing} xv6 always flushes the complete TLB on process switch \cite{cox2011xv6}. However, when switching from a process with ASID n to a process with ASID m, it suffices to flush the TLB entries belonging to ASID n only. The \texttt{sfence.vma} instruction already allows for such fine-grained control of the TLB. The memory fencing effect of the instruction would not change that way \cite{RISCVInstructionSet}.
+\paragraph{TLB Flushing} xv6 always flushes the complete TLB on process switch \cite{cox2011xv6}. However, when switching from a process with ASID n to a process with ASID m, it suffices to flush the TLB entries belonging to ASID n only. The \texttt{sfence.vma} instruction already allows for such fine-grained control of the TLB. The memory fencing effect of the instruction would not change either \cite{RISCVInstructionSet}.
 % Finer TLB Control
 
 \paragraph{Finer TLB Control} As shown in chapter \ref{chap:theory}, MIPS \cite{MIPSArchitectureProgrammers2016} provides a very fine control of its TLB entries. Such fine control would allow the TLB handler to implement custom replacement policies which could adapt the system to current workloads and biasing cache replacement \cite{park2022every}.

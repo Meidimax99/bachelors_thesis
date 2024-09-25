@@ -387,7 +387,7 @@ Typical segmented memory designs also allow for dynamic segment sizes \cite{tane
 \paragraph{Tableless Segmented Virtual Memory}
 As a typical segmented memory design splits the programs memory into logical units, this design uses segmentation to split the whole physical memory into logical parts.
 These logical parts however do not reflect the structure of a program, but distinct process address spaces: Each segment of main memory can hold one process.
-To keep the design as lightweight as possible, each segments has a fixed size, which is determined at compile time of the operating system.
+To keep the design as lightweight as possible, each segment has a fixed size, which is determined at compile time of the operating system.
 This is less flexible but omits the need of storing the segment size for each segment, as they are all the same size.
 To calculate a physical address from a virtual one, all the mapping function needs is the ASID (segment number) and the offset into the address space.
 To check whether accesses reach over the the segment, only the static segment size is necessary.
@@ -425,7 +425,7 @@ of an xv6 process.
 \paragraph{Trapframe and Trampoline} xv6 pins special pages to the top end of a processes address space: The trampoline and trapframe pages.
 The trampoline page contains code for context switches and kernel entry and needs to be mapped
 into every processes address space.
-The trapframe is used to save the state of the process on context switch and is thus essential to be present for every process.
+The trapframe is used to save the state of the process on context switch and is thus essential for every process.
 
 In xv6's original memory system, both of these pages would be pinned to the maximum virtual address.
 With the segmented design, the address space only comprises the range of \[
@@ -450,17 +450,17 @@ process and is thus pinned to the very top of the physical segment of each proce
 % Calculation of addresses
 
 \paragraph{Address Calculation}
-The calculation of physical addresses from physical ones is very straight forward. All that is required is the processes ASID and the offset into the address space.
+The calculation of physical addresses from virtual ones is very straightforward. All that is required is the ASID of the process and the offset into the address space.
 The ASID is saved in the process control block (PCB). But because accessing it may be expensive when frequent TLB misses occur, the ASID is encoded into the \texttt{satp} register.
-\texttt{satp} is normally used to provide the base address of the root page table to the memory management hardware, but since there is not page table to be used in the memory manager, the register is free to be used for additional context info in the exception handler.
+\texttt{satp} is normally used to provide the base address of the root page table to the memory management hardware, but since there is no page table to be used in the memory manager, the register is free to be used for additional context info in the exception handler.
 
 Looking back at figure \ref{fig:theory:sv39satp} shows that there is a ASID field in \texttt{satp} anyways,
 so the \texttt{PPN} field does not have to be touched.
 But the implementation may choose to use a different number of address spaces than there are supported by the \texttt{ASID} field to allow more processes to be run at the same time.
-But with 16 bit, $2^16 = 65536$ address spaces can be supported, which should be more than enough.
+But with 16 bit, $2^{16} = 65536$ address spaces can be supported, which should be more than enough.
 
 % Assumption: TLB more often than context switch
-This optimization is based on the assumption, that TLB misses (and thus calls to the exception handler) occur more frequently than context switches, which should be granted when processes use more than one page and have all their TLB entries flushed at context switch.
+This optimization is based on the assumption that TLB misses (and thus calls to the exception handler) occur more frequently than context switches, which should be granted when processes use more than one page and have all their TLB entries flushed at context switch.
 So the access of the ASID is moved from the frequent TLB miss exception handler to the infrequent context switch. % Heißer 20 year or liedtke homage?
 
 % xv6 Perspective and specifcs (but still theory!) -> Into Impl?
