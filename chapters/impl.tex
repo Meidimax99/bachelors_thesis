@@ -49,17 +49,17 @@
 This chapter summarizes the implementation of the \textit{softtlb} page-table-less virtual memory system. softtlb is a term used secludedly in this paper and refers to the software handling of TLB misses via a exception handler.
 The ordering of the sections in this chapter reflect the implementation process of the softtlb design and a mapping function implemented on top of that design. It consists of the following steps:
 \begin{enumerate}
-    \item \paragraph{TLB miss exception and Exception Triggerer} The first step is about
+    \item \textbf{TLB miss exception and Exception Triggerer} The first step is about
           the implementation of the TLB miss exception in the QEMU RISC-V emulator. On the xv6-side,
           a user-mode program is added to trigger a TLB miss exception from the shell.
-    \item \paragraph{Exception Handling and TLB Writing} The second step implements the
+    \item \textbf{Exception Handling and TLB Writing} The second step implements the
           handling of the TLB miss exception by implementing a machine mode exception handler.
           The RISC-V emulation is extended by two new CSRs that facilitate writing TLB from the
           software-side of things.
-    \item \paragraph{Software Page Table Walk for all Addresses} This step removes the restriction
+    \item \textbf{Software Page Table Walk for all Addresses} This step removes the restriction
           in the QEMU emulator to only throw exeptions for a specific address. In the exception handler,
           a page table walk is implemented to now create virtual to physical mappings for all addresses.
-    \item \paragraph{Segmented Memory Design using software-defined TLB Filling} In this step, the xv6 virtual memory system is completely
+    \item \textbf{Segmented Memory Design using software-defined TLB Filling} In this step, the xv6 virtual memory system is completely
           replaced. The new design gets rid of the page table and only uses information present in
           registers to create virtual-to-physical mappings and to fill the tlb.
 \end{enumerate}
@@ -254,7 +254,7 @@ file to gain access to some preimplemented function and system call wrappers \ci
 
 The final exception triggerer may look something like this:
 
-\begin{lstlisting}[language=c,float=hf  !,label{impl:excptTrigger},caption={\textbf{Exception Triggerer} Trying to
+\begin{lstlisting}[language=c,float=h!,label{impl:excptTrigger},caption={\textbf{Exception Triggerer} Trying to
     load from a hardcoded address prompts the emulated hardware to trigger a TLB miss exception.}]
     #include "kernel/types.h"
     #include "user/user.h"

@@ -100,32 +100,23 @@ in contemporary architectures \cite{intel5LevelPaging5Level2017}.
 %                                             Segmented VM Desing (Design shortcommings)
 % -------------------------------------------------------------------------------------------------
 \section{Segmented Memory Design}
-The segmented mapping function design has some fundamental problems that restrict
-% Generall Segmented Design shortcommings
-% Allgemeine Discussion eines Segmentierten Designs
-% \cite{skarlatos2020elastic}
-% \cite{tanenbaumOS}
-% \cite{denning1997before}??
-% TODO [denningVirtualMemoryDenning1996] -> Overlay problem with segmented designs
+The segmented mapping function design has some fundamental problems that restrict the programs running on the system and the general flexibility of the system.
 
+Programs can only have a \textbf{maximum size} which can (with this implementation) no be extended when the program requires more memory. This can happen at any system load and even if there is still a lot of unused memory in the address spaces of other programs.
 
-% Restrictions of the Segmented design ( da kann ich auch allgemeine Punkte zu segmentierten
-% speicherdesigns aus grundlagendpapern rausnehmen)
+This is due to the huge amount of \textbf{internal fragmentation} that this design introduces to the memory system. Even small programs take the maximum amount of memory the address space can offer.
 
-%Flexibility limitation -> flexibility of the virtual memory system
-% is still restricted by the tlb structure
-% -> other approach jacobSoftwaremanagedAddressTranslation1997
+In general, the memory system is very rigid concerning the size of programs and can only a fixed size. When working with such a system, the memory requirements of programs should be assessed beforehand and the address space size determined to best fit the systems needs.
 
-% More fine grained controll over TLBs via CSRs -> Inspo mips ( Evaluation of Implementation, not necesarrily design)
+Additionally, the selected maximum address space size also determines the amount of \textbf{multiprogramming} the system can handle. As every program needs a address space to run, the maximum number of processes the system can run at once is limited by the number of address spaces.
+It is a trade-off between address space size and address space number.
 
-\paragraph*{Fragmentation}
-%Processes have fixed size of memory and may not use all of it
+A more refined implementation building on top of the segmented design may use overlays \cite{tanenbaumOS} to assign one ASID to multiple processes, swapping them in and out of memory as necessary. To increase the flexibility of the processes memory size, a way to assign multiple ASIDs to a single process may be implemented.
 
-\paragraph*{Limited Process count}
-%Maybe appropiate for embedded applications?
+Further refining this idea of a many-to-many relationship between processes and address spaces boils down to conventional virtual memory systems operating on page granularity and allowing page sharing in processes.
 
-% Shortcomming: Access rights, no internal segmentation of segments
-%  With segmentation it would still be relatively cheap to add a table structure that supports access rights ( in a statically allocated scheme)
+Finally, the memory system does isolate processes from each other, but is not able to provide fine grained protection of logical program segments (like the text segment) from each other. As such, it is possible (maybe due to some malicious input) for the code to modify itself, corrupting the execution of the program.
+
 %-------------------------------------------------------------------------------------------------
 %                                             Functional Requirements
 % -------------------------------------------------------------------------------------------------
@@ -163,11 +154,12 @@ The stateless design requires no tables to store the bookkeeping for the mapping
 \section{Cost Analysis}
 
 % A naive approach to performance measurement?
-A naive approach to measuring the performance of the virtual memory system is to implement a xv6 user-level program that will result in a number of TLB misses and thus prompt the triggering of the TLB refill mechanism. The execution time of that program can be measured and the run first with the QEMU-emulated MMU, the software page table walker in the TLB miss handler, and the mapping function.
-It would however be hard % TODO SOURCES
+A \textbf{naive approach} to measuring the performance of the virtual memory system is to implement a xv6 user-level program that will result in a number of TLB misses and thus prompt the triggering of the TLB refill mechanism. The execution time of that program can be measured and the run first with the QEMU-emulated MMU, the software page table walker in the TLB miss handler, and the mapping function.
+
+This gives only weak indication of the memory systems actual performance, because the runtime of the operating system running on the emulator strongly depends on the current load of the system running on the host. Additionally, QEMU is an emulator build for performance but not for precise simulation of the hardware \cite{bellard2005qemu}. Especially for this work, a quantitative measurement approach would require accurate measurements of the time it takes the MMU to walk the page table. This is not possible with an emulator, as the high degree of parallelism on which hardware components run can not easily be emulated in a performant way \cite{chen2010emulator}. Thus, the following will focus on a qualitative reasoning of the performance.
 
 % Memory access cost
-In the implementation, the cost introduced by memory accesses is very high, because the whole state of the register file is saved to memory. That is an unacceptable cost for a operation that is on the critical path of every TLB miss. It is however possible to omit most of these memory accesses in favor of a light-weight TLB miss handler similar to the fast TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel}. The main difference being that the TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel} performs a page table walk and has thus access main memory. An optimized implementation of the mapping function can work with only a small number of register.
+In the implementation, the cost introduced by \textbf{memory accesses} is very high, because the whole state of the register file is saved to memory. That is an unacceptable cost for a operation that is on the critical path of every TLB miss. It is however possible to omit most of these memory accesses in favor of a light-weight TLB miss handler similar to the fast TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel}. The main difference being that the TLB miss handler in \cite{heiserAnatomyHighPerformanceMicrokernel} performs a page table walk and has thus access main memory. An optimized implementation of the mapping function can work with only a small number of register.
 
 % Reserving registers
 To omit all memory accesses from the handler, some registers may be reserved to be only used by kernel code, as MIPS does it with two registers. However, compilers would have to be made aware of that. Depending on the application, reserving registers may still result in a loss of performance because the availability of registers is imperative to the compilers ability to optimize code \cite{elphinstone2013l3}.
@@ -178,11 +170,6 @@ Even when all memory references are eliminated from the handler code, it still i
 % Inline interrupt handling
 \cite{jaleel2001line} proposes a solution that promises to alleviate the cost related to the calling of software interrupt handlers that disturb the pipeline. The paper describes a method to integrate exception handlers directly into the reorder buffer, avoiding the need to flush the pipeline when handling a precise interrupt. The exception handler for TLB misses using a mapping function can be very small and may thus benefit from the idea.
 
-
-
-% Warum geht quantitativ  nicht -> Emuliert
-
-% Ohne caches -> Emualtion vs Real Hardware -> Warum keine quantitaive analyse
 
 
 
