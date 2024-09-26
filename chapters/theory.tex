@@ -72,14 +72,14 @@ It then presents the theory behind the different components of the implementatio
 % The implementation is not only about the mapping functiion but also about the  platform modifications to create mapping functions
 
 The goal of this work is to provide a proof of concept of an alternative approach
-to virtual memory management that reduces the overhead associated with traditional page tables walks.
+to Virtual Memory management that reduces the overhead associated with traditional page tables walks.
 Instead of suffering the penalty of up to five memory accesses on a TLB miss,
 we want to explore using simple functions for the mapping.
 
 Figure \ref{fig:theory:normal_tlb_miss} shows the usual architecture of a system
 with a hierarchical page table.
 This architecture provides only limited flexibility in interacting with the TLB, especially when it comes to TLB writes.
-Architectures like MIPS allow direct manipulation of TLB structures and thus provide a good framework for implementing new approaches for virtual memory management.
+Architectures like MIPS allow direct manipulation of TLB structures and thus provide a good framework for implementing new approaches for Virtual Memory management.
 
 The architecture is only one half of the design. To test the ideas for mapping
 functions, a system utilizing the memory system and defining the functions is necessary.
@@ -266,7 +266,7 @@ shows a number of different instructions concerned with invalidation, probing, f
 and writing (indexed and random) of the TLB.
 The most interesting instruction for a first design would be the \texttt{TLBWR} instruction for writing a TLB
 entry at a random index. With a similar instruction in RISC-V, we can already implement a purely
-software-controlled virtual memory system.
+software-controlled VM system.
 The other types of TLB instructions that MIPS provides are not strictly necessary,
 except for flushing. Without being able to flush existing translations from the TLB,
 user mode processes may try to access physical mappings stemming from other processes. But the RISC-V privileged architecture already provides this functionality
@@ -309,7 +309,7 @@ The mapping has a granularity of 4 KB pages. Thus, the lower 12 bits of both the
 virtual address are not needed.
 This still leaves $2*(64-12)=104$ bits for the mapping.
 The virtual address cannot be easily shortened further. Taking some of the most significant bits
-would shorten the virtual memory space of the programs.
+would shorten the Virtual Memory space of the programs.
 The physical address could still be shortened to only have enough bits to cover the physical address
 space used by xv6.
 But this would still end up taking more than 64 bit and thus more than one CSR.

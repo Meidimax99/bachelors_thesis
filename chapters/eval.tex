@@ -38,8 +38,8 @@
 % -------------------------------------------------------------------------------------------------
 
 % Successful poc
-The previous chapters show the successful and transparent replacement of the xv6 virtual memory system with a mapping function based TLB miss handler. However, the design and implementation have a number of shortcomings.
-This chapter will discuss these shortcomings of the presented mapping function in light of typical requirements to virtual memory systems. It will also attempt to qualitatively analyze the cost of the exception handler implementing the mapping function and compare it to conventional page table based schemes. The chapter will also discuss some shortcomings of the implementation and give some ideas on how to alleviate the problems.
+The previous chapters show the successful and transparent replacement of the xv6 VM system with a mapping function based TLB miss handler. However, the design and implementation have a number of shortcomings.
+This chapter will discuss these shortcomings of the presented mapping function in light of typical requirements to VM systems. It will also attempt to qualitatively analyze the cost of the exception handler implementing the mapping function and compare it to conventional page table based schemes. The chapter will also discuss some shortcomings of the implementation and give some ideas on how to alleviate the problems.
 % The points will also shortly address some improvement ideas
 
 % -------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ Instructions that have already been partially executed in the pipeline have to b
 imposing extra cost on the software handler \cite{jacob1998look}.
 
 \subsection{Exception Handler} The key difference of this exception handler and exception handlers
-of other software-based virtual memory designs is that this one does not need to access
+of other software-based VM designs is that this one does not need to access
 memory to generate mappings (apart from the register state save).
 Looking back at listing \ref{lst:handler} it is apparent that there still are some
 memory references:
@@ -113,7 +113,7 @@ It is a trade-off between address space size and address space number.
 
 A more refined implementation building on top of the segmented design may use overlays \cite{tanenbaumOS} to assign one ASID to multiple processes, swapping them in and out of memory as necessary. To increase the flexibility of the processes memory size, a way to assign multiple ASIDs to a single process may be implemented.
 
-Further refining this idea of a many-to-many relationship between processes and address spaces boils down to conventional virtual memory systems operating on page granularity and allowing page sharing in processes.
+Further refining this idea of a many-to-many relationship between processes and address spaces boils down to conventional VM systems operating on page granularity and allowing page sharing in processes.
 
 Finally, the memory system does isolate processes from each other, but is not able to provide fine grained protection of logical program segments (like the text segment) from each other. As such, it is possible (maybe due to some malicious input) for the code to modify itself, corrupting the execution of the program.
 
@@ -122,7 +122,7 @@ Finally, the memory system does isolate processes from each other, but is not ab
 % -------------------------------------------------------------------------------------------------
 \section{Memory System Requirements}
 % Shortcommings of my implementation
-For a qualitative assessment of the design, the functional requirements to virtual memory system from chapter \ref{chap:fund} are revisited.
+For a qualitative assessment of the design, the functional requirements to VM system from chapter \ref{chap:fund} are revisited.
 
 \paragraph{Address Space Protection / Isolation} Since all memory accesses from virtual addresses go through the TLB, a proper isolation of processes in the TLB exception handler guarantees isolation of processes. ASIDs are used as the foundation of address calculation to provide each process with a distinct physical memory space.
 Synchronization on the data structure managing ASIDs makes sure that no two processes can have the same ASID while both are alive.
@@ -132,14 +132,14 @@ That would however increase the complexity of the mapping function. Another idea
 
 \paragraph{Superpages} The current state of the design does not really deal in pages but rather in complete address spaces. As such, super pages are not supported.
 
-\paragraph{Flexibility} Pages in the virtual memory space can be placed anywhere as long as they are within the maximum address space size. And they must not clash with the heap space that will always be expanding from low to high addresses.
+\paragraph{Flexibility} Pages in the Virtual Memory space can be placed anywhere as long as they are within the maximum address space size. And they must not clash with the heap space that will always be expanding from low to high addresses.
 
-\paragraph{Sparsity} Sparsity in page table-based virtual memory systems is about efficiently
+\paragraph{Sparsity} Sparsity in page table-based VM systems is about efficiently
 supporting huge address spaces with only a small number of pages being used. The bookkeeping should use as little additional memory as possible.
 
 The stateless design requires no tables to store the bookkeeping for the mapping - there is no bookkeeping. However, huge address spaces are not supported and the internal fragmentation if very high.
 
-\paragraph{Swapping} One of the most important tasks of a virtual memory system is to automate the swapping of memory pages between main memory and secondary storage. xv6 does not provide a good starting point to experiment with new virtual memory systems that also fulfil that requirement, as xv6 does not implement page swapping. Programs are completely held in memory and loaded completely into memory on execution \cite{cox2011xv6}. As such, page table faults of any kind will result in xv6 killing the process.
+\paragraph{Swapping} One of the most important tasks of a VM system is to automate the swapping of memory pages between main memory and secondary storage. xv6 does not provide a good starting point to experiment with new VM systems that also fulfil that requirement, as xv6 does not implement page swapping. Programs are completely held in memory and loaded completely into memory on execution \cite{cox2011xv6}. As such, page table faults of any kind will result in xv6 killing the process.
 
 % Was ist mit dem paging passiert -> Automatisches Tauschen von Seiten zwischen Haupt und Nebenspeicher?
 % In xv6 nicht implementiert, könnte es mit dem Segmentierten Design implementiert werden
@@ -154,7 +154,7 @@ The stateless design requires no tables to store the bookkeeping for the mapping
 \section{Cost Analysis}
 
 % A naive approach to performance measurement?
-A \textbf{naive approach} to measuring the performance of the virtual memory system is to implement a xv6 user-level program that will result in a number of TLB misses and thus trigger the TLB refill mechanism. The execution time of that program can be measured and then run first with the QEMU-emulated MMU, the software page table walker in the TLB miss handler, and the mapping function.
+A \textbf{naive approach} to measuring the performance of the VM system is to implement a xv6 user-level program that will result in a number of TLB misses and thus trigger the TLB refill mechanism. The execution time of that program can be measured and then run first with the QEMU-emulated MMU, the software page table walker in the TLB miss handler, and the mapping function.
 
 This gives only weak indication of the memory systems actual performance, because the runtime of the operating system running on the emulator strongly depends on the current load of the system running on the host. Additionally, QEMU is an emulator build for performance but not for precise simulation of the hardware \cite{bellard2005qemu}. Especially for this work, a quantitative measurement approach would require accurate measurements of the time it takes the MMU to walk the page table. This is not possible with an emulator, as the high degree of parallelism on which hardware components run can not easily be emulated in a performant way \cite{chen2010emulator}. Thus, the following will focus on a qualitative reasoning of the performance.
 

@@ -1,7 +1,7 @@
 \chapter{Related Work}
 
 \label{chap:related}
-This work can be broadly classified to be in the field of Virtual Memory optimization. There is a large body of literature that deals with optimizing the Virtual Memory system, as it lies on the critical path of every memory operation.
+This work can be broadly classified to be in the field of Virtual Memory optimization. There is a large body of literature that deals with optimizing the VM system, as it lies on the critical path of every memory operation.
 
 There are different approaches or perspectives to addressing the system (this is not an exhaustive list):
 
@@ -20,7 +20,7 @@ There are different approaches or perspectives to addressing the system (this is
 \textbf{\cite{liedtkeGPT}} shows an innovative design leveraging the flexibility of software-managed
 address translation.
 The design of Guarded Page Tables (GPTs) is based on hierarchical page tables, but allows skipping over levels of the table to reach translation results faster.
-This proves to be very effective for increasing the performance of virtual memory systems, as the biggest penalty comes from page tables walks needing to reference memory for every level in the page table.
+This proves to be very effective for increasing the performance of Virtual Memory systems, as the biggest penalty comes from page tables walks needing to reference memory for every level in the page table.
 Gernot Heiser showcases a practical implementation of GPTs in the L4/MIPS system \cite{heiserAnatomyHighPerformanceMicrokernel}.
 
 
@@ -87,8 +87,8 @@ They show a 2.3\% performance improvement from flattening the page table tree, 6
 \cite{zagieboylo2020cost} proposes an approach that shifts responsibilities of memory management in
 parts back to the applications: All applications get a fixed-size chunks of physical memory and then have to manage allocations across these blocks.
 Thus, the task of memory management with the chunks falls to compilers, language runtimes and the applications themselves.
-This approach does not require any address translation and thus gets completely rid of the overhead associated with the virtual memory system.
-Common features of virtual memory, like memory space protection can still be implemented with physical memory protection mechanisms present on commodity hardware.
+This approach does not require any address translation and thus gets completely rid of the overhead associated with the VM system.
+Common features of Virtual Memory, like memory space protection can still be implemented with physical memory protection mechanisms present on commodity hardware.
 Overall, this approach trades a reduction for complexity of the hardware with increased complexity on the software side.
 
 The design presented in this paper resorts to bigger segments per process, but generally aims to keep the memory management responsibilities with the operating system.
@@ -103,6 +103,6 @@ They reuse existing interfaces and work on top of existing page table structures
 % -------------------------------------------------------------------------------------------------
 
 The related work presented here focuses on optimizing current page table designs and their hardware
-support. This work will explore the feasibility of implementing virtual memory without any page table whatsoever using a specialized mapping function to generate virtual to physical mappings.
+support. This work will explore the feasibility of implementing Virtual Memory without any page table whatsoever using a specialized mapping function to generate virtual to physical mappings.
 This promises to reduce the overhead of TLB misses caused by expensive main memory access.
 
