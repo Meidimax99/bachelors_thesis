@@ -190,17 +190,17 @@ The faulting address will also be necessary for handling the TLB miss exception.
 % -------------------------------------------------------------------------------------------------
 
 % Adding new Exception to Qemu RV target
-\paragraph{New Exception} Adding a new exception to the QEMU emulator requires changes at a number of places. In the following,
-the relevant code locations in the QEMU source \cite{QEMUSource2024} are shown.
+\paragraph{New Exception} Adding a new exception to the QEMU emulator requires changes at a number of places. Below
+the relevant code locations in the QEMU source \cite{QEMUSource2024}.
 This may be completely different for other targets, as the exception code is mostly target specific and
 this implementation only looked at the RISC-V target.
 \begin{itemize}
     \item \texttt{target/riscv/cpu\_bits.h} contains all CPU-definitions specific to the RISC-V target.
           There is also an enum called \texttt{RISCVException} which contains the number-codes for all RISC-V exceptions.
-          In choosing an appropriate number for a new exception, one should consult the Privileged Architecture Specification \cite{RISCVInstructionSet}.
+          In order to choose an appropriate number for a new exception, one should consult the Privileged Architecture Specification \cite{RISCVInstructionSet}.
           There are specific exception code ranges that are designated for custom use. E.g. the codes 24--32 and 48--63.
     \item \texttt{target/riscv/cpu\_helper.c\:riscv\_cpu\_do\_interrupt\(\)} is the target-specific function
-          for triggering interrupts. Here it suffices to add the new exception enum item to the switch case, when
+          for triggering interrupts. Here it is sufficient to add the new exception enum item to the switch case, when
           the new exception is similar in behavior to existing exceptions.
           Here the new exception is simply supposed to jump into an exception handler in the kernel. A lot of exceptions
           like page faults share that behavior.
@@ -339,7 +339,7 @@ As previously mentioned, the CSRs have some index ranges for new, custom CSRs. F
 of TLB write CSRs, the indexes \texttt{0xBEE} and \texttt{BFF} have been selected.
 Using these constants and the steps above, two new instructions\todo{are these actually instructions} can be realized.
 
-\subsection{CSR Callback Implementation} Apart from the above-mentioned steps to add new CSRs to the emulator, the
+\subsection{CSR Callback Implementation} Apart from the steps above to add new CSRs to the emulator, the
 main logic of the implementation is in the callbacks referenced in \texttt{target/riscv/csr.c}.
 The implementation of these callbacks is strongly dependent on the structure of the data that is written to
 the CSRs. Fundamentally, these callbacks act as a bridge between the exposed ISA and the implementation of
@@ -347,8 +347,7 @@ that instruction set in software.
 As previously mentioned, two new CSRs will be needed to implement the TLB-writing. \todo{ PUT THIS IN THE THEORY PART about CSR format and number: In theory, it would
     also be possible to implement the functionality using only one CSR, by just taking the faulting address from the mtval register, but
     this paper focuses on the proof of concept of the design and not on the optimization }
-The implementations
-of the write-callbacks look as follows:
+The write-callback implementations look like this:
 
 
 % Callbacks
@@ -361,8 +360,8 @@ of the write-callbacks look as follows:
         return RISCV_EXCP_NONE;
     }
 \end{lstlisting}
-The implementation of the \texttt{tlbh} CSR write does not do anything else but saving the value
-that is written to it to the environment of the CPU.
+The implementation of the \texttt{tlbh} CSR write does nothing more than storing the value
+that is written to it in the environment of the CPU (which is essentially the register-state).
 This is because the theory specifies that the TLB entry will only
 be written to the TLB when the write to the \texttt{tlbl} CSR has succeeded.
 
@@ -441,7 +440,7 @@ Using the \textit{vectored} mode makes all \textit{exceptions} jump to the addre
 in the \texttt{mtvec BASE} field but all \textit{interrupts} set the program counter
 to \texttt{BASE} plus four times the interrupt cause \cite{RISCVInstructionSet}.
 
-So to add machine mode exception handlers with disrupting the existing code as little as possible only
+So to add machine mode exception handlers with as little disruption to the existing code as possible only
 requires changing the trap vectoring mode to \texttt{vectored} mode and moving the timer interrupt code
 to the correct offset.
 
@@ -450,7 +449,7 @@ to the correct offset.
 +    w_mtvec((uint64)mtvec_vector_table | 0x1);
 \end{lstlisting}
 
-The changes for changing the mode are trivial. Only the one bit indicating the \texttt{vectored} mode
+The modifications to change the mode are trivial. Only the one bit indicating the \texttt{vectored} mode
 needs to be set.
 Placing the timer vector at the correct offset from the default trap handler vector can be achieved by
 filling the space between the base address and the timer vector with no-operations. The same could be
@@ -499,13 +498,13 @@ The timer interrupt will jump directly to the \texttt{IRQ\_7} label.
 
 \paragraph{Store/Load Sandwich} The idea behind the \textit{softtlb} design is to not use as many of the five
 memory references modern architectures need for a page table walk \cite{intel5LevelPaging5Level2017}. But
-for a first proof of concept, it is helpful to not have to think about which registers to use and to not optimize
+for a first proof of concept, it is helpful not to have to think about which registers to use and not to optimize
 away all unnecessary memory references before the design even works.
-That is why the first thing the default exception handler will do is to store the current state of the register
+Therefore the first thing the default exception handler will do is to store the current state of the register
 file.
 This is essential so that, once returned to the context that triggered the TLB miss, execution can continue
 as if nothing happened.
-After storing the state and running the exception handler, the state must again be loaded into the registers.
+After storing the state and running the exception handler, the state must be reloaded into the registers.
 
 \todo{use minipages to have text and listing side by side ? https://latex.org/forum/viewtopic.php?t=6652}
 \begin{lstlisting}[language={[RISC-V]Assembler},float=h!,
@@ -754,8 +753,8 @@ void tlb_handle_miss(uint64 addr, uint64 satp) {
 
 If the \texttt{walk\_pt()} function returns 0, the virtual address lead to no valid PTE. This is a
 page fault and would raise a page fault fitting the faulting instructions type of access \cite{tanenbaumOS}.
-As xv6 does not handle page faults other than by killing the program \cite{cox2011xv6} this
-paper will not go into more detail of raising and triggering page faults for the \texttt{softtlb}
+As xv6 does not handle page faults other than by terminating the program \cite{cox2011xv6} this
+paper will not provide further detail of page faults for the \texttt{softtlb}
 design.
 
 
@@ -769,16 +768,14 @@ After step 3, xv6's virtual memory system runs completely without using the (emu
 walking state machine:
 Instead of invoking the page table walker, a TLB miss triggers an exception. This exception is handled by the
 operating system kernel and a TLB entry for the faulting address is generated.
-Yet at this point, we have not really won anything. We only moved the page table walking to the software side,
-which would certainly be slower at traversing the page table than a real MMU \cite{jacob1998look}. And that is
-even if we ignore the expensive context switch that needs to be performed when the exception handler is invoked.
+But at this point, we have not really won anything. We only moved the page table walking to the software side,
+which would certainly be slower at traversing the page table than a real MMU \cite{jacob1998look}. This cost will also be higher when ignoring the memory overhead introduces by the storing of the register state.
 
-While we did not gain any performance, there is now the opportunity to modify the virtual memory system
+While we did not gain any performance, we now have the opportunity to modify the virtual memory system
 completely in software. We do not need to adhere to the rigid structures \cite{tanenbaumOS} of the memory management hardware anymore.
 We gained a great deal of flexibility.
 
-The rest of this section explores a first idea of how a table-based virtual memory system can be
-replaced by essentially a simple function that does not require expensive memory accesses.
+The rest of this section explores a first idea of how to replace a table-based virtual memory system with an essentially simple function that does not require expensive memory accesses.
 
 The initial idea, as presented in the theory chapter, is a segmented memory design. It splits the total
 available memory into parts of equal size, also called segments.
@@ -787,8 +784,7 @@ Each new process acquires one of those segments, if there are any left. If none 
 \todo{basic assumption to make this work: xv6 process memory model -> should be mentioned here and explained in detail in theory}
 % TODO Concept of AS used here -> distinct from hard ware mechanism, but could be used for it
 \subsection{Address Spaces}
-As with segmentation, the available physical memory is split into evenly sized portions\todo{is it? Cite!}
-from now called address spaces. When a new process is started it tries to acquire an address space by
+As with segmentation, the available physical memory is split into evenly sized portions \cite{tanenbaumOS}from now called address spaces. When a new process is started it tries to acquire an address space by
 checking whether there is a free one and then claiming that free address space.
 The number of address spaces will thus limit the number of concurrently running programs.
 
@@ -906,7 +902,7 @@ Here, its managed memory is merely reduced by assigning it the memory area of th
 \paragraph{\texttt{copyin() copyout()}} The copyin() and copyout() functions are used to copy data between
 user space and kernel. They traverse the page table tree to acquire the physical location for the data
 to be either copied in or copied out.
-Both of those function rely on the \texttt{walkaddr()} function to do the walking for them.
+Both of those functions rely on the \texttt{walkaddr()} function to do the walking for them.
 The implementation can be changed to call the \texttt{tlb\_manager.c:walk\_addr()} function instead.
 
 \paragraph{Process Loading} % No page table creation, asid allocation, also no destruction, % Parsing elf directly into AS
@@ -936,7 +932,7 @@ When making simultaneous changes to both the Qemu emulator and xv6, it can be di
 \subsection{xv6}
 The Makefile in the xv6-riscv source repository has a rule \texttt{qemu-gdb} to start xv6 in Qemu with a GDB server. In another terminal, you can then start GDB with the binary you want to debug and connect to the gdbstub using \texttt{target remote:<port>}. A comment in the Makefile suggests that this rule is intended for user-mode debugging, but nothing prevents you from also debugging the kernel, which is particularly useful when making changes to the memory system.
 
-\paragraph{Debugging user mode} When debugging a user-mode program, you often want to start at the \texttt{main} function. If you set a breakpoint at this function, a breakpoint is set at a rather low virtual address. If you set the breakpoint before even starting the kernel, you might stop immediately after starting. This happens because you're currently in the Qemu boot ROM, which is mapped by Qemu into the emulated memory layout in the range \texttt{0x0 - 0x1000}. The debugger does not differentiate between virtual and physical addresses and simply looks at what the program counter (PC) contains. \todo{The satp PPN field could be used for more information (process VM configuration).}
+\paragraph{Debugging user mode} When debugging a user-mode program, you often want to start at the \texttt{main} function. If you set a breakpoint at this function, a breakpoint is set at a rather low virtual address. If you set the breakpoint before even starting the kernel, it might stop immediately after starting. This happens because you're currently in the Qemu boot ROM, which is mapped by Qemu into the emulated memory layout in the range \texttt{0x0 - 0x1000}. The debugger does not differentiate between virtual and physical addresses and simply looks at what the program counter (PC) contains. \todo{The satp PPN field could be used for more information (process VM configuration).}
 
 \paragraph{Debugging the kernel} After replacing the virtual memory system, an interesting effect was observed when debugging the kernel: As soon as the \texttt{satp} register is set in the \texttt{kvminithart()} function, GDB can no longer display the code at the current address (or any following ones). This is due to the value of the \texttt{satp} register. After the VM system was redesigned, it no longer contains the \texttt{PPN}. Only the \texttt{MODE} and \texttt{ASID} fields are relevant for the new system. There is no longer a page table that the PPN could point to. This behavior suggests that the gdbstub implemented by Qemu performs a hardware-emulated page walk to obtain the physical addresses and, consequently, the code. This, of course, does not work without a page table. One way to debug the kernel properly in GDB again would be to rebuild the kernel page table as before. However, since all the kernel mappings are direct mappings, it is sufficient to place a PTE for the address \texttt{0x80000000}, where the kernel code begins, behind the PPN in \texttt{satp}.
 
@@ -978,15 +974,20 @@ With the Qemu monitor, all kinds of information about the running emulation can 
 
 \subsection{QEMU Record/Replay}
 QEMUs Record/Replay feature allows a deterministic replay of a machine's execution by recording
-all non-deterministic events that happened. This can be especially helpful to investigate bugs
-that occur as a result of an interrupt or require special preconditions or timings to occur.
+all non-deterministic events that happened. This can be particularly helpful for investigating bugs
+that occur as a result of an interrupt or that require special preconditions or timings to occur.
 With the Record/Replay feature, it is easy to recreate the situation in which a bug or unexpected
-behavior occured.
-For this project, especially the mouse and keybord input and the hardware clock are interesting
+behavior occurred.
+For this project, especially the mouse and keyboard input and the hardware clock are interesting
 non-deterministic events that influence the execution of the system \cite{RecordReplayQEMU}.
 
 \subsection{Double GDB Setup}
-\todo{wite}
+
+Sometimes it is useful to debug both QEMU and xv6 at the same time to follow the control path between the system running on the emulator and the emulator itself. This is particularly useful when examining the correctness of custom interfaces between the two.
+
+This set requires QEMU to be started within gdb and with the gdbstub for QEMU enabled. Once QEMU is running in gdb, another terminal can be opened to connect to the gdbstub. From there, xv6 can be started.
+
+Sensible breakpoints are then necessary to follow the control flow between QEMU and xv6. For debugging the TLB filling path, I used breakpoints in the TLB triggering routine and the exception handler on xv6 side and breaks at the \texttt{tlbh} and \texttt{tlbl} callbacks on the QEMU side.
 
 % -------------------------------------------------------------------------------------------------
 %                                    END OF SECTION - Debugging
