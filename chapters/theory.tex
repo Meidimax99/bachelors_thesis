@@ -90,8 +90,6 @@ Thus part of this chapter will describe the theoretical foundations for modifyin
 the QEMU/RISC-V emulator to transform the memory system architecture to something
 more similar to MIPS.
 The final architecture for the memory system will look like depicted in figure \ref{fig:theory:mapping_fx}
-% TODO der Zwischenschritt mit dem Software Page Table walk wird dann in der Impl
-% eingeführt
 
 % Normal Page Table Walk
 \begin{figure*}[ht!]
@@ -219,7 +217,6 @@ timer interrupt in machine mode. Every other trap is forwarded to supervisor mod
 The trap vectoring mode can also be changed by setting the \texttt{MODE} field of the
 \texttt{mtvec} register \cite{RISCVInstructionSet}. The alternative mode forwards
 each interrupt to its own address, set at a fixed offset from the \texttt{BASE} address.
-\todo{mtvec bytefield}
 
 Every exception will still be forwarded to the \texttt{BASE} address set in the \texttt{mtvec}
 register, regardless of the vectoring mode.
@@ -288,10 +285,9 @@ Some TLB entries can be protected from this ``random'' replacement by setting a 
 register. The value in this register represents a lower bound, protecting all TLB entries that lie below it.
 This is useful to keep some mappings in the TLB that are valid all the time.
 
-% TODO should this be here? We should probably have a discussion about xv6 first
 %Protected TLB entries in xv6 -> Trampoline page
 Having a protected space of TLB entries can especially be useful for global mappings. xv6 employs such a global
-mapping for every process and the kernel with the trampoline page.\todo{trampoline page should be explained in fundamentals/platform}
+mapping for every process and the kernel with the trampoline page.
 
 \paragraph{MIPS - TLBWR} The arguments for the instruction need to be written in some
 other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \texttt{PageMask}.
@@ -395,7 +391,6 @@ To check whether accesses reach over the the segment, only the static segment si
 This approach also protects logical units (process address spaces) from each other. This is made sure
 by flushing the TLB on context switch.
 
-\todo{figure to visualize this?}
 
 % Segmented memory layout
 

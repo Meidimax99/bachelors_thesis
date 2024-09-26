@@ -29,7 +29,6 @@ between software-managed and hardware-managed VM systems.
 Finally, some specifics of the memory system of the chosen implementation platform, \textit{RISC-V},
 are shown.
 
-% Todo Overlaying
 \section{Virtual Memory}
 \textit{Virtual Memory} was first introduced in the Atlas System \cite{fotheringham1961dynamic} to
 automate the task of swapping pages between main and secondary memory.
@@ -167,8 +166,8 @@ With a 64-bit computers, the space requirements for such page tables would be ev
 
 % Hierarchical
 \subsubsection{Hierarchical/Radix/Multi-level Page Tables}
-To reduce the memory cost of managing pages, most \todo{cite?} VM systems use a
-multi-level page table, also known as a hierarchical page table. However, its structure
+To reduce the memory cost of managing pages, most VM systems use a
+multi-level page table, also known as a hierarchical page table \cite{tanenbaumOS}. However, its structure
 is less like a table and more like a tree, in which the nodes are tables of page table entries (PTEs) \cite{tanenbaumOS}.
 Here the virtual page number is divided into several parts. Each part of the Virtual Page Number (VPN)
 is used to index a smaller table. The indexed PTE then points to the next smaller page table,
@@ -208,6 +207,7 @@ A physical page frame is a page-aligned space in physical memory for a page.
 The number of physical frames is determined by the size of main memory divided by the page size.
 This has the enormous advantage that the bookkeeping only needs to keep record of as many pages
 as the physical memory can support.
+
 In contrast, hierarchical page tables need to keep track of as many pages as there can be in the virtual
 address space of all processes combined. That is a huge memory overhead compared to inverted page tables
 \cite{jacob1998look}.
@@ -215,7 +215,7 @@ The page table design also has the advantage that, in the best case, significant
 accesses are required. In the simple design shown in figure \ref{fig:fund:inverted}, the corresponding
 page table entry can be found with just two memory lookups \cite{skarlatos2020elastic}.
 
-\todo{this is a lot of text with no image an no emphasize/fat}
+
 % How can it use so little memory
 To get a deterministic mapping from virtual to physical address, \emph{Inverted Page Tables} are indexed
 using a hash calculated from the VPN.
@@ -302,7 +302,6 @@ which is accessed with physical addresses. When the processor accesses a certain
 the MMU performs a page table walk to determine the physical address corresponding to the virtual
 address. During this process, the processor is effectively frozen \cite{jacobVirtualMemoryContemporary1998}.
 
-%TODO TLB as interface for VM
 
 \paragraph{TLB} Since it would be very costly to traverse the page table in hardware for every load or store memory access, there is a cache for the translations, the Translation Lookaside Buffer (TLB). This cache contains the most recent translations from virtual to physical addresses. The MMU can first check the TLB, which can be searched in parallel and thus extremely quickly \cite{drepper2007every,jacobVirtualMemoryContemporary1998}.
 
@@ -413,14 +412,14 @@ This also complicates the portability of system software, as there is no standar
 structures. Despite there being no significant performance differences among the various designs,
 there is no standardization \cite{jacob1998look}.
 
-\paragraph{Pipeline Freezing / Flushing} On a TLB miss\todo{already defined?},
+\paragraph{Pipeline Freezing / Flushing} On a TLB miss,
 with a hardware-managed TLB, only the pipeline freezes (at least for instructions dependent on
 the memory access). However, with a software-managed TLB, control is handed back to the operating system
 via an exception, which notes that the required address is not in the TLB (TLB miss exception).
 The jump back to the operating system causes a context switch, requiring the state of the current process
 to be saved. During this, the reorder buffer is flushed, and the pipeline is heavily disrupted.
 Switching to the kernel can also lead to further data and instruction misses in the long term
-as the kernel entry likely overwrites some cache lines that the running process needed. \todo{Cite}
+as the kernel entry likely overwrites some cache lines that the running process needed \cite{jaleel2001line}.
 
 \paragraph{Complexity} Choosing between hardware and software Virtual Memory is choosing where to shift the complexity.
 Systems that do only support software managed VM systems are simpler on the hardware side, because the burden of managing the memory is shifted to the software, which in turn will be more complex.
@@ -433,14 +432,6 @@ viable if the caches are large enough to reduce the number of cache misses.
 Especially in terms of flexibility, software-based approaches have a significant advantage,
 as the VM system can be fully defined by the operating system.
 
-% -------------------------------------------------------------------------------------------------
-
-% -------------------------------------------------------------------------------------------------
-
-% TODO Short discussion hw and sw vm -> common problem: Page Table Walks require in either case a
-% lot of memory references. These costs can be aleviated using caches, but will still cost [ cite a source abouts costs here]
-
-\todo{section on basic operating system structures like exception handler, load store sandwich}
 
 % -------------------------------------------------------------------------------------------------
 
@@ -468,7 +459,6 @@ The following will only look at specifics for the Sv39 addressing mode.
 The page table is an orthodox hierarchical multi-level page table, where each Page Table Entry (PTE) points to a PTE in the next level.
 Each level of the page table contains 512 PTEs, 64-bit in size, bringing a page table to exactly 4 KB in size.
 The format of a PTE is shown in figure \ref{fig:theory:sv39pte}.
-\todo{explain why the top bits in PTE are all zero (with leichten Bezug zu xv6 impl)}
 \begin{figure*}[h]
     \centering
     \begin{bytefield}[bitwidth=\widefigurewidth/64,bitheight=\widthof{~PBMT~}, bitformatting={\tiny\bfseries}, boxformatting={\centering}]{64}
@@ -489,11 +479,10 @@ The format of a PTE is shown in figure \ref{fig:theory:sv39pte}.
         \bitbox{1}{R} &
         \bitbox{1}{V}
     \end{bytefield}
-    \caption[RISC-V Sv39 Page Table Entry]{\textbf{RISC-V Sv39 Page Table Entry} }
+    \caption[RISC-V Sv39 Page Table Entry]{\textbf{RISC-V Sv39 Page Table Entry} The top bits are reserved; the least significant bits are used for access rights and to aid the implementation of replacement strategies }
     \label{fig:theory:sv39pte}
 \end{figure*}
 
-\todo{describe format}
 The translation process (which was already shown in Figure \ref{fig:fund:pagetree}) splits the virtual address (See figure \ref{fig:theory:sv39va}) into 4 logical parts:
 Three parts are parts of the Virtual Page Number (VPN), which are used to index the different page tables that are being traversed.
 If the page table walk succeeds, the last PTE will contain a Physical Page Number (PPN), which will then be combined with the offset to create a physical address (See figure \ref{fig:theory:sv39pa}).
@@ -559,16 +548,13 @@ vector for handling both interrupts and exceptions \cite{RISCVInstructionSet}.
 % Exception registers
 There are six central registers for triggering and handling exceptions. These exist both for
 Supervisor Mode (prefixed with "s") and Machine Mode (prefixed with "m").
-\todo{Have privilege modes been introduced already?}
 Whether the machine mode or supervisor mode version of the register should be used for an exception depends
 on the mode in which the exception is handled. In the following, all registers are presented with the
-M-Mode prefix only. \todo{Has M-Mode as an abbreviation for Machine Mode been introduced?}
-\todo{Because the exception was ultimately designed as an M-Mode exception?}
+M-Mode prefix only.
 
-% TODO: sorting of registers by role?
 
 % Vector -> mtvec
-\paragraph{Exception Vector} The hardware thread (hart) \todo{Has the term "hart" been introduced?} experiencing
+\paragraph{Exception Vector} The hardware thread (hart) experiencing
 an exceptional state must know where the kernel routine is located to handle the exception.
 The \texttt{BASE} field of the register contains a 4-byte aligned physical address to which
 the program counter is set in the case of an exception.

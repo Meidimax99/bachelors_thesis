@@ -2,16 +2,7 @@
 
 \label{chap:impl}
 
-% -------------------------------------------------------------------------------------------------
-%                                           General TODOs
-% -------------------------------------------------------------------------------------------------
 
-
-\todo{Add references to documentation at appropriate places}
-\todo{ add disclaimer, that most of this information was derived from reading the source code and may in some places not be accurate because the code is pretty complex and
-    i have only been at it for a few months}
-
-% TODO viruteller address raum eines xv6 processes
 % Qemu implementation TLB vs Echter TLB
 % -------------------------------------------------------------------------------------------------
 %                                    Chapter structure overview
@@ -65,7 +56,7 @@ The order of the sections in this chapter reflects the implementation process of
 \end{enumerate}
 Each section elaborates on both the xv6 side and the QEMU side of the implementation.
 The final section describes debugging techniques that were used or can otherwise be useful for
-similar implementations.
+similar implementations. Note that most of the information taken from this section is derived from the source code of both xv6 \cite{xv6source}, the xv6 handbook \cite{cox2011xv6} and the QEMU source code \cite{QEMUSource2024}.
 
 \begin{figure*}[t!]
     \centering
@@ -112,8 +103,7 @@ always gives out the next page starting from low to high addresses when a new pa
 by kernel routines. The address \texttt{0x84fff000} was chosen as a testing address.
 Note that the physical memory allocator in \texttt{kalloc.c} will actually reference this address(or
 any address in the range from \texttt{0x80000000} to \texttt{0x88000000}), when initializing
-the linked list used to keep track of the free pages \cite{cox2011xv6}.\todo{explain why this
-    may be relevant or just leave it out? }
+the linked list used to keep track of the free pages \cite{cox2011xv6}.
 % does not need to be an accessible address now, but later we want to write and read from it
 
 \begin{figure*}[t!]
@@ -126,12 +116,6 @@ the linked list used to keep track of the free pages \cite{cox2011xv6}.\todo{exp
 
 
 \subsection{TLB miss exception in QEMU}
-%TODO Explain what the riscv_cpu_tlb_fill function does originally - in detail
-% TODO discussion and reference to READER/SPECIFICATION on what exception numbers and other constants can be used and are free
-
-% Qemu RISCV  exception adding "tutorial"
-%TODO Description of the TLB Exception implementation and how to generally add exceptions to the QEMU plattform
-% TODO List of code locations where changes need to be added -> should be usable as back reference for implementing more exceptions
 
 To properly test the implementation, the \texttt{tlb\_fill} function was replaced to throw the
 TLB\_MISS exception for
@@ -142,7 +126,6 @@ in Listing \ref{lst:specialCaseTLBfill}.
 
 
 % riscv_cpu_tlb_switch function
-%TODO is this listing really interesting?
 \begin{lstlisting}[language=c,float=h!,
     caption={Alternative Implementation for the RISC-V tlb\_fill function with a special case to
     start testing TLB miss Handler implementations.
@@ -241,7 +224,6 @@ as it gets back to the main execution loop \cite{QEMUSource2024}.
 
 
 \subsection{Exception Triggerer}
-% TODO TLB exception trigger
 To properly test the changes introduced to the QEMU emulator, there needs to be some way to
 trigger a TLB exception.
 By implementing this as a user-level program, the exception can be triggered using the xv6 shell.
@@ -300,7 +282,6 @@ This section will first go into a general description on how to add new CSRs to 
 will then elaborate on the specific implementation for the TLB CSRs.
 The section ends with the implementation of the exception handler.
 
-% TODO Why does the mmuidx need to be encoded into the faulting address -> Explain
 
 
 % -------------------------------------------------------------------------------------------------
@@ -315,7 +296,7 @@ The following code locations are relevant for CSRs in the RISC-V/QEMU emulation 
           While it is not strictly necessary to add another definition for new CSRs here, readability and maintainability
           of the code increases if a more descriptive definition name is used instead of a magic constant.
     \item \texttt{target/riscv/cpu\_cfg.h} contains a structure called \texttt{RISCVCPUConfig}. Every emulated RISC-V hart
-          has this structure to expose all the extensions that the hart supports. \todo{hart already known?}
+          has this structure to expose all the extensions that the hart supports.
           The structure has a boolean flag for every extension that is currently supported by the emulator.
           New extensions should get their own flag in this struct.
           Similar entries also need to be added to the \texttt{isa\_edata\_arr} and \texttt{riscv\_cpu\_extensions} arrays in \texttt{target/riscv/cpu.c}.
@@ -335,16 +316,14 @@ The following code locations are relevant for CSRs in the RISC-V/QEMU emulation 
 
 As previously mentioned, the CSRs have some index ranges for new, custom CSRs. For the implementation
 of TLB write CSRs, the indexes \texttt{0xBEE} and \texttt{BFF} have been selected.
-Using these constants and the steps above, two new instructions\todo{are these actually instructions} can be realized.
+Using these constants and the steps above, two new instructions can be realized.
 
 \subsection{CSR Callback Implementation} Apart from the steps above to add new CSRs to the emulator, the
 main logic of the implementation is in the callbacks referenced in \texttt{target/riscv/csr.c}.
 The implementation of these callbacks is strongly dependent on the structure of the data that is written to
 the CSRs. Fundamentally, these callbacks act as a bridge between the exposed ISA and the implementation of
 that instruction set in software.
-As previously mentioned, two new CSRs will be needed to implement the TLB-writing. \todo{ PUT THIS IN THE THEORY PART about CSR format and number: In theory, it would
-    also be possible to implement the functionality using only one CSR, by just taking the faulting address from the mtval register, but
-    this paper focuses on the proof of concept of the design and not on the optimization }
+As previously mentioned, two new CSRs will be needed to implement the TLB-writing.
 The write-callback implementations look like this:
 
 
@@ -389,8 +368,7 @@ be written to the TLB when the write to the \texttt{tlbl} CSR has succeeded.
         return RISCV_EXCP_NONE;
     }
 \end{lstlisting}
-\todo{all these code lines need a theoretical foundation in the fundamentals chapter (BTW, the format
-    still adheres to PTEs!)}
+
 The value written to the \texttt{tlbl} CSR adheres to the same format as the RISC-V Sv39 PTEs (As shown in section \ref{fund:sv39}).
 
 To get the page-aligned physical address and to get rid of the access bits stored in the lower 10 bits,
@@ -412,7 +390,7 @@ The return value \texttt{RISCV\_EXCP\_NONE} indicates that nothing out of the or
 This is all that needs to be done to add CSRs for TLB filling to the QEMU RISC-V emulator.
 
 
-\todo{discussion of implementation at the end of this chapter: shortcommings, comparison QEMU - MIPS, comparison xv6 new vm - other vm -> eval??}
+
 
 % -------------------------------------------------------------------------------------------------
 
@@ -420,7 +398,6 @@ This is all that needs to be done to add CSRs for TLB filling to the QEMU RISC-V
 % Previous state of xv6 machine mode trap handler
 %   -> Only for Timer Interrupt
 %   -> Small amount of saved registers
-% TODO TLB fill manager
 % Changes -> Vectored mode to keep timer interrupt as is, just need to move it
 With capabilities to write TLB entries in place, an effective exception handler can be implemented.
 
@@ -483,7 +460,6 @@ IRQ_7:  # timer handler
         j timervec
 \end{lstlisting}
 
-% TODO verifying the placement of addresses and symbols using the name utility
 
 RISC-V provides 4 bytes for every interrupt request (IRQ) and the default trap handler. This is not enough
 to implement proper trap handling, so these 4 bytes are typically spent jumping to a more elaborate trap
@@ -612,15 +588,11 @@ Note that this implementation does not yet use the format for the \texttt{tlbh} 
 in the theory section \ref{chap:theory}.
 Merely the faulting address and the intended mapping are written to the registers.
 
-% HERE TODO explain the implication for implementation
 \subsection{Testing}
 Listing \ref{lst:defaultTrapHandler} already shows a part of the setup to test that the mapping actually worked.
 When the mapping worked, it should be possible to read a value from the mapped page.
 The user-level exception triggerer already tries to do just that.
-With the mapping working, the output of the program looks as follows:
-
-\todo{add console output}
-
+With the mapping working, the program will read the value \texttt{0xDEADBEEF} from memory.
 The value \texttt{0xDEADBEEF} that was read from the mapped page is not a coincidence:
 For testing purposes, the page \texttt{0x85000000} was filled with \texttt{0xDEADBEEF} bit patterns at the initialization of the physical memory allocator in \texttt{kalloc.c}.
 
@@ -629,7 +601,6 @@ The address for the physical ''testing'' page was deliberately chosen to be \tex
 mapping happening.
 
 
-\todo{add xv6 shell output at this stage progression - no more exception printing, xv6 should read deadbeef now}
 
 % -------------------------------------------------------------------------------------------------
 %                                       END OF SECTION - STEP 2
@@ -671,7 +642,7 @@ The final implementation looks as follows:
 
         //No address translation in m-mode
         if(vm == VM_1_10_MBARE || mode == PRV_M) {
-            int tlb_size = 4096; //TODO Get from PMP?
+            int tlb_size = 4096;
             hwaddr pa = address;
             int prot = PAGE_READ | PAGE_WRITE | PAGE_EXEC;
             tlb_set_page(cs, address & ~(tlb_size - 1), pa & ~(tlb_size - 1),
@@ -710,7 +681,6 @@ general setup including exception invocation, exception handling and TLB writing
 expected.
 Listing \ref{lst:softptw} shows the implementation.
 
-\todo{The listing seems to be way broader than it needs to be}
 \begin{lstlisting}[language=c,float=t,
     caption={\textbf{TLB miss exception Handler with Page Table Walk}
     The \texttt{walk\_pt()} function walks the Sv39 page table with the base address
@@ -747,7 +717,7 @@ void tlb_handle_miss(uint64 addr, uint64 satp) {
 }
 \end{lstlisting}
 
-\todo{To make it easier to understand -> Architectural overview of the memory path after each implementation step?}
+
 
 If the \texttt{walk\_pt()} function returns 0, the virtual address lead to no valid PTE. This is a
 page fault and would raise a page fault fitting the faulting instructions type of access \cite{tanenbaumOS}.
@@ -779,8 +749,7 @@ The initial idea, as presented in chapter \cref{chap:theory}, is a segmented mem
 available memory into parts of equal size, also called segments.
 Each new process acquires one of those segments, if there are any left. If none are left, process creation fails.
 
-\todo{basic assumption to make this work: xv6 process memory model -> should be mentioned here and explained in detail in theory}
-% TODO Concept of AS used here -> distinct from hard ware mechanism, but could be used for it
+
 \subsection{Address Spaces}
 As with segmentation, the available physical memory is split into evenly sized portions \cite{tanenbaumOS}from now called address spaces. When a new process is started it tries to acquire an address space by
 checking whether there is a free one and then claiming that free address space.
@@ -810,7 +779,6 @@ are used in different parts of the code to calculate different addresses related
 \subsection{Mapping function for Segmented Memory}
 The ASID of a process is the foundation for calculating the virtual to physical mapping in the exception handler.
 The only other information required is the faulting address.
-\todo{theory needs to explain that the asid is transfered via SATP reg}
 
 The ASID can be used to calculate the actual physical address at which the Address Space starts.
 The faulting address, which would, according to the xv6 process memory model, be an address in the low
@@ -861,11 +829,6 @@ void tlb_handle_miss(vaddr addr, uint64 satp) {
 }
 \end{lstlisting}
 
-\todo{check tex comments here}
-% TODO it is not enough to simply change the tlb miss manager, because other
-%   parts of te OS still use the VM system for stuff
-%       What are these parts that interact with the os?
-%       How can be made it fit this scheme?
 
 \subsection{Special Mappings}
 xv6 needs a trampoline page mapped into the address space of the process for system calls to work properly (see chapter \ref{chap:theory}).
@@ -906,7 +869,6 @@ then returns \texttt{-1} if it is. Else it will return the previous program brea
 
 
 
-% TODO Should this be an appendix?
 % -------------------------------------------------------------------------------------------------
 %                                         SECTION - Debugging
 % -------------------------------------------------------------------------------------------------
@@ -916,7 +878,7 @@ When making simultaneous changes to both the Qemu emulator and xv6, it can be di
 \subsection{xv6}
 The Makefile in the xv6-riscv source repository has a rule \texttt{qemu-gdb} to start xv6 in Qemu with a GDB server. In another terminal, you can then start GDB with the binary you want to debug and connect to the gdbstub using \texttt{target remote:<port>}. A comment in the Makefile suggests that this rule is intended for user-mode debugging, but nothing prevents you from also debugging the kernel, which is particularly useful when making changes to the memory system.
 
-\paragraph{Debugging user mode} When debugging a user-mode program, you often want to start at the \texttt{main} function. If you set a breakpoint at this function, a breakpoint is set at a rather low virtual address. If you set the breakpoint before even starting the kernel, it might stop immediately after starting. This happens because you're currently in the Qemu boot ROM, which is mapped by Qemu into the emulated memory layout in the range \texttt{0x0 - 0x1000}. The debugger does not differentiate between virtual and physical addresses and simply looks at what the program counter (PC) contains. \todo{The satp PPN field could be used for more information (process VM configuration).}
+\paragraph{Debugging user mode} When debugging a user-mode program, you often want to start at the \texttt{main} function. If you set a breakpoint at this function, a breakpoint is set at a rather low virtual address. If you set the breakpoint before even starting the kernel, it might stop immediately after starting. This happens because you're currently in the Qemu boot ROM, which is mapped by Qemu into the emulated memory layout in the range \texttt{0x0 - 0x1000}. The debugger does not differentiate between virtual and physical addresses and simply looks at what the program counter (PC) contains.
 
 \paragraph{Debugging the kernel} After replacing the VM system, an interesting effect was observed when debugging the kernel: As soon as the \texttt{satp} register is set in the \texttt{kvminithart()} function, GDB can no longer display the code at the current address (or any following ones). This is due to the value of the \texttt{satp} register. After the VM system was redesigned, it no longer contains the \texttt{PPN}. Only the \texttt{MODE} and \texttt{ASID} fields are relevant for the new system. There is no longer a page table that the PPN could point to. This behavior suggests that the gdbstub implemented by Qemu performs a hardware-emulated page walk to obtain the physical addresses and, consequently, the code. This, of course, does not work without a page table. One way to debug the kernel properly in GDB again would be to rebuild the kernel page table as before. However, since all the kernel mappings are direct mappings, it is sufficient to place a PTE for the address \texttt{0x80000000}, where the kernel code begins, behind the PPN in \texttt{satp}.
 
@@ -946,13 +908,11 @@ The following call confirms the correct placement of the symbols:
     00000000800092b0 T mtvec_vector_table
 \end{lstlisting}
 
-\todo{forktest for testing number of address spaces}
 % -------------------------------------------------------------------------------------------------
 
 \subsection{QEMU Monitor}
 With the Qemu monitor, all kinds of information about the running emulation can be displayed. Particularly interesting for this work would be the monitor for the mappings currently contained in the emulated TLB. However, for RISC-V, this was not available.
 
-\todo{Beschreibung der TLB strukturen früher im kapitel}
 
 % -------------------------------------------------------------------------------------------------
 

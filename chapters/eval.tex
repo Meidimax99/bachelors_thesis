@@ -85,17 +85,7 @@ the ASID and bitwise operations.
 This is an advantage over radix page table systems that may need up to five memory references
 in contemporary architectures \cite{intel5LevelPaging5Level2017}.
 
-% \todo{typical tlb replacement strategies}
-% \todo{How does QEMU replace TLB entries -> index?} % Direct mapped
-% With the new CSRs presented above, it is possible to write TLB entries.
-% The placement of the entry and thus the entry to be replaced can not be selected.
-% The replacement policy would be completely up to the hardware implementation.
-% It would also be possible to further extend the ISA with additional CSRs to
-% support specific selection of entries to be replaced, or to select between
-% a number of replacement strategies.
-% However, the efficiency of more complex strategies need to be weighed carefully
-% against their benefits, since the TLB filling is on the critical path of all
-% memory accesses.
+
 % -------------------------------------------------------------------------------------------------
 %                                             Segmented VM Desing (Design shortcommings)
 % -------------------------------------------------------------------------------------------------
@@ -139,13 +129,8 @@ supporting huge address spaces with only a small number of pages being used. The
 
 The stateless design requires no tables to store the bookkeeping for the mapping - there is no bookkeeping. However, huge address spaces are not supported and the internal fragmentation if very high.
 
-\paragraph{Swapping} One of the most important tasks of a VM system is to automate the swapping of memory pages between main memory and secondary storage. xv6 does not provide a good starting point to experiment with new VM systems that also fulfil that requirement, as xv6 does not implement page swapping. Programs are completely held in memory and loaded completely into memory on execution \cite{cox2011xv6}. As such, page table faults of any kind will result in xv6 killing the process.
+\paragraph{Swapping} One of the most important tasks of a VM system is to automate the swapping of memory pages between main memory and secondary storage. xv6 does not provide a good starting point to experiment with new VM systems that also fulfil that requirement, as xv6 does not implement page swapping. Programs are completely held in memory and loaded completely into memory on execution \cite{cox2011xv6}. As such, page table faults of any kind will result in xv6 terminating the process.
 
-% Was ist mit dem paging passiert -> Automatisches Tauschen von Seiten zwischen Haupt und Nebenspeicher?
-% In xv6 nicht implementiert, könnte es mit dem Segmentierten Design implementiert werden
-
-% TODO -> Perspektive richtung Embedded, wo isolation gewünscht aber kein Nebenspeicher existiert
-% Idee -> Address spaces with different sizes, so that slots can be swapped, or address spaces can be merged
 
 
 % -------------------------------------------------------------------------------------------------
