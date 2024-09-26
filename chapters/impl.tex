@@ -145,7 +145,7 @@ in Listing \ref{lst:specialCaseTLBfill}.
 %TODO is this listing really interesting?
 \begin{lstlisting}[language=c,float=h!,
     caption={Alternative Implementation for the RISC-V tlb\_fill function with a special case to
-    start testing TLB Miss Handler implementations.
+    start testing TLB miss Handler implementations.
     In line 11, a conditional branch is used to only trigger the exception when neither the
     Virtual Memory (as set in the \texttt{satp} \texttt{MODE} field) is bare nor the privilege
     mode is the machine mode.
@@ -562,7 +562,7 @@ Most of the load/stores have been omitted to not flood the listing.
 In between the store and load blocks, the \texttt{machine\_default\_exception\_handler} C function is called. This is
 where the implementation differentiates between the different exception numbers and calls exception handlers
 specific to the exceptions.
-In xv6, all other exceptions but the new TLB miss exception are handled in supervisor mode, so there are
+In xv6, every exceptions except the new TLB miss exception are handled in supervisor mode, so there are
 no handlers for other exceptions.
 
 \begin{lstlisting}[language={C},float=h!,
@@ -622,7 +622,7 @@ With the mapping working, the output of the program looks as follows:
 \todo{add console output}
 
 The value \texttt{0xDEADBEEF} that was read from the mapped page is not a coincidence:
-For testing purposes, the page \texttt{0x85000000} was filled with \texttt{0xDEADBEEF} bit patterns.
+For testing purposes, the page \texttt{0x85000000} was filled with \texttt{0xDEADBEEF} bit patterns at the initialization of the physical memory allocator in \texttt{kalloc.c}.
 
 The address for the physical ''testing'' page was deliberately chosen to be \texttt{0x85000000} and not
 \texttt{0x84fff000} (like all the hardcoded testing addresses) to make sure that there is no accidental physical
@@ -775,7 +775,7 @@ We gained a great deal of flexibility.
 
 The rest of this section explores a first idea of how to replace a table-based VM system with an essentially simple function that does not require expensive memory accesses.
 
-The initial idea, as presented in the theory chapter, is a segmented memory design. It splits the total
+The initial idea, as presented in chapter \cref{chap:theory}, is a segmented memory design. It splits the total
 available memory into parts of equal size, also called segments.
 Each new process acquires one of those segments, if there are any left. If none are left, process creation fails.
 
@@ -790,7 +790,7 @@ To keep track of which process acquired which address space, the kernel keeps an
 This array has a size equal to the number of address spaces (NAS).
 For a newly created process to acquire an address space, the kernel will (synchronized by a spinlock \cite{cox2011xv6})
 iterate through the array to find an array slot with the value 0. It then writes the process ID into that array.
-The process creation fails if there are no more array slots set to 0.
+The process creation fails if there are no more array slots set to \texttt{0}.
 The address space ID (ASID) acquired by the process is also written to the processes control block (PCB).
 
 NAS is set via a preprocessor definition and thus set at compilation time. More elaborate implementations
@@ -831,26 +831,18 @@ Listing \ref{lst:handler} shows the implementation for the TLB miss exception ha
 extern char trampoline[];
 paddr get_mapping(vaddr addr, uint16 asid) {
 
-  //special case for trampoline, which is in every address space at the same address
-  // (except for the physical one!)
   if(PGROUNDDOWN(addr) == TRAMPOLINE) {
     return (uint64)trampoline;
   }
   if(asid == 0) {
-    //Kernel -> direkt mapping
-    //TODO special mappings
     return addr;
   } else {
-    //mappings for processes
-    //TODO trapframe and trampoline mappings
     if(PGROUNDDOWN(addr) == TRAPFRAME) {
       return TRAPFRAME_FROM_ASID(asid);
     }
 
-    //Base case
     uint64 vpage = PGROUNDDOWN(addr);
     if(vpage >= MAX_AS_MEM - (0x1000 * 4)) {
-      //Error, address out of range
       panic("tlb_manager: address to high!");
     }
     return AS_START(asid) + vpage;
@@ -860,16 +852,9 @@ paddr get_mapping(vaddr addr, uint16 asid) {
 
 void tlb_handle_miss(vaddr addr, uint64 satp) {
   w_tp(r_mhartid()); //fix problems with locks based on cpuid()
-
-  //TODO Locks!
-  //TODO buffering printer, only prints completed lines
-  //uint16 mmuid = addr & 0xfff;
   vaddr addr_no_mmuid = addr & ~0xfff;
-  //printf("tlb_manager: addr=%p satp=%p mmuid=%d\n", addr_no_mmuid, satp, mmuid);
   paddr pa = get_mapping(addr_no_mmuid, SATP2ASID(satp));
-
   w_tlbh(addr);
-  //TODO all access rights for now
   uint16 prot =  PTE_R | PTE_W | PTE_X | PTE_V | ((SATP2ASID(satp) != 0) ? PTE_U : 0);
   w_tlbl(PA2PTE(pa) | prot);
   return;
@@ -904,7 +889,8 @@ Both of those functions rely on the \texttt{walkaddr()} function to do the walki
 The implementation can be changed to call the \texttt{tlb\_manager.c:walk\_addr()} function instead.
 
 \paragraph{Process Loading} % No page table creation, asid allocation, also no destruction, % Parsing elf directly into AS
-\todo{write}
+Usually, if a xv6 process is loaded, the ELF header \cite{tisexecutable} is parsed and the program segments are loaded into memory, page by page \cite{cox2011xv6}. For every page in the program image, a new physical page is acquired and a mapping in the page table created. For the segmented design, no page table is created and filled on process creation. Instead, an ASID is acquired and the address space is then filled according to the virtual addresses on top of the physical offset defined by the ASID.
+
 \paragraph{sbrk()}The \texttt{sbrk()} system call is used by the program to increase the size
 of the programs data segment. Typically, this call would demand a new page from the physical memory allocator
 and then add a new PTE to the page table.
@@ -945,7 +931,7 @@ A whole page was allocated in the code as follows:
 However, it would also be sufficient to allocate only the space for a single PTE. The PPN must be set so that at least the entry at index 2 is present. Interpreting the address \texttt{0x80000000} as a virtual address yields a value of 2 for the \texttt{VPN[2]} field. By marking this top-level page table entry as valid, the memory at this address is treated as a 1 GB superpage. This is enough to cover the kernel code, and the code can once again be viewed as usual during debugging.
 
 \paragraph{Verifying Addresses in Binaries} Implementing the vectored trap vectoring mode
-required moving the interrupt handler code for the timer interrupt to a specific offset
+requires moving the interrupt handler code for the timer interrupt to a specific offset
 from the address specified in the \texttt{mtvec} \texttt{BASE} field.
 To verify the correct placement of the label, the unix \texttt{nm} tool is very useful:
 It lists the symbols of an object file and their addresses.

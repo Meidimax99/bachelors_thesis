@@ -57,7 +57,7 @@ for the kernel and the other one must be saved in memory to later be restored \c
 While the processor still has to run the instructions, this is only minimally invasive
 for the state of the kernel.
 
-This implementation performs a complete save of the processor state, including most of the
+Our implementation performs a complete save of the processor state, including most of the
 32 registers that RISC-V offers.
 This allows running C code from the exception handler without having to think about what
 registers are mangled by the code, which is very useful for trying different implementations.

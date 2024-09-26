@@ -97,7 +97,7 @@ The final architecture for the memory system will look like depicted in figure \
 \begin{figure*}[ht!]
     \centering
     \includegraphics[scale=1.5]{figures/theory_normal_tlb_miss.pdf}
-    \caption[Usual TLB Miss]{This figure shows what usually happens when the TLB misses:
+    \caption[Usual TLB miss]{This figure shows what usually happens when the TLB misses:
         the miss will invoke the hardware state machine page table tree walker; the walker traverses
         the page table tree and if a valid PTE is found, the mapping is added to the TLB. The processor
         then executes the failing instruction again which will then result in a TLB hit}
@@ -108,7 +108,7 @@ The final architecture for the memory system will look like depicted in figure \
     \centering
     \includegraphics[scale=1.5]{figures/theory_mapping_fx.pdf}
     \caption[Virtual Memory using a mapping function]{Instead of emulating a hardware page table walk in software on
-        a TLB Miss exception, a mapping function is invoked that calculates the PTE using arithmetic primitives and tries
+        a TLB miss exception, a mapping function is invoked that calculates the PTE using arithmetic primitives and tries
         to avoid memory references.}
     \label{fig:theory:mapping_fx}
 \end{figure*}
@@ -170,7 +170,7 @@ At this point the faulting instruction will either be repeated, if the TLB fill 
 a page fault exception will be invoked \cite{RISCVInstructionSet}. The kernel then has to handle that page fault with help
 of the contents of the \texttt{satp} and \texttt{mtval} (or \texttt{stval}) registers.
 
-The behavior of a TLB Miss exception should be pretty similar: If the TLB hits, the program will
+The behavior of a TLB miss exception should be pretty similar: If the TLB hits, the program will
 just continue as usual. If the TLB misses, an exception should be raised, providing context
 information about the miss in registers. The invocation of the hardware page table walker is
 not necessary.
@@ -178,7 +178,7 @@ not necessary.
 
 % -------------------------------------------------------------------------------------------------
 \paragraph{Adding a new Exception to RISC-V}
-Extending the emulator to throw a new exception is explained in the Implementation chapter.
+Extending the emulator to throw a new exception is explained in the chapter \ref{chap:impl}.
 On the theoretical side, it is important to choose an exception code from the code ranges designated
 for custom use. These are $24-31$ and $48-63$ \cite{RISCVInstructionSet}. For the implementation we chose $24$ or $0x18$.
 
@@ -195,9 +195,9 @@ Throwing an exception is only part of the design. The operating system also has 
 % -------------------------------------------------------------------------------------------------
 \paragraph{L4/MIPS TLB Exception Handling}
 MIPS vectors its exception vectors in a continuous area in memory, starting at a base address.
-That gives the TLB miss handler 32 instructions to service the TLB Miss. Otherwise it has to jump
+That gives the TLB miss handler 32 instructions to service the TLB miss. Otherwise it has to jump
 somewhere with more space.
-The \emph{Fast TLB Miss} handler is able to service the miss using only the two kernel-reserved
+The \emph{Fast TLB miss} handler is able to service the miss using only the two kernel-reserved
 registers \texttt{k0} and \texttt{k1} and another register, which has to be saved first \cite{heiserAnatomyHighPerformanceMicrokernel}.
 Thus the memory footprint of the handler is low.
 
@@ -208,7 +208,7 @@ but notably also the different page fault exceptions, xv6 will simply kill the o
 
 % -------------------------------------------------------------------------------------------------
 \paragraph{TLB Miss Exception Handler}
-To simplify things, we will let the TLB Miss exception handler run in machine mode only.
+To simplify things, we will let the TLB miss exception handler run in machine mode only.
 The usual mode for a operating system kernel would be the supervisor mode. However, this
 mode also uses address translation. This could create a situation in which we would have
 to deal with nested exceptions.
@@ -228,7 +228,7 @@ The value of the \texttt{mcause} register identifies the reason for the exceptio
 This value can be used in something like a switch-case statement to call specific handlers
 for the different exception causes.
 This switch-case is not necessary in xv6, since the only exception that can enter
-the machine-mode exception handler is the TLB Miss exception.
+the machine-mode exception handler is the TLB miss exception.
 
 Before running any code that modifies general-purpose registers, the current state of the
 registers and the program counter should be saved to memory. These need to be restored after
@@ -267,8 +267,7 @@ and writing (indexed and random) of the TLB.
 The most interesting instruction for a first design would be the \texttt{TLBWR} instruction for writing a TLB
 entry at a random index. With a similar instruction in RISC-V, we can already implement a purely
 software-controlled VM system.
-The other types of TLB instructions that MIPS provides are not strictly necessary,
-except for flushing. Without being able to flush existing translations from the TLB,
+The other types of TLB instructions that MIPS provides are not strictly necessary, they provide more fine grained control and thus allow better optimization of the system. For the basic functionality a way to write TLB entries is enough. However, flushing the TLB also needs to be possible. Without being able to flush existing translations from the TLB,
 user mode processes may try to access physical mappings stemming from other processes. But the RISC-V privileged architecture already provides this functionality
 with the \texttt{sfence.vma} instruction \cite{riscvreader}.
 
@@ -276,7 +275,7 @@ with the \texttt{sfence.vma} instruction \cite{riscvreader}.
 % Replacement policy
 %   MIPS -> Indexed writes
 \paragraph{Replacement Strategies} An advantage of software-managed TLBs is that the operating system can implement custom
-TLB replacement policies, that may even change depending on workload, programs running
+TLB replacement policies, that may even change depending on workload, running programs
 and other circumstances.
 The default replacement strategy for the MIPS \texttt{tlbwr} instruction is to simply
 use the value of the \texttt{C0\_RANDOM} register as the index for the next TLB entry
@@ -296,8 +295,8 @@ mapping for every process and the kernel with the trampoline page.\todo{trampoli
 
 \paragraph{MIPS - TLBWR} The arguments for the instruction need to be written in some
 other registers - \texttt{EntryHi}, \texttt{EntryLo0}, \texttt{EntryLo1} and \texttt{PageMask}.
-The contents of those registers directly correspond to the TLB entry, which creates quite large
-TLB entries \cite{heiserAnatomyHighPerformanceMicrokernel}.
+The contents of those registers directly correspond to the TLB entry, which creates large
+TLB entries \cite{heiserAnatomyHighPerformanceMicrokernel}. Bigger TLB entries result in the TLB needing more space for less entries. Increasing the TLB range by adding more TLB slots in hardware will thus be more expensive than with smaller TLB entries \cite{hennessy2017computer}.
 
 
 
