@@ -115,18 +115,32 @@ the linked list used to keep track of the free pages \cite{cox2011xv6}.
 \end{figure*}
 
 
-\subsection{TLB miss exception in QEMU}
+\subsection{TLB Miss Exception in QEMU}
 
 To properly test the implementation, the \texttt{tlb\_fill} function was replaced to throw the
 TLB\_MISS exception for
 one specified, page-aligned address and to continue normally for every other address.
 The implementation is outlined
-in Listing \ref{lst:specialCaseTLBfill}.
+in isting \ref{lst:specialCaseTLBfill}.
 
+
+
+
+% -------------------------------------------------------------------------------------------------
+
+
+% This section describes the necesarry steps for adding the TLB miss exception to the qemu source
+%in comparison with Page fault exceptions
+To draw inspiration on how to implement a TLB miss exception in QEMU, you can look at how
+page fault exceptions are thrown.
+Whenever a page fault exception is triggered, the TLB is checked first to see if there is a mapping
+for the input virtual address \cite{QEMUSource2024}. Additionally, RISC-V cores provide the faulting
+address of the page fault exception in the \texttt{mtval} register \cite{RISCVInstructionSet}.
+The faulting address will also be necessary for handling the TLB miss exception.
 
 
 % riscv_cpu_tlb_switch function
-\begin{lstlisting}[language=c,float=h!,
+\begin{lstlisting}[language=c,float=h!,basicstyle=\footnotesize,
     caption={Alternative Implementation for the RISC-V tlb\_fill function with a special case to
     start testing TLB miss Handler implementations.
     In line 11, a conditional branch is used to only trigger the exception when neither the
@@ -157,19 +171,6 @@ bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
 
 % -------------------------------------------------------------------------------------------------
 
-
-% This section describes the necesarry steps for adding the TLB miss exception to the qemu source
-%in comparison with Page fault exceptions
-To draw inspiration on how to implement a TLB miss exception in QEMU, you can look at how
-page fault exceptions are thrown.
-Whenever a page fault exception is triggered, the TLB is checked first to see if there is a mapping
-for the input virtual address \cite{QEMUSource2024}. Additionally, RISC-V cores provide the faulting
-address of the page fault exception in the \texttt{mtval} register \cite{RISCVInstructionSet}.
-The faulting address will also be necessary for handling the TLB miss exception.
-
-
-% -------------------------------------------------------------------------------------------------
-
 % -------------------------------------------------------------------------------------------------
 
 % Adding new Exception to Qemu RV target
@@ -197,7 +198,7 @@ The code shown in Listing \ref{lst:specialCaseTLBfill} will finally trigger the 
 Listing \ref{lst:exceptionThrow}. After executing this function, QEMU will trigger a TLB miss exception as soon
 as it gets back to the main execution loop \cite{QEMUSource2024}.
 
-\begin{lstlisting}[language=c,float=h!,
+\begin{lstlisting}[language=c,float=h!,basicstyle=\footnotesize,
     caption={Setup-Code for raising a TLB Exception. The \texttt{cs-\textgreater exception\_index} variable needs
     to be set to the custom \texttt{TLB Exception} enum value. The \texttt{env-\textgreater badaddr} variable
     will end up in the \texttt{mtval} register. The address will be page-aligned first, by zeroing out the
@@ -206,10 +207,10 @@ as it gets back to the main execution loop \cite{QEMUSource2024}.
     label={lst:exceptionThrow}]
 
     static void raise_tlb_exception(CPURISCVState *env, target_ulong address,
-                                MMUAccessType access_type,
-                                /*unnecessary?*/ bool pmp_violation,
-                                bool first_stage, bool two_stage,
-                                bool two_stage_indirect, uint8_t mmu_idx) {
+            MMUAccessType access_type,
+            bool pmp_violation,
+            bool first_stage, bool two_stage,
+            bool two_stage_indirect, uint8_t mmu_idx) {
         CPUState *cs = env_cpu(env);
 
         cs->exception_index = RISCV_EXCP_TLB_MISS;
@@ -235,7 +236,7 @@ The new \texttt{.c} file only needs a \texttt{main} function and should also inc
 file to gain access to some preimplemented function and system call wrappers \cite{xv6source}.
 
 The final exception triggerer may look something like this:
-\begin{lstlisting}[language=c,float=h!,label={impl:excptTrigger},caption={\textbf{Exception Triggerer} Trying to
+\begin{lstlisting}[language=c,float=h!,label={impl:excptTrigger},basicstyle=\footnotesize,caption={\textbf{Exception Triggerer} Trying to
     load from a hardcoded address prompts the emulated hardware to trigger a TLB miss exception.}]
     #include "kernel/types.h"
     #include "user/user.h"
@@ -329,7 +330,7 @@ The write-callback implementations look like this:
 
 % Callbacks
 
-\begin{lstlisting}[language=c,float=h!,
+\begin{lstlisting}[language=c,float=h!,basicstyle=\footnotesize,caption={\textbf{Implementation of the tlbh Write Function}}
     label={lst:tlbh}]
     static RISCVException write_tlbh(CPURISCVState *env, int csrno, target_ulong new_val)
     {
@@ -342,7 +343,7 @@ that is written to it in the environment of the CPU (which is essentially the re
 This is because the theory specifies that the TLB entry will only
 be written to the TLB when the write to the \texttt{tlbl} CSR has succeeded.
 
-\begin{lstlisting}[language=c,float=h!,
+\begin{lstlisting}[language=c,float=h!,basicstyle=\footnotesize,caption={\textbf{Implementation of tlbl write function}}
     label={lst:tlbl}]
     static RISCVException write_tlbl(CPURISCVState *env, int csrno, target_ulong pte)
     {
@@ -375,6 +376,7 @@ To get the page-aligned physical address and to get rid of the access bits store
 the value will first be right shifted by ten and then left shifted by 12 bits.
 The topmost bits are specified to be all zero, as explained in the fundamentals chapter \cite{RISCVInstructionSet}.
 
+Figure \ref{lst:tlbl} depicts the implementation of the \texttt{tlbl} write functions.
 In line 10, the \texttt{mmu\_idx} is extracted from the lowest 11 bits of the virtual address. This is
 necessary, because QEMU uses up to 16 different MMU modes with dedicated TLBs \cite{QEMUSource2024}.
 Whenever QEMU performs a TLB lookup, it does so in a specific MMU mode. This MMU mode is clear when
@@ -419,7 +421,7 @@ So to add machine mode exception handlers with as little disruption to the exist
 requires changing the trap vectoring mode to \texttt{vectored} mode and moving the timer interrupt code
 to the correct offset.
 
-\begin{lstlisting}[language=diff]
+\begin{lstlisting}[language=diff,basicstyle=\footnotesize,caption={\textbf{Changes to the mtvec write}}]
 -    w_mtvec((uint64)timervec);
 +    w_mtvec((uint64)mtvec_vector_table | 0x1);
 \end{lstlisting}
@@ -432,7 +434,7 @@ achieved with linker directives.
 The interrupt number for the timer interrupt is \texttt{0x7}, this puts the timer interrupt vector
 at a positive \texttt{0x1c} offset from the base address.
 
-\begin{lstlisting}[language={[RISC-V]Assembler},float=h!,
+\begin{lstlisting}[language={[RISC-V]Assembler},float=h!,basicstyle=\footnotesize,
     label={lst:defaultTrapHandler}, caption={Vectored Trap Handler Routine}]
 mtvec_vector_table:
 IRQ_0:
@@ -481,7 +483,7 @@ as if nothing happened.
 After storing the state and running the exception handler, the state must be reloaded into the registers.
 
 \todo{use minipages to have text and listing side by side ? https://latex.org/forum/viewtopic.php?t=6652}
-\begin{lstlisting}[language={[RISC-V]Assembler},float=h!,
+\begin{lstlisting}[language={[RISC-V]Assembler},float=h!,basicstyle=\footnotesize,
     label={lst:defaultTrapHandler}, caption={Store/Load Sandwich}]
 default_exception_handler:
 
@@ -541,7 +543,7 @@ specific to the exceptions.
 In xv6, every exceptions except the new TLB miss exception are handled in supervisor mode, so there are
 no handlers for other exceptions.
 
-\begin{lstlisting}[language={C},float=h!,
+\begin{lstlisting}[language={C},float=h!,basicstyle=\footnotesize,
     label={lst:defaultTrapHandler}, caption={Exception Switch-Case Statement}]
     void machine_default_exception_handler() {
         switch (r_mcause()) {
@@ -574,7 +576,7 @@ value as arguments.
 The initial implementation simply calls the new \texttt{tlbh} and \texttt{tlbl} CSR instructions with and a pair of virtual and physical address and then
 returns.
 % Description of tlb handler and call of tlbh and tlbl
-\begin{lstlisting}[language={C},float=h!,
+\begin{lstlisting}[language={C},float=h!,basicstyle=\footnotesize,
     label={lst:defaultTrapHandler}, caption={Simple TLB miss exception handler for a single fixed address}]
 void tlb_handle_miss(uint64 addr, uint64 usatp) {
   //uint64 *paddr = kalloc();
@@ -628,8 +630,8 @@ The changes introduced to QEMU are simple: Essentially, only the condition check
 the ''testing'' address needs to be changed.
 The final implementation looks as follows:
 
-\begin{lstlisting}[language=c,float=h!,
-    caption={},
+\begin{lstlisting}[language=c,float=h!,basicstyle=\footnotesize,
+    caption={\textbf{TLB Fill Function in QEMU}},
     label={lst:updatedTLBFill}]
     bool my_riscv_cpu_tlb_fill(CPUState *cs, vaddr address, int size,
                         MMUAccessType access_type, int mmu_idx,
@@ -681,7 +683,7 @@ general setup including exception invocation, exception handling and TLB writing
 expected.
 Listing \ref{lst:softptw} shows the implementation.
 
-\begin{lstlisting}[language=c,float=t,
+\begin{lstlisting}[language=c,float=t,basicstyle=\footnotesize,
     caption={\textbf{TLB miss exception Handler with Page Table Walk}
     The \texttt{walk\_pt()} function walks the Sv39 page table with the base address
     encoded in the \texttt{satp} register. If a PTE with the valid bit set is found, the function
@@ -768,7 +770,7 @@ could also allow dynamic resizing of address spaces to provide space for more pr
 Using the ASID, the address range for a process can be calculated very easily. The macros in listing \ref{lst:macros}
 are used in different parts of the code to calculate different addresses related to an Address Space.
 
-\begin{lstlisting}[language=c,float=h!,
+\begin{lstlisting}[language=c,float=h!,basicstyle=\footnotesize,caption={\textbf{Simple Macros for Calculating Addresses related to Address Spaces}}
     label={lst:macros}]
     #define MAX_AS_MEM ((((PHYSTOP - (PGROUNDUP((uint64)end))) / (NAS + 1)) >> 12 )<< 12)
     #define AS_START(asid) (PGROUNDUP((uint64)end) + ((asid) * MAX_AS_MEM))
@@ -786,7 +788,7 @@ end of the Virtual Memory space, will provide the offset into the Address Space.
 
 Listing \ref{lst:handler} shows the implementation of the TLB miss exception handler.
 
-\begin{lstlisting}[language=c,float=h!,
+\begin{lstlisting}[language=c,float=h!,basicstyle=\footnotesize,
     label={lst:handler}, caption={\textbf{TLB Miss Exception Handler}}]
 #include "defs.h"
 #include "param.h"
@@ -883,7 +885,7 @@ The Makefile in the xv6-riscv source repository has a rule \texttt{qemu-gdb} to 
 \paragraph{Debugging the kernel} After replacing the VM system, an interesting effect was observed when debugging the kernel: As soon as the \texttt{satp} register is set in the \texttt{kvminithart()} function, GDB can no longer display the code at the current address (or any following ones). This is due to the value of the \texttt{satp} register. After the VM system was redesigned, it no longer contains the \texttt{PPN}. Only the \texttt{MODE} and \texttt{ASID} fields are relevant for the new system. There is no longer a page table that the PPN could point to. This behavior suggests that the gdbstub implemented by Qemu performs a hardware-emulated page walk to obtain the physical addresses and, consequently, the code. This, of course, does not work without a page table. One way to debug the kernel properly in GDB again would be to rebuild the kernel page table as before. However, since all the kernel mappings are direct mappings, it is sufficient to place a PTE for the address \texttt{0x80000000}, where the kernel code begins, behind the PPN in \texttt{satp}.
 
 A whole page was allocated in the code as follows:
-\begin{lstlisting}[language=c,float=h!, label={lst:fake_pt}]
+\begin{lstlisting}[language=c,float=h!, label={lst:fake_pt},basicstyle=\footnotesize]
     uint64 *pt = (uint64*)kalloc();
     for(uint64 i = 0 ; i < 512; i++) {
       pt[i] = 0xffffffffffffffff;
@@ -902,7 +904,7 @@ is supposed to come exactly \texttt{0x1c} bytes after the \texttt{mtvec\_vector\
 
 The following call confirms the correct placement of the symbols:
 
-\begin{lstlisting}[language={sh}]
+\begin{lstlisting}[language={sh},basicstyle=\footnotesize]
     $ nm kernel/kernel | grep 'mtvec_vector_table\|IRQ_7'
     00000000800092cc t IRQ_7
     00000000800092b0 T mtvec_vector_table
