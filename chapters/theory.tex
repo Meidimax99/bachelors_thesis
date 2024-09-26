@@ -152,7 +152,7 @@ Since using actual RISC-V hardware is not possible within the scope of implement
 % -------------------------------------------------------------------------------------------------
 % -------------------------------------------------------------------------------------------------
 \section{TLB Miss Exception}
-Operating systems running on RISC-V hardware are not directly notified of TLB misses.
+Operating systems running on RISC-V hardware are not directly notified of TLB misses \cite{RISCVInstructionSet}.
 A TLB miss can only be inferred when a page fault occurs. Otherwise, TLB misses will be handled
 by the MMU.
 To manage a TLB in software the operating system needs to be made aware that a TLB miss occured.
@@ -381,7 +381,7 @@ Typical segmented memory designs also allow for dynamic segment sizes \cite{tane
 
 % Elaboration on this specific design
 \paragraph{Tableless Segmented Virtual Memory}
-As a typical segmented memory design splits the programs memory into logical units, this design uses segmentation to split the whole physical memory into logical parts.
+As a typical segmented memory design splits the programs memory into logical units, this design uses segmentation to split the whole physical memory into logical parts \cite{tanenbaumOS}.
 These logical parts however do not reflect the structure of a program, but distinct process address spaces: Each segment of main memory can hold one process.
 To keep the design as lightweight as possible, each segment has a fixed size, which is determined at compile time of the operating system.
 This is less flexible but omits the need of storing the segment size for each segment, as they are all the same size.
@@ -435,7 +435,7 @@ trapframe and trampoline pages.
 To not change the memory layout of xv6 processes, a special rule is put into the mapping function
 to explicitly check for the usual addresses of trapframe and trampoline and then map them to appropriate physical addresses.
 The trampoline page can be the same for every process, but the trapframe needs to be unique per
-process and is thus pinned to the very top of the physical segment of each process.
+process and is thus pinned to the very top of the physical segment of each process \cite{cox2011xv6}.
 
 
 % Flush not precicse anymore if using more ASs than ASIDs in satp field

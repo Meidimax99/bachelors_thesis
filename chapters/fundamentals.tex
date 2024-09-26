@@ -150,7 +150,7 @@ These implementations are summarized next.
 %   [ A look at several...]
 %   [ Issues of implementation]
 \subsection{Implementation of Virtual Memory}
-Every Virtual Memory system must realize a mapping from virtual addresses of each process-private virtual address space to physical addresses that index data in main memory.
+Every Virtual Memory system must realize a mapping from virtual addresses of each process-private virtual address space to physical addresses that index data in main memory \cite{tanenbaumOS}.
 This section will provide an overview of how the most commonly used VM implementations satisfy
 this requirement.
 
@@ -206,7 +206,7 @@ for each physical frame instead of one entry per virtual page.
 A physical page frame is a page-aligned space in physical memory for a page.
 The number of physical frames is determined by the size of main memory divided by the page size.
 This has the enormous advantage that the bookkeeping only needs to keep record of as many pages
-as the physical memory can support.
+as the physical memory can support \cite{yaniv2016hash}.
 
 In contrast, hierarchical page tables need to keep track of as many pages as there can be in the virtual
 address space of all processes combined. That is a huge memory overhead compared to inverted page tables
@@ -226,7 +226,7 @@ unbounded \cite{tanenbaumOS}.
 
 % Hierarchical -> fixed number of refs (but memory usage)
 Hierarchical page tables have the key advantage that they always require
-a fixed number of memory accesses to determine the PTE.
+a fixed number of memory accesses to determine the PTE \cite{jacob1998virtualissues}.
 
 % Hash anchor to reduce the number of collisions
 Typical inverted page table designs often include a so-called hash anchor table, which is then
@@ -321,7 +321,7 @@ because the translations will change.
 The instruction also acts as a flushing operation for TLB entries. With both optional register
 arguments set to zero, the instruction will flush all entries.
 Setting the first register to a specific address will only flush translations containing that address.
-The second register specifies the address space that is supposed to be flushed, given an ASID.
+The second register specifies the address space that is supposed to be flushed, given an ASID \cite{riscvreader}.
 
 This mechanism allows for a precise control over the flushing of TLB entries, which can improve the
 memory system performance \cite{RISCVInstructionSet}.
@@ -457,7 +457,7 @@ For bigger memory needs, there are the Sv48 and Sv57 addressing modes, adding on
 The following will only look at specifics for the Sv39 addressing mode.
 
 The page table is an orthodox hierarchical multi-level page table, where each Page Table Entry (PTE) points to a PTE in the next level.
-Each level of the page table contains 512 PTEs, 64-bit in size, bringing a page table to exactly 4 KB in size.
+Each level of the page table contains 512 PTEs, 64-bit in size, bringing a page table to exactly 4 KB in size \cite{RISCVInstructionSet}.
 The format of a PTE is shown in figure \ref{fig:theory:sv39pte}.
 \begin{figure*}[h]
     \centering
@@ -484,7 +484,7 @@ The format of a PTE is shown in figure \ref{fig:theory:sv39pte}.
 \end{figure*}
 
 The translation process (which was already shown in Figure \ref{fig:fund:pagetree}) splits the virtual address (See figure \ref{fig:theory:sv39va}) into 4 logical parts:
-Three parts are parts of the Virtual Page Number (VPN), which are used to index the different page tables that are being traversed.
+Three parts are parts of the Virtual Page Number (VPN), which are used to index the different page tables that are being traversed \cite{riscvreader}.
 If the page table walk succeeds, the last PTE will contain a Physical Page Number (PPN), which will then be combined with the offset to create a physical address (See figure \ref{fig:theory:sv39pa}).
 
 
@@ -517,7 +517,7 @@ If the page table walk succeeds, the last PTE will contain a Physical Page Numbe
 
 Essential to the configuration of the VM system in RISC-V is the \texttt{satp} register (See figure \ref{fig:theory:sv39satp}).
 It configures whether Virtual Memory is enabled at all or if direct mapping is used for all addresses. It is also used to set the addressing mode.
-Beyond the configuration of the VM system, it contains the base address pointing to the root page table used for translations.
+Beyond the configuration of the VM system, it contains the base address pointing to the root page table used for translations \cite{RISCVInstructionSet}.
 
 \begin{figure*}[t]
     \centering
@@ -550,7 +550,7 @@ There are six central registers for triggering and handling exceptions. These ex
 Supervisor Mode (prefixed with "s") and Machine Mode (prefixed with "m").
 Whether the machine mode or supervisor mode version of the register should be used for an exception depends
 on the mode in which the exception is handled. In the following, all registers are presented with the
-M-Mode prefix only.
+M-Mode prefix only \cite{riscvreader}.
 
 
 % Vector -> mtvec
@@ -560,7 +560,7 @@ The \texttt{BASE} field of the register contains a 4-byte aligned physical addre
 the program counter is set in the case of an exception.
 The \texttt{MODE} field allows switching between \texttt{direct} and \texttt{vectored} modes.
 In \texttt{MODE=Direct}, the PC is set to BASE for all traps, whereas in \texttt{MODE=Vectored},
-the PC is set to $BASE+4*CAUSE$ for asynchronous interrupts.
+the PC is set to $BASE+4*CAUSE$ for asynchronous interrupts \cite{cox2011xv6}.
 
 % Delegation -> medeleg
 
@@ -574,7 +574,7 @@ exception-specific information, such as the virtual address that triggered a pag
 \paragraph{Delegation} Normally, all exceptions are handled in machine mode; however, in some cases,
 it may be useful to handle the exception in a lower privilege mode. With the bitfield in the
 \texttt{medeleg} register, individual exceptions can be chosen to be delegated to the next-lower
-privilege mode.
+privilege mode \cite{cox2011xv6}.
 
 % Exception number
 \paragraph{Exception Code} Each exception is assigned a unique number, the exception code \cite{riscvreader}.
