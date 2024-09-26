@@ -59,7 +59,7 @@ The order of the sections in this chapter reflects the implementation process of
     \item \textbf{Software Page Table Walk for all Addresses} This step removes the restriction
           in the QEMU emulator to only throw exceptions for a specific address. In the exception handler,
           a page table walk is implemented to now create virtual to physical mappings for all addresses.
-    \item \textbf{Segmented Memory Design using software-defined TLB Filling} In this step, the xv6 VM system is completely
+    \item \textbf{Segmented Memory Design using Software-Defined TLB Filling} In this step, the xv6 VM system is completely
           replaced. The new design gets rid of the page table and only uses information present in
           registers to create virtual-to-physical mappings and to fill the tlb.
 \end{enumerate}
@@ -760,7 +760,7 @@ design.
 %                                               STEP 4
 % -------------------------------------------------------------------------------------------------
 
-\section{Segmented Memory Design using software-defined TLB Filling}
+\section{Segmented Memory Design using Software-Defined TLB Filling}
 
 After step 3, xv6's VM system runs completely without using the (emulated) page table
 walking state machine:
@@ -816,10 +816,10 @@ The ASID can be used to calculate the actual physical address at which the Addre
 The faulting address, which would, according to the xv6 process memory model, be an address in the low
 end of the Virtual Memory space, will provide the offset into the Address Space.
 
-Listing \ref{lst:handler} shows the implementation for the TLB miss exception handler.
+Listing \ref{lst:handler} shows the implementation of the TLB miss exception handler.
 
 \begin{lstlisting}[language=c,float=h!,
-    label={lst:handler}]
+    label={lst:handler}, caption={\textbf{TLB Miss Exception Handler}}]
 #include "defs.h"
 #include "param.h"
 #include "types.h"

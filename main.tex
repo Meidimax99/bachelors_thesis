@@ -55,11 +55,11 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 ]{PSIThesis} % The class file specifying the document structure
 
 % version of the guide
-\def\tversion{v20200913}
+%\def\tversion{v20200913}
 
 % long-term stable URL to the thesis guide
-\def\doiurl{https://doi.org/10.20378/irb-48428}
-\def\githuburl{https://github.com/UBA-PSI/psi-thesis-guide}
+%\def\doiurl{https://doi.org/10.20378/irb-48428}
+%\def\githuburl{https://github.com/UBA-PSI/psi-thesis-guide}
 
 \input{misc/setup.tex} % Load the settings from Misc/setup.tex
 \input{misc/commands.tex} % Load the custom commands from Misc/commands.tex
@@ -250,7 +250,7 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 %----------------------------------------------------------------------------------------
 
 \begin{abstract}
-  \emph{Virtual Memory} (VM) is a fundamental component of modern computer systems, widely adopted across various computing environments, from embedded devices to large-scale data centers. While it initially served to automate memory management by transparently swapping pages between main memory and secondary storage, it now plays a crucial role in ensuring system security, process isolation, and overall flexibility. However, the increasing overhead associated with traditional VM systems — originally designed for resource-constrained environments — has led to performance bottlenecks, particularly in systems with high memory demands and applications with poor spatial locality. The ever-increasing depth of conventional hierarchical page tables further exacerbates these challenges.
+  \emph{Virtual Memory} (VM) is a fundamental component of modern computer systems, widely adopted across various computing environments, from embedded devices to large-scale data centers. While it initially served to automate memory management by transparently swapping pages between main memory and secondary storage, it now plays a crucial role in ensuring system security, process isolation, and overall flexibility of memory handling. However, the increasing overhead associated with traditional VM systems — originally designed for resource-constrained environments — has led to performance bottlenecks, particularly in systems with high memory demands and applications with poor spatial locality. The ever-increasing depth of conventional \textit{Hierarchical Page Tables} further exacerbates these challenges.
 
   To address these limitations, alternative approaches like \emph{Inverted Page Tables} are used, but they have their own set of downsides. The plethora of designs and approaches to optimizing these designs suggest general performance problems. This thesis proposes an approach that aims to eliminate the need for page tables and main memory accesses altogether by using specialized mapping functions instead of costly page table walks. These mappings promise faster address translation, as they omit the cost associated with the page table accesses, while providing flexibility to system designers by defining them in software. This allows tailoring the VM system to specific use cases.
 
@@ -262,12 +262,10 @@ consistentlayout, % layout of declaration, abstract and acknowledgements pages m
 %	ACKNOWLEDGEMENTS
 %----------------------------------------------------------------------------------------
 
-%\begin{acknowledgements}
-% %\addchaptertocentry{\acknowledgementname}
-% Add the acknowledgements to the table of contents (not recommended)
-%
-%The acknowledgments and the people to thank go here.
-%\end{acknowledgements}
+\begin{acknowledgements}
+  %\addchaptertocentry{\acknowledgementname}
+
+\end{acknowledgements}
 
 
 %----------------------------------------------------------------------------------------

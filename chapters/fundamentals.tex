@@ -45,7 +45,7 @@ still fit in memory, operating systems make it possible to run multiple programs
 the available physical memory \cite{tanenbaumOS}.
 % -------------------------------------------------------------------------------------------------
 
-\subsection{Virtual and physical addresses}
+\subsection{Virtual and Physical Addresses}
 The terms of \textit{Virtual} and \textit{Physical} addresses are used a lot of this thesis.
 Virtual addresses refer to those that are used by the program to reference a memory object in its address
 space. They are only valid in the address space of the program. Thus, it is possible for programs to use the same
@@ -67,7 +67,7 @@ These requirements are as follows:
 
 % -------------------------------------------------------------------------------------------------
 
-\paragraph{Address Space Protection / Isolation} It should not be possible for one process to access the data
+\paragraph{Address Space Protection / Isolation} This aims to prohibit one process to access the data
 of another process, unless explicitly shared.
 \cite{jacobVirtualMemoryContemporary1998}
 
@@ -166,7 +166,7 @@ Aditionally, each array should include additional bits for read/write/execute ri
 With a 64-bit computers, the space requirements for such page tables would be even higher.
 
 % Hierarchical
-\subsubsection{Hierarchical/radix/multi-level page tables}
+\subsubsection{Hierarchical/Radix/Multi-level Page Tables}
 To reduce the memory cost of managing pages, most \todo{cite?} VM systems use a
 multi-level page table, also known as a hierarchical page table. However, its structure
 is less like a table and more like a tree, in which the nodes are tables of page table entries (PTEs) \cite{tanenbaumOS}.
@@ -201,7 +201,7 @@ in the worst case, if all caches miss, up to 5 memory accesses may be required (
 scheme) just to find the mapping for a single memory access.
 
 % Solution? Hashed!
-\subsubsection{Inverted page tables}
+\subsubsection{Inverted Page tables}
 An alternative paging scheme approaches the problem from the opposite direction and provides a PTE
 for each physical frame instead of one entry per virtual page.
 A physical page frame is a page-aligned space in physical memory for a page.
