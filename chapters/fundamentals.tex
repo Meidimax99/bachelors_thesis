@@ -51,7 +51,7 @@ Virtual addresses refer to those that are used by the program to reference a mem
 space. They are only valid in the address space of the program. Thus, it is possible for programs to use the same
 virtual addresses, which point to different physical addresses.
 Virtual addresses are translated to physical addresses, which are actual addresses of memory. The \textit{VM System} is tasked with performing this translation, the creation of mappings,
-and keeping book of those mappings \cite{denning1996virtual}.
+and keeping track of those mappings \cite{denning1996virtual}.
 
 Some memory systems which use inverted page tables also use the notion of \textit{effective} addresses.
 These form an additional layer of indirection that allows the sharing of pages \cite{jacob1998virtualissues}.
@@ -161,9 +161,8 @@ The naive approach is to simply have a big array in main memory. This array can 
 using the virtual addresses, at which the physical address to that virtual address is placed.
 In a 32-bit address space with 4 KB pages, this requires 20 bits per page table entry. This
 adds up to \[ 20 * 2^{20} bit = 20971520 / 8 Byte = 2.5 MB \]
-To properly isolate the processes from each other, every process needs to have one of those arrays.
-To realize fine-grained protection of pages, there would also need to be some bits per array entry
-for read/write/execute rights.
+To properly isolate the processes from each other, every process must have an array as outlined above.
+Aditionally, each array should include additional bits for read/write/execute rights, in order to realize fine-grained protection of pages.
 With a 64-bit computers, the space requirements for such page tables would be even higher.
 
 % Hierarchical
