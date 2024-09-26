@@ -253,8 +253,7 @@ The new \texttt{.c} file only needs a \texttt{main} function and should also inc
 file to gain access to some preimplemented function and system call wrappers \cite{xv6source}.
 
 The final exception triggerer may look something like this:
-
-\begin{lstlisting}[language=c,float=h!,label{impl:excptTrigger},caption={\textbf{Exception Triggerer} Trying to
+\begin{lstlisting}[language=c,float=h!,label={impl:excptTrigger},caption={\textbf{Exception Triggerer} Trying to
     load from a hardcoded address prompts the emulated hardware to trigger a TLB miss exception.}]
     #include "kernel/types.h"
     #include "user/user.h"
@@ -281,7 +280,6 @@ and the kernel will print out an error message, as it does for all exceptions th
 numbers or do not have an exception handler implemented \cite{cox2011xv6}.
 If the exception was not properly implemented, the kernel would report a load page fault exception.
 
-\todo{add xv6 shell output at this stage progression - should be an error printed by the kernel exception handler}
 % -------------------------------------------------------------------------------------------------
 %                                       END OF SECTION - STEP 1
 % -------------------------------------------------------------------------------------------------
